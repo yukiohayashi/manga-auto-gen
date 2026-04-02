@@ -81,34 +81,47 @@ class ImageGenerator:
         description = panel.get("description", "")
         background = panel.get("background", "シンプルな背景")
         effects = panel.get("effects", [])
+        dialogues = panel.get("dialogue", [])
         panel_names = ["起", "承", "転", "結"]
+        
+        # セリフを整形
+        dialogue_text = ""
+        if dialogues:
+            dialogue_lines = []
+            for d in dialogues:
+                char = d.get("character", "")
+                text = d.get("text", "")
+                dialogue_lines.append(f"{char}: 「{text}」")
+            dialogue_text = "\n".join(dialogue_lines)
 
         prompt = f"""
-Generate a single panel for a Japanese 4-koma manga (4-panel comic).
+日本の4コマ漫画の1コマを生成してください。
 
-## Style Requirements
-- Japanese manga style with clean lines
-- Cel-shading (no gradients)
-- Pastel colors, low saturation
-- Minimal abstract background
-- NO speech bubbles or text (will be added separately)
+## スタイル要件
+- 日本の少女漫画スタイル
+- セル影（グラデーション禁止）
+- パステルカラー、低彩度
+- 吹き出しとセリフを必ず含める
+- 茶色の枠線（#5D4037）
 
-## Scene Description
-Panel {panel_number} ({panel_names[panel_number-1]}): {description}
+## シーン説明
+{panel_number}コマ目（{panel_names[panel_number-1]}）: {description}
 
-## Characters
-{', '.join(characters) if characters else 'No characters'}
+## キャラクター
+{', '.join(characters) if characters else 'キャラクターなし'}
 
-## Background
+## セリフ（吹き出しに入れる）
+{dialogue_text if dialogue_text else 'セリフなし'}
+
+## 背景
 {background}
 
-## Visual Effects
-{', '.join(effects) if effects else 'None'}
+## 視覚効果
+{', '.join(effects) if effects else 'なし'}
 
-## Technical Specs
-- Aspect ratio: 1:1 (square)
-- Clean composition with space for speech bubbles
-- Brown border (#5D4037)
+## 技術仕様
+- アスペクト比: 1:1（正方形）
+- 吹き出しとセリフを画像内に描画すること
 """
         return prompt
 
@@ -121,11 +134,11 @@ Panel {panel_number} ({panel_names[panel_number-1]}): {description}
         print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number})")
         
         try:
-            # Gemini 2.5 Flash Image で画像生成
+            # Gemini 3 Pro Image で画像生成
             from google.genai import types
             
             response = self.client.models.generate_content(
-                model="gemini-2.5-flash-image",
+                model="gemini-3-pro-image-preview",
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_modalities=["IMAGE", "TEXT"],
