@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Icon?
+Thumbs.db
+
+# 画像ファイル（Google Driveで管理）
+characters/*.png
+characters/*.jpg
+references/*.png
+references/*.jpg
+!characters/INDEX.md
+!references/INDEX.md
+
+# 出力フォルダ
+episodes/*
+!episodes/.gitkeep
+
+# 認証情報（絶対にコミットしない）
+credentials/
+secrets/
+*.credentials.json
+
+# ログ
+*.log
+logs/
+
+# 一時ファイル
+*.tmp
+.tmp*/
