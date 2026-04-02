@@ -3,19 +3,22 @@
 モジュール3：画像生成＆レイアウト描画
 
 manga_spec.ymlの指示とキャラクターリファレンスに基づき、
-各コマを描画・結合する。
+Gemini APIで各コマを生成し、吹き出しを描画・結合する。
 
 吹き出し描画は bubble_renderer.py モジュールを使用。
 """
 
 import argparse
+import base64
 import json
 import os
 from pathlib import Path
 from typing import Optional
+from io import BytesIO
 
 import yaml
 from PIL import Image, ImageDraw, ImageFont
+from google import genai
 
 from bubble_renderer import BubbleRenderer
 
@@ -27,12 +30,21 @@ PANEL_SIZE = (1365, 768)  # 16:11
 class ImageGenerator:
     """画像生成クラス"""
 
-    def __init__(self, spec_path: str, assets_path: str):
+    def __init__(self, spec_path: str, assets_path: str, api_key: str = None):
         with open(spec_path, "r", encoding="utf-8") as f:
             self.spec = yaml.safe_load(f)
         self.assets_path = Path(assets_path)
         self.character_images = self._load_character_images()
         self.bubble_renderer = BubbleRenderer(font_dir=Path(assets_path).parent / "fonts")
+        
+        # Gemini API クライアント初期化
+        self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
+        if self.api_key:
+            self.client = genai.Client(api_key=self.api_key)
+            print("[Module3] Gemini API クライアント初期化完了")
+        else:
+            self.client = None
+            print("[Module3] 警告: GEMINI_API_KEY未設定、プレースホルダー画像を使用")
 
     def _load_character_images(self) -> dict:
         """キャラクター画像を読み込み"""
@@ -63,40 +75,74 @@ class ImageGenerator:
         except:
             return ImageFont.load_default()
 
-    def generate_panel_prompt(self, panel: dict, scenario: dict) -> str:
+    def generate_panel_prompt(self, panel: dict, scenario: dict, panel_number: int) -> str:
         """Gemini画像生成用のプロンプトを生成"""
         characters = panel.get("characters", [])
         description = panel.get("description", "")
         background = panel.get("background", "シンプルな背景")
         effects = panel.get("effects", [])
+        panel_names = ["起", "承", "転", "結"]
 
         prompt = f"""
-4コマ漫画の1コマを生成してください。
+Generate a single panel for a Japanese 4-koma manga (4-panel comic).
 
-## スタイル指定
-- 日本の4コマ漫画スタイル
-- セル影を使用（グラデーション禁止）
-- パステル調・低彩度
-- 背景は最小限で抽象的
+## Style Requirements
+- Japanese manga style with clean lines
+- Cel-shading (no gradients)
+- Pastel colors, low saturation
+- Minimal abstract background
+- NO speech bubbles or text (will be added separately)
 
-## シーン
-{description}
+## Scene Description
+Panel {panel_number} ({panel_names[panel_number-1]}): {description}
 
-## 登場キャラクター
-{', '.join(characters)}
+## Characters
+{', '.join(characters) if characters else 'No characters'}
 
-## 背景
+## Background
 {background}
 
-## 効果
-{', '.join(effects) if effects else 'なし'}
+## Visual Effects
+{', '.join(effects) if effects else 'None'}
 
-## 技術仕様
-- アスペクト比: 16:11（横長）
-- 解像度: 1365 x 768 px
-- 枠線: 濃い茶色（#5D4037）
+## Technical Specs
+- Aspect ratio: 1:1 (square)
+- Clean composition with space for speech bubbles
+- Brown border (#5D4037)
 """
         return prompt
+
+    def generate_panel_with_gemini(self, panel: dict, scenario: dict, panel_number: int) -> Optional[Image.Image]:
+        """Gemini APIで画像を生成"""
+        if not self.client:
+            return None
+        
+        prompt = self.generate_panel_prompt(panel, scenario, panel_number)
+        print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number})")
+        
+        try:
+            response = self.client.models.generate_content(
+                model="gemini-2.0-flash-exp",
+                contents=prompt,
+                config={
+                    "response_modalities": ["image", "text"],
+                }
+            )
+            
+            # レスポンスから画像を抽出
+            for part in response.candidates[0].content.parts:
+                if hasattr(part, 'inline_data') and part.inline_data:
+                    image_data = part.inline_data.data
+                    image = Image.open(BytesIO(base64.b64decode(image_data)))
+                    print(f"[Module3] Gemini画像生成成功: パネル{panel_number}")
+                    return image.resize(CANVAS_SIZE)
+            
+            print(f"[Module3] 警告: Gemini応答に画像が含まれていません")
+            return None
+            
+        except Exception as e:
+            print(f"[Module3] Gemini画像生成エラー: {e}")
+            return None
 
     def create_title_panel(self, title: str) -> Image.Image:
         """タイトルパネルを生成"""
@@ -255,14 +301,21 @@ class ImageGenerator:
     def create_panel_with_dialogues(
         self, 
         panel_number: int, 
-        panel: dict
+        panel: dict,
+        scenario: dict = None
     ) -> Image.Image:
         """パネルを生成し、セリフを描画"""
         description = panel.get("description", "")
         is_final_panel = panel_number == 4
 
-        # ベースパネルを生成
-        img = self.create_placeholder_panel(panel_number, description)
+        # Gemini APIで画像生成を試行
+        img = None
+        if self.client and scenario:
+            img = self.generate_panel_with_gemini(panel, scenario, panel_number)
+        
+        # Gemini生成失敗時はプレースホルダーを使用
+        if img is None:
+            img = self.create_placeholder_panel(panel_number, description)
 
         # セリフを描画
         img = self.draw_panel_with_dialogues(img, panel, is_final_panel)
@@ -279,7 +332,7 @@ class ImageGenerator:
             print(f"[Module3] パネル{i}を生成中...")
             
             # パネルを生成（吹き出し付き）
-            img = self.create_panel_with_dialogues(i, panel)
+            img = self.create_panel_with_dialogues(i, panel, scenario)
             
             # 1コマ目の場合はタイトルを追加
             if i == 1:
