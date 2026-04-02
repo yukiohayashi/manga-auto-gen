@@ -23,7 +23,7 @@ import io
 
 # 必須：親フォルダID（manga-auto-genフォルダ）
 # ⚠️ この値は絶対に変更しないこと
-REQUIRED_PARENT_FOLDER_ID = "1InxhF6u1ToFBTsnfMeJ1xIW3ibNynUq_"
+REQUIRED_PARENT_FOLDER_ID = "1KjFd6ImfHBivg4SEWfrZzKekVaj7N80b"
 
 # 登録済みファイルインデックス（manga_spec.yml準拠）
 REGISTERED_FILES = {
