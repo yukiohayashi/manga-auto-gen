@@ -67,13 +67,43 @@ class ImageGenerator:
 
     def _get_font(self, size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
         """フォントを取得"""
-        # システムフォントを使用（実際の環境ではNoto Sans JPを指定）
-        try:
-            if bold:
-                return ImageFont.truetype("/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc", size)
-            return ImageFont.truetype("/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc", size)
-        except:
-            return ImageFont.load_default()
+        # GitHub Actions環境とローカル環境の両方に対応
+        font_paths = [
+            # GitHub Actions (Ubuntu)
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+            "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
+            "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+            # macOS
+            "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+            "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc",
+            "/System/Library/Fonts/Hiragino Sans GB.ttc",
+        ]
+        for path in font_paths:
+            try:
+                return ImageFont.truetype(path, size)
+            except:
+                continue
+        return ImageFont.load_default()
+
+    def _get_title_font(self, size: int) -> ImageFont.FreeTypeFont:
+        """タイトル用フォントを取得（太字）"""
+        font_paths = [
+            # GitHub Actions (Ubuntu) - Noto Sans CJK
+            "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+            "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
+            "/usr/share/fonts/opentype/noto/NotoSansCJKjp-Bold.otf",
+            # macOS
+            "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+            "/Library/Fonts/Arial Unicode.ttf",
+        ]
+        for path in font_paths:
+            try:
+                return ImageFont.truetype(path, size)
+            except:
+                continue
+        print("[Module3] 警告: 日本語フォントが見つかりません。デフォルトフォントを使用します。")
+        return ImageFont.load_default()
 
     def generate_panel_prompt(self, panel: dict, scenario: dict, panel_number: int) -> str:
         """Gemini画像生成用のプロンプトを生成"""
@@ -105,11 +135,11 @@ class ImageGenerator:
         prompt = f"""
 日本の4コマ漫画の1コマを生成してください。
 
-## 絶対に守るルール
-- キャラクター名（はな、さき、ようた等）を画像内に絶対に表示しないこと
-- 空白の吹き出しは絶対に描画しないこと
-- 吹き出しには必ずセリフのテキストを入れること
-- セリフがない場合は吹き出しを描画しないこと
+## 絶対禁止事項（これを破ると失敗）
+1. 空白・空っぽの吹き出しを描画してはいけない
+2. テキストのない吹き出しを描画してはいけない
+3. キャラクター名（はな、さき、ようた等）を画像内に表示してはいけない
+4. 指定されたセリフ以外の吹き出しを追加してはいけない
 
 ## スタイル要件
 - 日本の少女漫画スタイル
@@ -120,20 +150,19 @@ class ImageGenerator:
 ## シーン説明
 {panel_number}コマ目（{panel_names[panel_number-1]}）: {description}
 
-## 吹き出しとセリフ（必ずテキストを入れること）
-{chr(10).join(dialogue_instructions) if dialogue_instructions else '吹き出しなし（セリフがないため）'}
+## 吹き出しとセリフ（以下のセリフのみを描画すること）
+{chr(10).join(dialogue_instructions) if dialogue_instructions else '【吹き出しなし】このコマには吹き出しを一切描画しないこと'}
 
 ## 背景
 {background}
 
 ## キャラクターの服装
-- キャラクターシートと同じ服装を着せること
-- 服装を変更しないこと
+- キャラクターシートの画像と完全に同じ服装にすること
+- 服の色、デザイン、模様を変更しないこと
 
 ## 技術仕様
 - アスペクト比: 1:1（正方形）
 - 濃い茶色（#5D4037）の枠線
-- 空白の吹き出しは禁止
 """
         return prompt
 
@@ -407,29 +436,37 @@ class ImageGenerator:
             # 1コマ目の場合はタイトルを追加
             if i == 1:
                 print(f"[Module3] タイトル「{title}」を追加中...")
-                title_height = 120
-                # タイトル付きの新しい画像を作成
-                combined = Image.new("RGB", (CANVAS_SIZE[0], CANVAS_SIZE[1] + title_height), "#FFFFFF")
+                title_height = 100
+                panel_width = img.width
+                panel_height = img.height
+                
+                # タイトル付きの新しい画像を作成（パネルと同じ幅）
+                combined = Image.new("RGB", (panel_width, panel_height + title_height), "#FFFFFF")
                 
                 # タイトルエリア背景（パステルピンク）
-                title_area = Image.new("RGB", (CANVAS_SIZE[0], title_height), "#FFE4E1")
+                title_area = Image.new("RGB", (panel_width, title_height), "#FFE4E1")
                 draw = ImageDraw.Draw(title_area)
                 
-                # タイトルテキスト
-                font = self._get_font(42, bold=True)
+                # フォント取得（日本語対応）
+                font = self._get_title_font(48)
+                
+                # タイトルテキストの位置計算
                 text_bbox = draw.textbbox((0, 0), title, font=font)
                 text_width = text_bbox[2] - text_bbox[0]
-                text_x = (CANVAS_SIZE[0] - text_width) // 2
-                text_y = (title_height - 42) // 2
+                text_height = text_bbox[3] - text_bbox[1]
+                text_x = (panel_width - text_width) // 2
+                text_y = (title_height - text_height) // 2
                 
-                # 白アウトライン
-                for dx, dy in [(-2, -2), (-2, 2), (2, -2), (2, 2), (-2, 0), (2, 0), (0, -2), (0, 2)]:
+                # 白アウトライン（太め）
+                outline_offsets = [(-3, -3), (-3, 0), (-3, 3), (0, -3), (0, 3), (3, -3), (3, 0), (3, 3)]
+                for dx, dy in outline_offsets:
                     draw.text((text_x + dx, text_y + dy), title, font=font, fill="#FFFFFF")
                 # 黒文字
                 draw.text((text_x, text_y), title, font=font, fill="#000000")
                 
-                # 境界線（下部）
-                draw.line([(0, title_height - 2), (CANVAS_SIZE[0], title_height - 2)], fill="#5D4037", width=3)
+                # 境界線（上部と下部）
+                draw.line([(0, 2), (panel_width, 2)], fill="#5D4037", width=4)
+                draw.line([(0, title_height - 2), (panel_width, title_height - 2)], fill="#5D4037", width=4)
                 
                 # 結合
                 combined.paste(title_area, (0, 0))
@@ -438,7 +475,7 @@ class ImageGenerator:
                 # 外枠（茶色）
                 draw_combined = ImageDraw.Draw(combined)
                 draw_combined.rectangle(
-                    [(0, 0), (CANVAS_SIZE[0] - 1, CANVAS_SIZE[1] + title_height - 1)],
+                    [(0, 0), (panel_width - 1, panel_height + title_height - 1)],
                     outline="#5D4037", width=4
                 )
                 
