@@ -353,40 +353,85 @@ TECHNICAL:
         """
         draw = ImageDraw.Draw(img)
         dialogues = panel.get("dialogue", [])
-        
-        # 吹き出しの配置位置を計算（簡易的な自動配置）
         num_dialogues = len(dialogues)
-        bubble_height = 100
-        bubble_width = 280
-        start_y = 400
-        spacing = 120
+        if num_dialogues == 0:
+            return img
 
+        panel_w, panel_h = img.size
+        font_size = 28
+        margin = 30  # パネル端からの余白
+
+        # 各吹き出しのサイズを先に計算
+        bubble_infos = []
         for i, dialogue in enumerate(dialogues):
+            text = dialogue.get("text", "")
+            bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
+            is_caption = bubble_type == "caption"
+
+            if is_caption:
+                # キャプションは横書き・小さめ
+                text_clean = text.replace("「", "").replace("」", "")
+                bw = len(text_clean) * 18 + 40
+                bh = 40
+            else:
+                # 縦書きレイアウトからサイズ計算
+                _, bw, bh = self.bubble_renderer.calculate_vertical_layout(
+                    text, font_size, max_chars_per_col=8
+                )
+                # 少し余裕を持たせる
+                bw = int(bw * 1.2)
+                bh = int(bh * 1.15)
+            
+            bubble_infos.append({
+                "dialogue": dialogue,
+                "width": bw,
+                "height": bh,
+                "is_caption": is_caption,
+            })
+
+        # 吹き出しの配置位置を計算
+        # 参考画像のように、パネル上部の左右に配置
+        for i, info in enumerate(bubble_infos):
+            dialogue = info["dialogue"]
             character = dialogue.get("character", "")
             text = dialogue.get("text", "")
-            # "type" または "bubble_type" の両方に対応
             bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
             keyword = dialogue.get("highlight", dialogue.get("keyword", ""))
+            bw = info["width"]
+            bh = info["height"]
+            is_caption = info["is_caption"]
 
-            # 吹き出しの位置を計算
-            if i % 2 == 0:
-                x1 = 80
+            if is_caption:
+                # キャプションは左下寄り
+                x1 = margin
+                y1 = panel_h // 2
+            elif num_dialogues == 1:
+                # 1つだけなら右上
+                x1 = panel_w - bw - margin
+                y1 = margin
             else:
-                x1 = CANVAS_SIZE[0] - bubble_width - 80
-            
-            y1 = start_y + i * spacing
-            x2 = x1 + bubble_width
-            y2 = y1 + bubble_height
+                # 交互に右・左に配置（右上から開始）
+                if i % 2 == 0:
+                    x1 = panel_w - bw - margin
+                else:
+                    x1 = margin
+                # 縦方向は上から順に配置
+                y1 = margin + i * (bh + 20)
 
-            # しっぽの位置（キャラクターの方向を想定）
-            tail_x = x1 + bubble_width // 2
-            tail_y = y2 + 30
+            # パネル内に収まるように調整
+            x1 = max(margin, min(x1, panel_w - bw - margin))
+            y1 = max(margin, min(y1, panel_h - bh - margin))
+            x2 = x1 + bw
+            y2 = y1 + bh
 
-            # 吹き出しタイプの判定（shoutはtsukkomiとして扱う）
+            # しっぽの位置（吹き出しの下中央）
+            tail_x = x1 + bw // 2
+            tail_y = y2 + 25
+
+            # 吹き出しタイプの判定
             is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and i == num_dialogues - 1)
             is_monologue = bubble_type == "monologue"
             is_thought = bubble_type == "thought"
-            is_caption = bubble_type == "caption"
 
             # 吹き出しを描画
             self.bubble_renderer.draw_speech_bubble(
@@ -400,7 +445,7 @@ TECHNICAL:
                 is_thought=is_thought,
                 is_caption=is_caption,
                 keyword=keyword if is_tsukkomi else None,
-                font_size=24
+                font_size=font_size
             )
 
         return img

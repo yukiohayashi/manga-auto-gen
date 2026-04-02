@@ -290,64 +290,115 @@ class BubbleRenderer:
         bbox = draw.textbbox((0, 0), text, font=font)
         return bbox[2] - bbox[0], bbox[3] - bbox[1]
 
+    # 縦書き用の句読点位置調整マップ
+    VERTICAL_PUNCTUATION = {
+        "。": (0.5, -0.3),   # 右上寄せ
+        "、": (0.5, -0.3),
+        "，": (0.5, -0.3),
+        "．": (0.5, -0.3),
+        "！": (0.0, 0.0),
+        "？": (0.0, 0.0),
+        "!": (0.0, 0.0),
+        "?": (0.0, 0.0),
+        "ー": (0.0, 0.0),    # 長音は回転が必要だが、そのまま描画
+        "…": (0.0, 0.0),
+        "─": (0.0, 0.0),
+    }
+
+    def calculate_vertical_layout(
+        self, text: str, font_size: int, max_chars_per_col: int = 10
+    ) -> tuple[list[str], int, int]:
+        """縦書きレイアウトを計算し、必要な吹き出しサイズを返す
+        
+        Returns:
+            (columns, bubble_width, bubble_height)
+        """
+        text_clean = text.replace("「", "").replace("」", "")
+        
+        char_h = font_size + 6      # 1文字の縦幅
+        col_w = font_size + 10      # 1列の横幅
+        padding = 20
+        
+        # テキストを列に分割
+        columns = []
+        current_col = ""
+        for char in text_clean:
+            if len(current_col) >= max_chars_per_col:
+                columns.append(current_col)
+                current_col = char
+            else:
+                current_col += char
+        if current_col:
+            columns.append(current_col)
+        
+        num_cols = len(columns)
+        max_col_len = max(len(col) for col in columns) if columns else 1
+        
+        bubble_width = num_cols * col_w + padding * 2
+        bubble_height = max_col_len * char_h + padding * 2
+        
+        # 最小サイズ保証
+        bubble_width = max(bubble_width, 80)
+        bubble_height = max(bubble_height, 100)
+        
+        return columns, bubble_width, bubble_height
+
     def draw_vertical_text(
         self,
         draw: ImageDraw.Draw,
         text: str,
         position: tuple[int, int, int, int],
-        font_size: int = 24,
+        font_size: int = 28,
         fill: str = "#000000"
     ) -> None:
-        """縦書きテキストを描画
-        
-        Args:
-            draw: ImageDraw オブジェクト
-            text: テキスト
-            position: 吹き出しの位置 (x1, y1, x2, y2)
-            font_size: フォントサイズ
-            fill: テキスト色
-        """
+        """縦書きテキストを描画（右から左、上から下）"""
         font = self.get_font(font_size)
         x1, y1, x2, y2 = position
         
-        # 「」を除去
         text_clean = text.replace("「", "").replace("」", "")
         
-        # 吹き出し内のパディング
-        padding = 15
+        padding = 20
+        char_h = font_size + 6
+        col_w = font_size + 10
         
-        # 縦書き：右から左へ、上から下へ
-        char_height = font_size + 4
-        line_width = font_size + 8
-        
-        # 利用可能な高さと幅
+        # 利用可能エリア
         available_height = y2 - y1 - padding * 2
-        available_width = x2 - x1 - padding * 2
+        max_chars_per_col = max(1, available_height // char_h)
         
-        # 1行あたりの文字数
-        chars_per_line = max(1, available_height // char_height)
-        
-        # 行数を計算
-        lines = []
-        current_line = ""
+        # テキストを列に分割
+        columns = []
+        current_col = ""
         for char in text_clean:
-            if len(current_line) >= chars_per_line:
-                lines.append(current_line)
-                current_line = char
+            if len(current_col) >= max_chars_per_col:
+                columns.append(current_col)
+                current_col = char
             else:
-                current_line += char
-        if current_line:
-            lines.append(current_line)
+                current_col += char
+        if current_col:
+            columns.append(current_col)
         
-        # 右から左へ描画
-        start_x = x2 - padding - font_size
-        for line_idx, line in enumerate(lines):
-            x = start_x - line_idx * line_width
-            y = y1 + padding
+        # テキスト全体の幅と高さ
+        total_width = len(columns) * col_w
+        max_col_chars = max(len(col) for col in columns) if columns else 0
+        total_height = max_col_chars * char_h
+        
+        # 中央揃え
+        start_x = x1 + (x2 - x1 + total_width) // 2 - col_w
+        start_y = y1 + ((y2 - y1) - total_height) // 2
+        
+        # 右から左へ列を描画
+        for col_idx, col in enumerate(columns):
+            x = start_x - col_idx * col_w
+            y = start_y
             
-            for char in line:
-                draw.text((x, y), char, font=font, fill=fill)
-                y += char_height
+            for char in col:
+                # 句読点の位置調整
+                offset = self.VERTICAL_PUNCTUATION.get(char, (0.0, 0.0))
+                dx = int(offset[0] * font_size)
+                dy = int(offset[1] * font_size)
+                
+                draw.text((x + dx, y + dy), char, font=font, fill=fill)
+                y += char_h
 
     def draw_text_with_emphasis(
         self,
