@@ -132,9 +132,21 @@ Panel {panel_number} ({panel_names[panel_number-1]}): {description}
                 )
             )
             
+            # デバッグ: レスポンス構造を出力
+            print(f"[Module3] DEBUG: response type = {type(response)}")
+            if hasattr(response, 'candidates') and response.candidates:
+                print(f"[Module3] DEBUG: candidates count = {len(response.candidates)}")
+                if response.candidates[0].content:
+                    print(f"[Module3] DEBUG: parts count = {len(response.candidates[0].content.parts)}")
+                    for i, part in enumerate(response.candidates[0].content.parts):
+                        print(f"[Module3] DEBUG: part[{i}] type = {type(part)}, has inline_data = {hasattr(part, 'inline_data')}")
+                        if hasattr(part, 'text'):
+                            print(f"[Module3] DEBUG: part[{i}] text = {part.text[:100] if part.text else 'None'}...")
+            
             # レスポンスから画像を抽出
             for part in response.candidates[0].content.parts:
                 if hasattr(part, 'inline_data') and part.inline_data:
+                    print(f"[Module3] DEBUG: inline_data found, mime_type = {part.inline_data.mime_type if hasattr(part.inline_data, 'mime_type') else 'unknown'}")
                     image_data = base64.b64decode(part.inline_data.data)
                     image = Image.open(BytesIO(image_data))
                     print(f"[Module3] Gemini画像生成成功: パネル{panel_number}")
