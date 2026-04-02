@@ -84,42 +84,56 @@ class ImageGenerator:
         dialogues = panel.get("dialogue", [])
         panel_names = ["起", "承", "転", "結"]
         
-        # セリフを整形（キャラクター名は含めない）
-        dialogue_text = ""
+        # セリフを整形（吹き出しの色と内容を指定）
+        dialogue_instructions = []
         if dialogues:
-            dialogue_lines = []
             for d in dialogues:
+                char = d.get("character", "")
                 text = d.get("text", "")
-                dialogue_lines.append(f"「{text}」")
-            dialogue_text = "\n".join(dialogue_lines)
+                bubble_type = d.get("type", "normal")
+                
+                # 吹き出しの色を決定
+                if bubble_type == "thought" or "モノローグ" in str(d):
+                    bubble_color = "白い雲形の吹き出し"
+                elif bubble_type == "shout" or "！" in text or "!!" in text:
+                    bubble_color = "黄色いギザギザの吹き出し"
+                else:
+                    bubble_color = "白い楕円の吹き出し"
+                
+                dialogue_instructions.append(f"- {bubble_color}に「{text}」と書く")
 
         prompt = f"""
 日本の4コマ漫画の1コマを生成してください。
 
-## 重要なルール
-- キャラクター名（はな、さき等）を画像内に絶対に表示しないこと
-- 吹き出し内にはセリフのテキストのみを表示すること
-- 名前ラベルや字幕は禁止
+## 絶対に守るルール
+- キャラクター名（はな、さき、ようた等）を画像内に絶対に表示しないこと
+- 空白の吹き出しは絶対に描画しないこと
+- 吹き出しには必ずセリフのテキストを入れること
+- セリフがない場合は吹き出しを描画しないこと
 
 ## スタイル要件
 - 日本の少女漫画スタイル
 - セル影（グラデーション禁止）
 - パステルカラー、低彩度
-- 吹き出しとセリフを必ず含める
+- 濃い茶色（#5D4037）の枠線で囲む
 
 ## シーン説明
 {panel_number}コマ目（{panel_names[panel_number-1]}）: {description}
 
-## セリフ（吹き出しに入れる、名前は表示しない）
-{dialogue_text if dialogue_text else 'セリフなし'}
+## 吹き出しとセリフ（必ずテキストを入れること）
+{chr(10).join(dialogue_instructions) if dialogue_instructions else '吹き出しなし（セリフがないため）'}
 
 ## 背景
 {background}
 
+## キャラクターの服装
+- キャラクターシートと同じ服装を着せること
+- 服装を変更しないこと
+
 ## 技術仕様
 - アスペクト比: 1:1（正方形）
-- 吹き出しとセリフを画像内に描画すること
-- キャラクター名は絶対に表示しないこと
+- 濃い茶色（#5D4037）の枠線
+- 空白の吹き出しは禁止
 """
         return prompt
 
@@ -392,12 +406,44 @@ class ImageGenerator:
             
             # 1コマ目の場合はタイトルを追加
             if i == 1:
-                title_img = self.create_title_panel(title)
-                # タイトルとパネルを結合
-                combined = Image.new("RGB", (CANVAS_SIZE[0], CANVAS_SIZE[1] + 150), "#FFFFFF")
-                combined.paste(title_img.crop((0, 0, CANVAS_SIZE[0], 150)), (0, 0))
-                combined.paste(img, (0, 150))
+                print(f"[Module3] タイトル「{title}」を追加中...")
+                title_height = 120
+                # タイトル付きの新しい画像を作成
+                combined = Image.new("RGB", (CANVAS_SIZE[0], CANVAS_SIZE[1] + title_height), "#FFFFFF")
+                
+                # タイトルエリア背景（パステルピンク）
+                title_area = Image.new("RGB", (CANVAS_SIZE[0], title_height), "#FFE4E1")
+                draw = ImageDraw.Draw(title_area)
+                
+                # タイトルテキスト
+                font = self._get_font(42, bold=True)
+                text_bbox = draw.textbbox((0, 0), title, font=font)
+                text_width = text_bbox[2] - text_bbox[0]
+                text_x = (CANVAS_SIZE[0] - text_width) // 2
+                text_y = (title_height - 42) // 2
+                
+                # 白アウトライン
+                for dx, dy in [(-2, -2), (-2, 2), (2, -2), (2, 2), (-2, 0), (2, 0), (0, -2), (0, 2)]:
+                    draw.text((text_x + dx, text_y + dy), title, font=font, fill="#FFFFFF")
+                # 黒文字
+                draw.text((text_x, text_y), title, font=font, fill="#000000")
+                
+                # 境界線（下部）
+                draw.line([(0, title_height - 2), (CANVAS_SIZE[0], title_height - 2)], fill="#5D4037", width=3)
+                
+                # 結合
+                combined.paste(title_area, (0, 0))
+                combined.paste(img, (0, title_height))
+                
+                # 外枠（茶色）
+                draw_combined = ImageDraw.Draw(combined)
+                draw_combined.rectangle(
+                    [(0, 0), (CANVAS_SIZE[0] - 1, CANVAS_SIZE[1] + title_height - 1)],
+                    outline="#5D4037", width=4
+                )
+                
                 img = combined
+                print(f"[Module3] タイトル追加完了")
             
             output_path = output_dir / f"4koma_panel_{i:02d}.png"
             img.save(output_path)
