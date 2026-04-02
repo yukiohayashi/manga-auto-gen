@@ -11,7 +11,7 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-import google.generativeai as genai
+from google import genai
 
 
 class SNSPublisher:
@@ -32,8 +32,7 @@ class SNSPublisher:
 
     def __init__(self, api_key: str, strategy_path: str = None):
         self.api_key = api_key
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-1.5-pro")
+        self.client = genai.Client(api_key=api_key)
         
         self.strategy = ""
         if strategy_path and Path(strategy_path).exists():
@@ -84,7 +83,10 @@ class SNSPublisher:
 }}
 """
 
-        response = self.model.generate_content(prompt)
+        response = self.client.models.generate_content(
+            model="gemini-3-flash-preview",
+            contents=prompt
+        )
         
         # JSONを抽出
         response_text = response.text
