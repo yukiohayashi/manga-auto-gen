@@ -2,30 +2,15 @@ name: Issue-Triggered Manga Generation
 
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
 
 env:
   PYTHON_VERSION: '3.13'
-  DRIVE_PARENT_FOLDER_ID: '1InxhF6u1ToFBTsnfMeJ1xIW3ibNynUq_'
+  DRIVE_PARENT_FOLDER_ID: '1InxhF6u1ToFBTsnfMeJ1xIU3ibNynUq_'
 
 jobs:
-  check-label:
-    runs-on: ubuntu-latest
-    outputs:
-      is_manga_request: ${{ steps.check.outputs.is_manga_request }}
-    steps:
-      - name: Check if manga-generation label
-        id: check
-        run: |
-          if [[ "${{ contains(github.event.issue.labels.*.name, 'manga-generation') }}" == "true" ]]; then
-            echo "is_manga_request=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_manga_request=false" >> $GITHUB_OUTPUT
-          fi
-
   generate-manga:
-    needs: check-label
-    if: needs.check-label.outputs.is_manga_request == 'true'
+    if: contains(github.event.issue.title, '[生成リクエスト]')
     runs-on: ubuntu-latest
     
     steps:
