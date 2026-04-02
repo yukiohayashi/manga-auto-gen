@@ -40,7 +40,7 @@ class ImageGenerator:
         character_files = {
             "はな": "hana.png",
             "さき": "saki.png",
-            "まさと": "masto.png",
+            "まさと": "masato.png",
             "ともや": "tomoya.png",
             "ようた": "yota.png",
         }

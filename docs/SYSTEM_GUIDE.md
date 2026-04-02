@@ -178,7 +178,7 @@ manga-auto-gen/
 |-----------|-------------|------|------|-----------|
 | `hana.png` | はな | 主人公 | 女性 | 黄色 `#FFE800` |
 | `saki.png` | さき | 友人 | 女性 | 黄色 `#FFE800` |
-| `masto.png` | まさと | 彼氏 | 男性 | パステルブルー `#D4E8FF` |
+| `masato.png` | まさと | 彼氏 | 男性 | パステルブルー `#D4E8FF` |
 | `tomoya.png` | ともや | 友人 | 男性 | パステルブルー `#D4E8FF` |
 | `yota.png` | YOTA | 弟 | 男性 | パステルブルー `#D4E8FF` |
 
@@ -188,7 +188,7 @@ manga-auto-gen/
 |-----------|-----------|
 | `hana.png` | `1Szs4wPmo_-en3iWlo4XlfkOJPTmAV_y2` |
 | `saki.png` | `1FUdszNEBTNWclsuy1g8PxACqQC2FijQo` |
-| `masto.png` | `1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn` |
+| `masato.png` | `1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn` |
 | `tomoya.png` | `1gt4a9_wbPYcVfjj4GDXaknnekiYMfuf8` |
 | `yota.png` | `1Vg_ZvcbdwUxTH9CcnAZ4OT4zVlPWPeaE` |
 
@@ -278,7 +278,7 @@ manga-auto-gen/
 | `manga_spec.yml` | `1oET1V34HPCDcgxqRzpXZ5ZSA9fO5WsxH` | 制作ルール |
 | `hana.png` | `1Szs4wPmo_-en3iWlo4XlfkOJPTmAV_y2` | 主人公・はな |
 | `saki.png` | `1FUdszNEBTNWclsuy1g8PxACqQC2FijQo` | 友人・さき |
-| `masto.png` | `1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn` | 彼氏・まさと |
+| `masato.png` | `1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn` | 彼氏・まさと |
 | `tomoya.png` | `1gt4a9_wbPYcVfjj4GDXaknnekiYMfuf8` | 友人・ともや |
 | `yota.png` | `1Vg_ZvcbdwUxTH9CcnAZ4OT4zVlPWPeaE` | 弟・YOTA |
 | `reference_4koma.png` | `1rh-477oeOOEuFmvIoZ0WKrd4uKdNuGxx` | 参照用4コマ |

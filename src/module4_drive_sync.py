@@ -27,7 +27,7 @@ REGISTERED_FILES = {
     "manga_spec.yml": "1oET1V34HPCDcgxqRzpXZ5ZSA9fO5WsxH",
     "hana.png": "1Szs4wPmo_-en3iWlo4XlfkOJPTmAV_y2",
     "saki.png": "1FUdszNEBTNWclsuy1g8PxACqQC2FijQo",
-    "masto.png": "1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn",
+    "masato.png": "1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn",
     "tomoya.png": "1gt4a9_wbPYcVfjj4GDXaknnekiYMfuf8",
     "yota.png": "1Vg_ZvcbdwUxTH9CcnAZ4OT4zVlPWPeaE",
     "reference_4koma.png": "1rh-477oeOOEuFmvIoZ0WKrd4uKdNuGxx",
@@ -212,7 +212,7 @@ class DriveSync:
         """
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        character_files = ["hana.png", "saki.png", "masto.png", "tomoya.png", "yota.png"]
+        character_files = ["hana.png", "saki.png", "masato.png", "tomoya.png", "yota.png"]
         success = []
         failed = []
         

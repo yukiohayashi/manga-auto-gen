@@ -961,7 +961,7 @@ google_drive_sync:
     - name: "saki.png"
       file_id: "1FUdszNEBTNWclsuy1g8PxACqQC2FijQo"
       operation: update
-    - name: "masto.png"
+    - name: "masato.png"
       file_id: "1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn"
       operation: update
     - name: "tomoya.png"

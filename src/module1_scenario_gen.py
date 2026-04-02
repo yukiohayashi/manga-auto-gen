@@ -59,10 +59,30 @@ def select_random_pattern() -> tuple[str, str]:
     return category, pattern
 
 
-def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str) -> dict:
+def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str, 
+                       title: str = "", theme: str = "", detail: str = "") -> dict:
     """Gemini APIを使用してシナリオを生成"""
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel("gemini-1.5-pro")
+
+    # テーマ指定がある場合は追加
+    theme_section = ""
+    if theme:
+        theme_section = f"""
+## 今回のテーマ・指示
+{theme}
+"""
+
+    # 詳細シナリオ指定がある場合は追加
+    detail_section = ""
+    if detail:
+        detail_section = f"""
+## 詳細シナリオ（この内容に従って生成すること）
+{detail}
+"""
+
+    # タイトル指定
+    title_instruction = f'タイトルは「{title}」を使用すること' if title else 'タイトルは内容に合わせて生成すること'
 
     prompt = f"""
 あなたは4コマ漫画のシナリオライターです。
@@ -70,7 +90,8 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str) -> dict
 
 ## どんでん返しパターン
 今回使用するパターン: {pattern}
-
+{theme_section}
+{detail_section}
 ## PlotTwistルール
 {plot_twist_rules}
 
@@ -86,6 +107,7 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str) -> dict
 2. 心理描写ではなく「実際の行動」ベースで描写する
 3. 主人公の目的・戦い・変化の3つのストーリーラインが交錯する瞬間にオチを発生させる
 4. 4コマ目は必ずツッコミ（オチ）で終わる
+5. {title_instruction}
 
 ## 出力形式（JSON）
 {{
@@ -137,11 +159,23 @@ def validate_scenario(scenario: dict) -> list[str]:
     return errors
 
 
+def parse_pattern_input(pattern_input: str) -> str:
+    """入力されたパターン文字列からパターン名を抽出"""
+    if not pattern_input or pattern_input == "おまかせ（自動選択）":
+        return ""
+    # "ドラフランケン (D→F)" のような形式からパターン名を抽出
+    pattern_name = pattern_input.split(" (")[0].strip()
+    return pattern_name
+
+
 def main():
     parser = argparse.ArgumentParser(description="4コマ漫画シナリオ生成")
     parser.add_argument("--config", required=True, help="PlotTwist_plain.txtのパス")
     parser.add_argument("--output", required=True, help="出力JSONファイルのパス")
-    parser.add_argument("--pattern", help="使用するどんでん返しパターン（省略時はランダム）")
+    parser.add_argument("--title", default="", help="漫画のタイトル")
+    parser.add_argument("--theme", default="", help="テーマやシナリオ指示")
+    parser.add_argument("--pattern", default="", help="どんでん返しパターン")
+    parser.add_argument("--detail", default="", help="詳細シナリオ（起承転結を直接指定）")
     args = parser.parse_args()
 
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -152,16 +186,24 @@ def main():
     plot_twist_rules = load_plot_twist_rules(args.config)
 
     # パターン選択
-    if args.pattern:
-        pattern = args.pattern
+    pattern_name = parse_pattern_input(args.pattern)
+    if pattern_name:
+        pattern = pattern_name
         category = "manual"
     else:
         category, pattern = select_random_pattern()
 
     print(f"[Module1] 選択パターン: {pattern} ({category})")
+    if args.title:
+        print(f"[Module1] タイトル: {args.title}")
+    if args.theme:
+        print(f"[Module1] テーマ: {args.theme}")
 
     # シナリオ生成
-    scenario = generate_scenario(api_key, plot_twist_rules, pattern)
+    scenario = generate_scenario(
+        api_key, plot_twist_rules, pattern,
+        title=args.title, theme=args.theme, detail=args.detail
+    )
 
     # 検証
     errors = validate_scenario(scenario)
