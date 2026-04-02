@@ -132,34 +132,36 @@ class ImageGenerator:
                 
                 dialogue_instructions.append(f"- {bubble_color}に「{text}」と書く")
 
+        # 英語プロンプト（Geminiは英語の方が指示を正確に理解する）
         prompt = f"""
-日本の4コマ漫画の1コマを生成してください。
+Generate a single panel of Japanese 4-koma manga.
 
-## 絶対禁止事項
-1. 吹き出しを一切描画しないこと（後から追加するため）
-2. テキストや文字を一切描画しないこと
-3. キャラクター名を画像内に表示しないこと
+CRITICAL RULES - DO NOT VIOLATE:
+- NO speech bubbles of any kind
+- NO text, letters, or words anywhere in the image
+- NO character names visible
+- Characters only - no dialogue elements
 
-## スタイル要件
-- 日本の少女漫画スタイル
-- セル影（グラデーション禁止）
-- パステルカラー、低彩度
-- 濃い茶色（#5D4037）の枠線で囲む
+STYLE:
+- Japanese shoujo manga style
+- Cel shading (no gradients)
+- Pastel colors, low saturation
+- Dark brown border (#5D4037)
 
-## シーン説明
-{panel_number}コマ目（{panel_names[panel_number-1]}）: {description}
+SCENE (Panel {panel_number}):
+{description}
 
-## 背景
+BACKGROUND:
 {background}
 
-## キャラクターの服装
-- キャラクターシートの画像と完全に同じ服装にすること
-- 服の色、デザイン、模様を変更しないこと
+CHARACTER CLOTHING:
+- Use EXACT same clothing as shown in the character reference sheet
+- Do not change colors, design, or patterns
 
-## 技術仕様
-- アスペクト比: 1:1（正方形）
-- 濃い茶色（#5D4037）の枠線
-- 吹き出しやテキストは描画しない（後処理で追加）
+TECHNICAL:
+- Aspect ratio: 1:1 (square)
+- Dark brown border (#5D4037)
+- Clean illustration without any text or speech bubbles
 """
         return prompt
 
