@@ -24,11 +24,11 @@ build/
 Icon?
 Thumbs.db
 
-# 画像ファイル（Google Driveで管理）
-characters/*.png
-characters/*.jpg
-references/*.png
-references/*.jpg
+# 画像ファイル（GitHubで管理）
+# characters/*.png
+# characters/*.jpg
+# references/*.png
+# references/*.jpg
 !characters/INDEX.md
 !references/INDEX.md
 
