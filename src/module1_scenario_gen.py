@@ -13,7 +13,8 @@ import random
 from datetime import datetime
 from pathlib import Path
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 # PlotTwistの10パターン
 PLOT_TWIST_PATTERNS = {
@@ -62,8 +63,7 @@ def select_random_pattern() -> tuple[str, str]:
 def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str, 
                        title: str = "", theme: str = "", detail: str = "") -> dict:
     """Gemini APIを使用してシナリオを生成"""
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    client = genai.Client(api_key=api_key)
 
     # テーマ指定がある場合は追加
     theme_section = ""
@@ -131,7 +131,10 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str,
 }}
 """
 
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=prompt
+    )
     
     # JSONを抽出
     response_text = response.text
