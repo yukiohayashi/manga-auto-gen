@@ -84,85 +84,88 @@ class ImageGenerator:
         dialogues = panel.get("dialogue", [])
         panel_names = ["起", "承", "転", "結"]
         
-        # セリフを整形
+        # セリフを整形（キャラクター名は含めない）
         dialogue_text = ""
         if dialogues:
             dialogue_lines = []
             for d in dialogues:
-                char = d.get("character", "")
                 text = d.get("text", "")
-                dialogue_lines.append(f"{char}: 「{text}」")
+                dialogue_lines.append(f"「{text}」")
             dialogue_text = "\n".join(dialogue_lines)
 
         prompt = f"""
 日本の4コマ漫画の1コマを生成してください。
+
+## 重要なルール
+- キャラクター名（はな、さき等）を画像内に絶対に表示しないこと
+- 吹き出し内にはセリフのテキストのみを表示すること
+- 名前ラベルや字幕は禁止
 
 ## スタイル要件
 - 日本の少女漫画スタイル
 - セル影（グラデーション禁止）
 - パステルカラー、低彩度
 - 吹き出しとセリフを必ず含める
-- 茶色の枠線（#5D4037）
 
 ## シーン説明
 {panel_number}コマ目（{panel_names[panel_number-1]}）: {description}
 
-## キャラクター
-{', '.join(characters) if characters else 'キャラクターなし'}
-
-## セリフ（吹き出しに入れる）
+## セリフ（吹き出しに入れる、名前は表示しない）
 {dialogue_text if dialogue_text else 'セリフなし'}
 
 ## 背景
 {background}
 
-## 視覚効果
-{', '.join(effects) if effects else 'なし'}
-
 ## 技術仕様
 - アスペクト比: 1:1（正方形）
 - 吹き出しとセリフを画像内に描画すること
+- キャラクター名は絶対に表示しないこと
 """
         return prompt
 
-    def generate_panel_with_gemini(self, panel: dict, scenario: dict, panel_number: int) -> Optional[Image.Image]:
-        """Gemini APIで画像を生成"""
+    def generate_panel_with_gemini(self, panel: dict, scenario: dict, panel_number: int, max_retries: int = 3) -> Optional[Image.Image]:
+        """Gemini APIで画像を生成（リトライ機能付き）"""
         if not self.client:
             return None
         
         prompt = self.generate_panel_prompt(panel, scenario, panel_number)
-        print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number})")
+        from google.genai import types
+        import time
         
-        try:
-            # Gemini 3 Pro Image で画像生成
-            from google.genai import types
+        for attempt in range(max_retries):
+            print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number}, 試行{attempt + 1}/{max_retries})")
             
-            response = self.client.models.generate_content(
-                model="gemini-3-pro-image-preview",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    response_modalities=["IMAGE", "TEXT"],
+            try:
+                response = self.client.models.generate_content(
+                    model="gemini-3-pro-image-preview",
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        response_modalities=["IMAGE", "TEXT"],
+                    )
                 )
-            )
+                
+                # レスポンスから画像を抽出
+                for part in response.candidates[0].content.parts:
+                    if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'data') and part.inline_data.data:
+                        print(f"[Module3] DEBUG: inline_data found, mime_type = {getattr(part.inline_data, 'mime_type', 'unknown')}")
+                        image_data = part.inline_data.data
+                        if isinstance(image_data, str):
+                            image_data = base64.b64decode(image_data)
+                        image = Image.open(BytesIO(image_data))
+                        print(f"[Module3] Gemini画像生成成功: パネル{panel_number}")
+                        return image.resize(CANVAS_SIZE)
+                
+                print(f"[Module3] 警告: Gemini応答に画像が含まれていません（試行{attempt + 1}）")
+                
+            except Exception as e:
+                print(f"[Module3] Gemini画像生成エラー (試行{attempt + 1}): {e}")
             
-            # レスポンスから画像を抽出
-            for part in response.candidates[0].content.parts:
-                if hasattr(part, 'inline_data') and part.inline_data and hasattr(part.inline_data, 'data') and part.inline_data.data:
-                    print(f"[Module3] DEBUG: inline_data found, mime_type = {getattr(part.inline_data, 'mime_type', 'unknown')}")
-                    image_data = part.inline_data.data
-                    # base64デコードが必要な場合
-                    if isinstance(image_data, str):
-                        image_data = base64.b64decode(image_data)
-                    image = Image.open(BytesIO(image_data))
-                    print(f"[Module3] Gemini画像生成成功: パネル{panel_number}")
-                    return image.resize(CANVAS_SIZE)
-            
-            print(f"[Module3] 警告: Gemini応答に画像が含まれていません（テキスト応答のみ）")
-            return None
-            
-        except Exception as e:
-            print(f"[Module3] Gemini画像生成エラー: {e}")
-            return None
+            # リトライ前に少し待機
+            if attempt < max_retries - 1:
+                time.sleep(2)
+        
+        print(f"[Module3] パネル{panel_number}の画像生成に失敗しました（{max_retries}回試行）")
+        return None
 
     def create_title_panel(self, title: str) -> Image.Image:
         """タイトルパネルを生成"""
