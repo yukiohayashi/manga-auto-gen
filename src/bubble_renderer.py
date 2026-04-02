@@ -60,11 +60,13 @@ THOUGHT_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.CLOUD)
 TEXT_COLOR_PRIMARY = "#000000"      # 通常テキスト（黒）
 TEXT_COLOR_EMPHASIS = "#FF0000"     # 強調キーワード（赤）
 
-# フォントパス（実際の環境に合わせて調整）
+# フォントパス（GitHub Actions環境とローカル環境の両方に対応）
 FONT_PATHS = {
     "main": "fonts/NotoSansJP-Black.ttf",
     "emphasis": "fonts/MPLUSRounded1c-ExtraBold.ttf",
     "fallback_mac": "/System/Library/Fonts/ヒラギノ角ゴシック W6.ttc",
+    "fallback_ubuntu": "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+    "fallback_ubuntu2": "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
 }
 
 
@@ -84,6 +86,8 @@ class BubbleRenderer:
         font_paths_to_try = [
             self.font_dir / "NotoSansJP-Black.ttf",
             self.font_dir / "MPLUSRounded1c-ExtraBold.ttf",
+            Path(FONT_PATHS["fallback_ubuntu"]),
+            Path(FONT_PATHS["fallback_ubuntu2"]),
             Path(FONT_PATHS["fallback_mac"]),
         ]
 
