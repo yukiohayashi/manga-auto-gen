@@ -8,6 +8,10 @@ env:
   PYTHON_VERSION: '3.13'
   DRIVE_PARENT_FOLDER_ID: '0AFCTATYikdWmUk9PVA'
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   generate-manga:
     if: contains(github.event.issue.title, '[生成リクエスト]')
