@@ -161,11 +161,9 @@ class ImageGenerator:
         contents = []
         if character_parts:
             contents.extend(character_parts)
-            contents.append(types.Part.from_text(
-                f"上記のキャラクターシートを参照して、以下の指示に従って画像を生成してください。キャラクターの外見（髪型、服装、顔の特徴）を正確に再現してください。\n\n{prompt}"
-            ))
+            contents.append(f"上記のキャラクターシートを参照して、以下の指示に従って画像を生成してください。キャラクターの外見（髪型、服装、顔の特徴）を正確に再現してください。\n\n{prompt}")
         else:
-            contents.append(types.Part.from_text(prompt))
+            contents.append(prompt)
         
         for attempt in range(max_retries):
             print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number}, 試行{attempt + 1}/{max_retries})")
