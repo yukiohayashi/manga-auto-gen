@@ -358,8 +358,8 @@ TECHNICAL:
             return img
 
         panel_w, panel_h = img.size
-        font_size = 28
-        margin = 30  # パネル端からの余白
+        font_size = 36
+        margin = 20  # パネル端からの余白
 
         # 各吹き出しのサイズを先に計算
         bubble_infos = []
@@ -376,11 +376,11 @@ TECHNICAL:
             else:
                 # 縦書きレイアウトからサイズ計算
                 _, bw, bh = self.bubble_renderer.calculate_vertical_layout(
-                    text, font_size, max_chars_per_col=8
+                    text, font_size, max_chars_per_col=6
                 )
-                # 少し余裕を持たせる
-                bw = int(bw * 1.2)
-                bh = int(bh * 1.15)
+                # 余裕を持たせる（参考画像のように大きめ）
+                bw = int(bw * 1.3)
+                bh = int(bh * 1.3)
             
             bubble_infos.append({
                 "dialogue": dialogue,

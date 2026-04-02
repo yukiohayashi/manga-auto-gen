@@ -306,7 +306,7 @@ class BubbleRenderer:
     }
 
     def calculate_vertical_layout(
-        self, text: str, font_size: int, max_chars_per_col: int = 10
+        self, text: str, font_size: int, max_chars_per_col: int = 6
     ) -> tuple[list[str], int, int]:
         """縦書きレイアウトを計算し、必要な吹き出しサイズを返す
         
@@ -315,9 +315,9 @@ class BubbleRenderer:
         """
         text_clean = text.replace("「", "").replace("」", "")
         
-        char_h = font_size + 6      # 1文字の縦幅
-        col_w = font_size + 10      # 1列の横幅
-        padding = 20
+        char_h = font_size + 10     # 1文字の縦幅（ゆったり）
+        col_w = font_size + 14      # 1列の横幅（ゆったり）
+        padding = 30
         
         # テキストを列に分割
         columns = []
@@ -338,8 +338,8 @@ class BubbleRenderer:
         bubble_height = max_col_len * char_h + padding * 2
         
         # 最小サイズ保証
-        bubble_width = max(bubble_width, 80)
-        bubble_height = max(bubble_height, 100)
+        bubble_width = max(bubble_width, 100)
+        bubble_height = max(bubble_height, 150)
         
         return columns, bubble_width, bubble_height
 
@@ -348,7 +348,7 @@ class BubbleRenderer:
         draw: ImageDraw.Draw,
         text: str,
         position: tuple[int, int, int, int],
-        font_size: int = 28,
+        font_size: int = 36,
         fill: str = "#000000"
     ) -> None:
         """縦書きテキストを描画（右から左、上から下）"""
@@ -357,9 +357,9 @@ class BubbleRenderer:
         
         text_clean = text.replace("「", "").replace("」", "")
         
-        padding = 20
-        char_h = font_size + 6
-        col_w = font_size + 10
+        padding = 30
+        char_h = font_size + 10
+        col_w = font_size + 14
         
         # 利用可能エリア
         available_height = y2 - y1 - padding * 2
