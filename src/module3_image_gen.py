@@ -121,11 +121,11 @@ Panel {panel_number} ({panel_names[panel_number-1]}): {description}
         print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number})")
         
         try:
-            # Gemini 2.0 Flash (実験版) で画像生成
+            # Gemini 2.5 Flash Image で画像生成
             from google.genai import types
             
             response = self.client.models.generate_content(
-                model="gemini-2.0-flash-exp-image-generation",
+                model="gemini-2.5-flash-image",
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     response_modalities=["IMAGE", "TEXT"],
