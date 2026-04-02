@@ -28,6 +28,17 @@ jobs:
           pip uninstall -y google-generativeai || true
           pip install --no-cache-dir -r requirements.txt
 
+      - name: List available models
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c "
+          from google import genai
+          client = genai.Client(api_key='$GEMINI_API_KEY')
+          for model in client.models.list():
+              print(model.name)
+          "
+
       - name: Parse Issue Body
         id: parse
         uses: actions/github-script@v7
