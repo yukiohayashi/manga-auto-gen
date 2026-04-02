@@ -386,10 +386,11 @@ class ImageGenerator:
                 character=character,
                 text=text,
                 position=(x1, y1, x2, y2),
-                tail_point=(tail_x, tail_y),
+                tail_point=(tail_x, tail_y) if not is_caption else None,
                 is_tsukkomi=is_tsukkomi,
                 is_monologue=is_monologue,
                 is_thought=is_thought,
+                is_caption=is_caption,
                 keyword=keyword if is_tsukkomi else None,
                 font_size=24
             )

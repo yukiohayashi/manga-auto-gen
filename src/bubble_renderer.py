@@ -55,6 +55,7 @@ CHARACTER_BUBBLE_STYLES = {
 MONOLOGUE_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.OVAL)
 TSUKKOMI_STYLE = BubbleStyle("#FFE800", "#000000", BubbleShape.EXPLOSION, outline_width=4)
 THOUGHT_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.CLOUD)
+CAPTION_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.ANGULAR_POLYGON, outline_width=2)  # 紹介キャプション用
 
 # テキスト色定義
 TEXT_COLOR_PRIMARY = "#000000"      # 通常テキスト（黒）
@@ -109,9 +110,12 @@ class BubbleRenderer:
         character: str, 
         is_tsukkomi: bool = False,
         is_monologue: bool = False,
-        is_thought: bool = False
+        is_thought: bool = False,
+        is_caption: bool = False
     ) -> BubbleStyle:
         """キャラクターと状況に応じた吹き出しスタイルを取得"""
+        if is_caption:
+            return CAPTION_STYLE
         if is_tsukkomi:
             return TSUKKOMI_STYLE
         if is_monologue:
@@ -322,6 +326,39 @@ class BubbleRenderer:
             # 通常テキストの描画
             draw.text(position, text, font=font_standard, fill=TEXT_COLOR_PRIMARY)
 
+    def draw_caption(
+        self,
+        draw: ImageDraw.Draw,
+        text: str,
+        position: tuple[int, int, int, int],
+        font_size: int = 20
+    ) -> None:
+        """
+        紹介キャプション（四角い矩形）を描画
+        
+        Args:
+            draw: ImageDraw オブジェクト
+            text: キャプションテキスト
+            position: キャプションの位置 (x1, y1, x2, y2)
+            font_size: フォントサイズ
+        """
+        x1, y1, x2, y2 = position
+        
+        # 白い矩形を描画
+        draw.rectangle(position, fill="#FFFFFF", outline="#000000", width=2)
+        
+        # テキストを中央に配置
+        font = self.get_font(font_size)
+        text_clean = text.replace("「", "").replace("」", "")
+        text_bbox = draw.textbbox((0, 0), text_clean, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+        
+        text_x = x1 + (x2 - x1 - text_width) // 2
+        text_y = y1 + (y2 - y1 - text_height) // 2
+        
+        draw.text((text_x, text_y), text_clean, font=font, fill="#000000")
+
     def draw_speech_bubble(
         self,
         draw: ImageDraw.Draw,
@@ -332,6 +369,7 @@ class BubbleRenderer:
         is_tsukkomi: bool = False,
         is_monologue: bool = False,
         is_thought: bool = False,
+        is_caption: bool = False,
         keyword: Optional[str] = None,
         font_size: int = 28
     ) -> None:
@@ -347,9 +385,15 @@ class BubbleRenderer:
             is_tsukkomi: ツッコミ（オチ）かどうか
             is_monologue: モノローグかどうか
             is_thought: 考え事かどうか
+            is_caption: 紹介キャプションかどうか
             keyword: 強調するキーワード（ツッコミ時）
             font_size: 基本フォントサイズ
         """
+        # キャプションの場合は専用メソッドで描画
+        if is_caption:
+            self.draw_caption(draw, text, position, font_size=18)
+            return
+        
         # 1. スタイルを決定
         style = self.get_bubble_style(character, is_tsukkomi, is_monologue, is_thought)
 
