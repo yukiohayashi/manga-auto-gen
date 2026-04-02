@@ -113,6 +113,21 @@ jobs:
             --spec config/manga_spec.yml \
             --output ${{ steps.episode.outputs.folder }}/validated_scenario.json
 
+      - name: List available Gemini models (debug)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c "
+          from google import genai
+          import os
+          client = genai.Client(api_key=os.environ['GEMINI_API_KEY'])
+          models = client.models.list()
+          print('=== Available models for image generation ===')
+          for m in models:
+              if 'image' in m.name.lower() or 'imagen' in m.name.lower():
+                  print(f'  {m.name}')
+          "
+
       - name: Module 3 - Generate Images
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
