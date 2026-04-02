@@ -40,7 +40,7 @@ GitHub ActionsとGemini APIを活用し、**PlotTwistガイドの法則に則っ
 | シナリオ生成 | Gemini API |
 | 画像生成 | Gemini API (Imagen) / 外部画像生成API |
 | ストレージ | Google Drive API (GWS CLI) |
-| 言語 | Python 3.11+ |
+| 言語 | Python 3.13+ |
 
 ### システムアーキテクチャ
 
@@ -84,6 +84,7 @@ manga-auto-gen/
 ├── config/
 │   ├── manga_spec.yml             # 制作ルール・描画指示
 │   └── PlotTwist_plain.txt        # どんでん返し10パターン定義
+├── .venv/                         # Python仮想環境（Git除外）
 ├── characters/                    # キャラクター表情シート
 │   └── (hana.png, saki.png, ...)
 ├── references/                    # 参照用素材
@@ -288,9 +289,14 @@ manga-auto-gen/
 
 ## 8. セットアップ手順
 
-### Step 1: 依存パッケージのインストール
+### Step 1: Python環境のセットアップ
 
 ```bash
+# Python 3.13の仮想環境を作成
+python3.13 -m venv .venv
+source .venv/bin/activate
+
+# 依存パッケージのインストール
 pip install -r requirements.txt
 ```
 
@@ -330,6 +336,9 @@ Gemini UIで以下を接続：
 ## 9. 手動実行コマンド
 
 ```bash
+# 仮想環境を有効化（初回のみ）
+source .venv/bin/activate
+
 # モジュール1: シナリオ生成
 python src/module1_scenario_gen.py \
   --config config/PlotTwist_plain.txt \
@@ -357,7 +366,7 @@ python src/module4_drive_sync.py \
 # モジュール5: SNS投稿文生成
 python src/module5_sns_publisher.py \
   --scenario episodes/test/validated_scenario.json \
-  --strategy config/instagram_marketing_strategy.md \
+  --strategy docs/SYSTEM_GUIDE.md \
   --output episodes/test/instagram_caption.txt
 ```
 
@@ -464,6 +473,7 @@ python src/module5_sns_publisher.py \
 |-----------|------|----------|
 | v1.0 | 2026-04-02 | 初版作成 |
 | v1.0 | 2026-04-02 | 全MDファイルを統合（README, SPEC, INTEGRATION_GUIDE, INDEX.md x2, instagram_marketing_strategy） |
+| v1.1 | 2026-04-02 | Python 3.13対応、仮想環境セットアップ手順追加 |
 
 ---
 

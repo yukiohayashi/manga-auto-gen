@@ -6,7 +6,7 @@ on:
   workflow_dispatch:      # 手動実行も可能
 
 env:
-  PYTHON_VERSION: '3.11'
+  PYTHON_VERSION: '3.13'
   DRIVE_PARENT_FOLDER_ID: '1InxhF6u1ToFBTsnfMeJ1xIW3ibNynUq_'
 
 jobs:
@@ -83,7 +83,7 @@ jobs:
         run: |
           python src/module5_sns_publisher.py \
             --scenario ${{ steps.episode.outputs.folder }}/validated_scenario.json \
-            --strategy config/instagram_marketing_strategy.md \
+            --strategy docs/SYSTEM_GUIDE.md \
             --output ${{ steps.episode.outputs.folder }}/instagram_caption.txt
 
       - name: Upload artifacts
