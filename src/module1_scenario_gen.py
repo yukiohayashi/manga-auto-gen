@@ -63,7 +63,7 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str,
                        title: str = "", theme: str = "", detail: str = "") -> dict:
     """Gemini APIを使用してシナリオを生成"""
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel("gemini-2.0-flash")
+    model = genai.GenerativeModel("gemini-1.5-flash")
 
     # テーマ指定がある場合は追加
     theme_section = ""
