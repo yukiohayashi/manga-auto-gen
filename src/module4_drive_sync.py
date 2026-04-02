@@ -99,9 +99,6 @@ class DriveSync:
         
         print(f"[Module4] 新規フォルダ作成: {folder_id}")
         
-        # 作成後の検証
-        self._verify_folder_location(folder_id, episode_name)
-        
         return folder_id
 
     def check_story_folder_exists(self, story_name: str) -> dict:
