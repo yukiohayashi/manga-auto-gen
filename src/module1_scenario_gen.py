@@ -132,7 +132,7 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str,
 """
 
     response = client.models.generate_content(
-        model="models/gemini-pro",
+        model="gemini-3-flash-preview",
         contents=prompt
     )
     
