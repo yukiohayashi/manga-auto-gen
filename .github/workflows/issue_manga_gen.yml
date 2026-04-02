@@ -6,7 +6,7 @@ on:
 
 env:
   PYTHON_VERSION: '3.13'
-  DRIVE_PARENT_FOLDER_ID: '1InxhF6u1ToFBTsnfMeJ1xIU3ibNynUq_'
+  DRIVE_PARENT_FOLDER_ID: '1InxhF6u1ToFBTsnfMeJ1xIW3ibNynUq_'
 
 jobs:
   generate-manga:
