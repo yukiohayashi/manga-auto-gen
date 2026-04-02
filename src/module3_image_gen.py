@@ -123,6 +123,28 @@ class ImageGenerator:
 """
         return prompt
 
+    def _get_character_images_for_panel(self, panel: dict) -> list:
+        """パネルに登場するキャラクターの参照画像を取得"""
+        from google.genai import types
+        character_parts = []
+        characters = panel.get("characters", [])
+        
+        for char_name in characters:
+            if char_name in self.character_images:
+                img = self.character_images[char_name]
+                # 画像をbase64エンコード
+                buffer = BytesIO()
+                img.save(buffer, format="PNG")
+                img_bytes = buffer.getvalue()
+                
+                character_parts.append(types.Part.from_bytes(
+                    data=img_bytes,
+                    mime_type="image/png"
+                ))
+                print(f"[Module3] キャラクター参照画像追加: {char_name}")
+        
+        return character_parts
+
     def generate_panel_with_gemini(self, panel: dict, scenario: dict, panel_number: int, max_retries: int = 3) -> Optional[Image.Image]:
         """Gemini APIで画像を生成（リトライ機能付き）"""
         if not self.client:
@@ -132,13 +154,26 @@ class ImageGenerator:
         from google.genai import types
         import time
         
+        # キャラクター参照画像を取得
+        character_parts = self._get_character_images_for_panel(panel)
+        
+        # コンテンツを構築（参照画像 + プロンプト）
+        contents = []
+        if character_parts:
+            contents.extend(character_parts)
+            contents.append(types.Part.from_text(
+                f"上記のキャラクターシートを参照して、以下の指示に従って画像を生成してください。キャラクターの外見（髪型、服装、顔の特徴）を正確に再現してください。\n\n{prompt}"
+            ))
+        else:
+            contents.append(types.Part.from_text(prompt))
+        
         for attempt in range(max_retries):
             print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number}, 試行{attempt + 1}/{max_retries})")
             
             try:
                 response = self.client.models.generate_content(
                     model="gemini-3-pro-image-preview",
-                    contents=prompt,
+                    contents=contents,
                     config=types.GenerateContentConfig(
                         response_modalities=["IMAGE", "TEXT"],
                     )
