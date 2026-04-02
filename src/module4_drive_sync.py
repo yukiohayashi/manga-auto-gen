@@ -78,7 +78,12 @@ class DriveSync:
             f'trashed=false'
         )
         
-        result = self.service.files().list(q=query, fields="files(id, name)").execute()
+        result = self.service.files().list(
+            q=query, 
+            fields="files(id, name)",
+            supportsAllDrives=True,
+            includeItemsFromAllDrives=True
+        ).execute()
         files = result.get("files", [])
         if files:
             folder_id = files[0]["id"]
@@ -92,7 +97,11 @@ class DriveSync:
             "parents": [self.parent_folder_id]  # ⚠️ 必須
         }
         
-        result = self.service.files().create(body=metadata, fields="id").execute()
+        result = self.service.files().create(
+            body=metadata, 
+            fields="id",
+            supportsAllDrives=True
+        ).execute()
         folder_id = result.get("id")
         if not folder_id:
             raise RuntimeError("フォルダ作成に失敗しました")
@@ -119,7 +128,12 @@ class DriveSync:
             f'trashed=false'
         )
         
-        result = self.service.files().list(q=query, fields="files(id, name)").execute()
+        result = self.service.files().list(
+            q=query, 
+            fields="files(id, name)",
+            supportsAllDrives=True,
+            includeItemsFromAllDrives=True
+        ).execute()
         
         folders = result.get("files", [])
         if not folders:
@@ -238,7 +252,12 @@ class DriveSync:
             f'trashed=false'
         )
         
-        result = self.service.files().list(q=query, fields="files(id, name)").execute()
+        result = self.service.files().list(
+            q=query, 
+            fields="files(id, name)",
+            supportsAllDrives=True,
+            includeItemsFromAllDrives=True
+        ).execute()
         
         files = result.get("files", [])
         found = any(f.get("id") == folder_id for f in files)
