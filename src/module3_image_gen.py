@@ -141,12 +141,18 @@ CRITICAL RULES - DO NOT VIOLATE:
 - NO text, letters, or words anywhere in the image
 - NO character names visible
 - Characters only - no dialogue elements
+- NO children - all characters are ADULTS in their 20s-30s
 
 STYLE:
 - Japanese shoujo manga style
 - Cel shading (no gradients)
 - Pastel colors, low saturation
 - Dark brown border (#5D4037)
+
+CHARACTER AGES (IMPORTANT):
+- All characters are ADULTS (20-30 years old)
+- "元高校球児" means "former high school baseball player" - he is NOW an ADULT man in his 20s
+- Do NOT draw children or teenagers
 
 SCENE (Panel {panel_number}):
 {description}

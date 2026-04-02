@@ -290,6 +290,65 @@ class BubbleRenderer:
         bbox = draw.textbbox((0, 0), text, font=font)
         return bbox[2] - bbox[0], bbox[3] - bbox[1]
 
+    def draw_vertical_text(
+        self,
+        draw: ImageDraw.Draw,
+        text: str,
+        position: tuple[int, int, int, int],
+        font_size: int = 24,
+        fill: str = "#000000"
+    ) -> None:
+        """縦書きテキストを描画
+        
+        Args:
+            draw: ImageDraw オブジェクト
+            text: テキスト
+            position: 吹き出しの位置 (x1, y1, x2, y2)
+            font_size: フォントサイズ
+            fill: テキスト色
+        """
+        font = self.get_font(font_size)
+        x1, y1, x2, y2 = position
+        
+        # 「」を除去
+        text_clean = text.replace("「", "").replace("」", "")
+        
+        # 吹き出し内のパディング
+        padding = 15
+        
+        # 縦書き：右から左へ、上から下へ
+        char_height = font_size + 4
+        line_width = font_size + 8
+        
+        # 利用可能な高さと幅
+        available_height = y2 - y1 - padding * 2
+        available_width = x2 - x1 - padding * 2
+        
+        # 1行あたりの文字数
+        chars_per_line = max(1, available_height // char_height)
+        
+        # 行数を計算
+        lines = []
+        current_line = ""
+        for char in text_clean:
+            if len(current_line) >= chars_per_line:
+                lines.append(current_line)
+                current_line = char
+            else:
+                current_line += char
+        if current_line:
+            lines.append(current_line)
+        
+        # 右から左へ描画
+        start_x = x2 - padding - font_size
+        for line_idx, line in enumerate(lines):
+            x = start_x - line_idx * line_width
+            y = y1 + padding
+            
+            for char in line:
+                draw.text((x, y), char, font=font, fill=fill)
+                y += char_height
+
     def draw_text_with_emphasis(
         self,
         draw: ImageDraw.Draw,
@@ -404,23 +463,8 @@ class BubbleRenderer:
         if tail_point:
             self.draw_tail(draw, position, tail_point, style)
 
-        # 4. テキストを描画
-        x1, y1, x2, y2 = position
-        padding = 15
-        text_x = x1 + padding
-        text_y = y1 + padding
-
-        # ツッコミの場合はキーワード強調
-        if is_tsukkomi and keyword:
-            self.draw_text_with_emphasis(
-                draw, text, (text_x, text_y),
-                base_font_size=font_size,
-                keyword=keyword,
-                emphasis_scale=1.4
-            )
-        else:
-            font = self.get_font(font_size)
-            draw.text((text_x, text_y), text, font=font, fill=TEXT_COLOR_PRIMARY)
+        # 4. テキストを縦書きで描画
+        self.draw_vertical_text(draw, text, position, font_size=font_size, fill=TEXT_COLOR_PRIMARY)
 
 
 def demo():
