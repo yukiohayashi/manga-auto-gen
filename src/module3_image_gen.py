@@ -423,11 +423,17 @@ TECHNICAL:
 
         return img
 
-    def generate_all_panels(self, scenario: dict, output_dir: Path) -> list[Path]:
-        """全パネルを生成（吹き出し描画付き）"""
+    def generate_all_panels(self, scenario: dict, output_dir: Path, max_panels: int = 4) -> list[Path]:
+        """全パネルを生成（吹き出し描画付き）
+        
+        Args:
+            scenario: シナリオデータ
+            output_dir: 出力ディレクトリ
+            max_panels: 生成するパネル数（デバッグ用: 1-4）
+        """
         output_files = []
         title = scenario.get("title", "無題")
-        panels = scenario.get("panels", [])
+        panels = scenario.get("panels", [])[:max_panels]  # max_panels枚まで
 
         for i, panel in enumerate(panels, start=1):
             print(f"[Module3] パネル{i}を生成中...")
@@ -515,6 +521,8 @@ def main():
     parser.add_argument("--spec", required=True, help="manga_spec.ymlのパス")
     parser.add_argument("--characters", required=True, help="キャラクター画像フォルダ")
     parser.add_argument("--output", required=True, help="出力フォルダ")
+    parser.add_argument("--panels", type=int, default=4, help="生成するパネル数（デバッグ用: 1-4）")
+    parser.add_argument("--no-combine", action="store_true", help="結合画像を生成しない")
     args = parser.parse_args()
 
     # シナリオ読み込み
@@ -527,13 +535,15 @@ def main():
 
     # 画像生成
     generator = ImageGenerator(args.spec, args.characters)
-    panel_files = generator.generate_all_panels(scenario, output_dir)
+    panel_files = generator.generate_all_panels(scenario, output_dir, max_panels=args.panels)
 
-    # 結合
-    combined_path = output_dir / "4koma_combined.png"
-    generator.combine_panels(panel_files, combined_path)
-
-    print(f"[Module3] 画像生成完了: {len(panel_files)}枚 + 結合画像1枚")
+    # 結合（--no-combineが指定されていない場合のみ）
+    if not args.no_combine and len(panel_files) == 4:
+        combined_path = output_dir / "4koma_combined.png"
+        generator.combine_panels(panel_files, combined_path)
+        print(f"[Module3] 画像生成完了: {len(panel_files)}枚 + 結合画像1枚")
+    else:
+        print(f"[Module3] 画像生成完了: {len(panel_files)}枚")
 
 
 if __name__ == "__main__":

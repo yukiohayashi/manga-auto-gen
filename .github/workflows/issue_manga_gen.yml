@@ -142,7 +142,9 @@ jobs:
             --scenario ${{ steps.episode.outputs.folder }}/validated_scenario.json \
             --spec config/manga_spec.yml \
             --characters characters \
-            --output ${{ steps.episode.outputs.folder }}
+            --output ${{ steps.episode.outputs.folder }} \
+            --panels 2 \
+            --no-combine
 
       - name: Module 4 - Sync to Google Drive (Optional)
         continue-on-error: true
