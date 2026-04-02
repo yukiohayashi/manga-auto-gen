@@ -13,9 +13,12 @@
 import argparse
 import json
 import os
-import subprocess
 from datetime import datetime
 from pathlib import Path
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+import io
 
 
 # 必須：親フォルダID（manga-auto-genフォルダ）
@@ -50,32 +53,18 @@ class DriveSync:
         self._validate_credentials()
 
     def _validate_credentials(self) -> None:
-        """認証情報の検証"""
-        creds = os.environ.get("GOOGLE_DRIVE_CREDENTIALS")
-        if not creds:
+        """認証情報の検証とDriveサービスの初期化"""
+        creds_json = os.environ.get("GOOGLE_DRIVE_CREDENTIALS")
+        if not creds_json:
             raise ValueError("GOOGLE_DRIVE_CREDENTIALS environment variable is not set")
-        print("[Module4] Google Drive認証情報を確認しました")
-
-    def _run_gws_command(self, args: list[str]) -> dict:
-        """GWS CLIコマンドを実行"""
-        cmd = ["gws", "drive"] + args
-        print(f"[Module4] 実行: {' '.join(cmd)}")
         
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True
+        creds_data = json.loads(creds_json)
+        credentials = service_account.Credentials.from_service_account_info(
+            creds_data,
+            scopes=['https://www.googleapis.com/auth/drive']
         )
-        
-        if result.returncode != 0:
-            raise RuntimeError(f"GWSコマンド失敗: {result.stderr}")
-        
-        if result.stdout.strip():
-            try:
-                return json.loads(result.stdout)
-            except json.JSONDecodeError:
-                return {"output": result.stdout}
-        return {}
+        self.service = build('drive', 'v3', credentials=credentials)
+        print("[Module4] Google Drive認証情報を確認しました")
 
     def create_episode_folder(self, episode_name: str) -> str:
         """エピソードフォルダを作成（必ず親フォルダID指定）"""
@@ -89,11 +78,7 @@ class DriveSync:
             f'trashed=false'
         )
         
-        result = self._run_gws_command([
-            "files", "list",
-            "--params", json.dumps({"q": query})
-        ])
-        
+        result = self.service.files().list(q=query, fields="files(id, name)").execute()
         files = result.get("files", [])
         if files:
             folder_id = files[0]["id"]
@@ -107,11 +92,7 @@ class DriveSync:
             "parents": [self.parent_folder_id]  # ⚠️ 必須
         }
         
-        result = self._run_gws_command([
-            "files", "create",
-            "--json", json.dumps(metadata)
-        ])
-        
+        result = self.service.files().create(body=metadata, fields="id").execute()
         folder_id = result.get("id")
         if not folder_id:
             raise RuntimeError("フォルダ作成に失敗しました")
@@ -141,10 +122,7 @@ class DriveSync:
             f'trashed=false'
         )
         
-        result = self._run_gws_command([
-            "files", "list",
-            "--params", json.dumps({"q": query})
-        ])
+        result = self.service.files().list(q=query, fields="files(id, name)").execute()
         
         folders = result.get("files", [])
         if not folders:
@@ -156,10 +134,7 @@ class DriveSync:
         
         # フォルダ内のファイル一覧を取得
         files_query = f'"{folder_id}" in parents and trashed=false'
-        files_result = self._run_gws_command([
-            "files", "list",
-            "--params", json.dumps({"q": files_query})
-        ])
+        files_result = self.service.files().list(q=files_query, fields="files(id, name)").execute()
         
         files = files_result.get("files", [])
         print(f"[Module4] フォルダ内ファイル数: {len(files)}")
@@ -189,14 +164,20 @@ class DriveSync:
         print(f"[Module4] ダウンロード: {filename} (ID: {file_id})")
         
         try:
-            result = self._run_gws_command([
-                "files", "get",
-                "--file-id", file_id,
-                "--download", str(output_path)
-            ])
+            request = self.service.files().get_media(fileId=file_id)
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+            
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, 'wb') as f:
+                f.write(fh.getvalue())
+            
             print(f"[Module4] ダウンロード完了: {output_path}")
             return True
-        except RuntimeError as e:
+        except Exception as e:
             print(f"[Module4] ダウンロード失敗: {e}")
             return False
 
@@ -260,10 +241,7 @@ class DriveSync:
             f'trashed=false'
         )
         
-        result = self._run_gws_command([
-            "files", "list",
-            "--params", json.dumps({"q": query})
-        ])
+        result = self.service.files().list(q=query, fields="files(id, name)").execute()
         
         files = result.get("files", [])
         found = any(f.get("id") == folder_id for f in files)
@@ -285,11 +263,8 @@ class DriveSync:
             "parents": [folder_id]  # ⚠️ 必須
         }
         
-        result = self._run_gws_command([
-            "files", "create",
-            "--upload", str(local_path),
-            "--json", json.dumps(metadata)
-        ])
+        media = MediaFileUpload(str(local_path), resumable=True)
+        result = self.service.files().create(body=metadata, media_body=media, fields="id").execute()
         
         file_id = result.get("id")
         if not file_id:
