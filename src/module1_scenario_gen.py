@@ -109,12 +109,6 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str,
 4. 4コマ目は必ずツッコミ（オチ）で終わる
 5. {title_instruction}
 
-## 吹き出しの種類（bubble_type）
-- "normal": 白い楕円の通常吹き出し（普通のセリフ）
-- "shout": 黄色いギザギザ吹き出し（叫び、ツッコミ、強調）
-- "thought": 白い雲形吹き出し（モノローグ、心の声）
-- "blue": パステルブルー吹き出し（冷静な説明、アドバイス）
-
 ## 出力形式（JSON）
 {{
   "title": "タイトル",
@@ -126,7 +120,7 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str,
       "description": "シーンの説明",
       "characters": ["登場キャラクター"],
       "dialogue": [
-        {{"character": "キャラ名", "text": "セリフ", "bubble_type": "normal/shout/thought/blue"}}
+        {{"character": "キャラ名", "text": "セリフ", "bubble_type": "normal/monologue/tsukkomi"}}
       ],
       "background": "背景の説明",
       "effects": ["効果"]

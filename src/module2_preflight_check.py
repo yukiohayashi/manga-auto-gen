@@ -101,11 +101,10 @@ class PreflightChecker:
 
     def check_bubble_types(self, scenario: dict) -> None:
         """吹き出しタイプのチェック"""
-        valid_types = ["normal", "monologue", "tsukkomi", "shout", "thought", "blue"]
         for panel in scenario.get("panels", []):
             for dialogue in panel.get("dialogue", []):
                 bubble_type = dialogue.get("bubble_type", "normal")
-                if bubble_type not in valid_types:
+                if bubble_type not in ["normal", "monologue", "tsukkomi", "shout"]:
                     self.warnings.append(
                         f"パネル{panel['number']}で不明な吹き出しタイプ: {bubble_type}"
                     )

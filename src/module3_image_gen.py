@@ -88,22 +88,19 @@ class ImageGenerator:
         dialogue_instructions = []
         if dialogues:
             for d in dialogues:
+                char = d.get("character", "")
                 text = d.get("text", "")
-                bubble_type = d.get("bubble_type", d.get("type", "normal"))
+                bubble_type = d.get("type", "normal")
                 
                 # 吹き出しの色を決定
-                if bubble_type == "thought":
-                    bubble_style = "白い雲形の吹き出し（モノローグ）"
-                elif bubble_type == "shout":
-                    bubble_style = "黄色いギザギザの吹き出し（叫び）"
-                elif bubble_type == "blue":
-                    bubble_style = "パステルブルーの吹き出し（冷静）"
-                elif "！" in text or "!!" in text or "！！" in text:
-                    bubble_style = "黄色いギザギザの吹き出し（叫び）"
+                if bubble_type == "thought" or "モノローグ" in str(d):
+                    bubble_color = "白い雲形の吹き出し"
+                elif bubble_type == "shout" or "！" in text or "!!" in text:
+                    bubble_color = "黄色いギザギザの吹き出し"
                 else:
-                    bubble_style = "白い楕円の吹き出し（通常）"
+                    bubble_color = "白い楕円の吹き出し"
                 
-                dialogue_instructions.append(f"- {bubble_style}に「{text}」と書く")
+                dialogue_instructions.append(f"- {bubble_color}に「{text}」と書く")
 
         prompt = f"""
 日本の4コマ漫画の1コマを生成してください。
