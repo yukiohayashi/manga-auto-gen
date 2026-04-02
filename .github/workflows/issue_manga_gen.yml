@@ -119,7 +119,8 @@ jobs:
             --characters characters \
             --output ${{ steps.episode.outputs.folder }}
 
-      - name: Module 4 - Sync to Google Drive
+      - name: Module 4 - Sync to Google Drive (Optional)
+        continue-on-error: true
         env:
           GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
           DRIVE_PARENT_FOLDER_ID: ${{ env.DRIVE_PARENT_FOLDER_ID }}
@@ -127,7 +128,7 @@ jobs:
           python src/module4_drive_sync.py \
             --source ${{ steps.episode.outputs.folder }} \
             --parent-folder-id ${{ env.DRIVE_PARENT_FOLDER_ID }} \
-            --episode-name "${{ steps.episode.outputs.name }}"
+            --episode-name "${{ steps.episode.outputs.name }}" || echo "[Module4] Google Drive同期をスキップしました（サービスアカウントのクォータ制限）"
 
       - name: Module 5 - Generate SNS Caption
         env:

@@ -255,13 +255,32 @@ class DriveSync:
         """ファイルをアップロード（必ず親フォルダID指定）"""
         print(f"[Module4] アップロード: {local_path.name}")
         
+        # 既存ファイルを確認
+        query = f'name="{local_path.name}" and "{folder_id}" in parents and trashed=false'
+        existing = self.service.files().list(q=query, fields="files(id)").execute()
+        existing_files = existing.get("files", [])
+        
+        if existing_files:
+            # 既存ファイルを更新
+            file_id = existing_files[0]["id"]
+            media = MediaFileUpload(str(local_path), resumable=True)
+            self.service.files().update(fileId=file_id, media_body=media).execute()
+            print(f"[Module4] 既存ファイル更新: {file_id}")
+            return file_id
+        
+        # 新規アップロード（supportsAllDrivesを使用）
         metadata = {
             "name": local_path.name,
-            "parents": [folder_id]  # ⚠️ 必須
+            "parents": [folder_id]
         }
         
         media = MediaFileUpload(str(local_path), resumable=True)
-        result = self.service.files().create(body=metadata, media_body=media, fields="id").execute()
+        result = self.service.files().create(
+            body=metadata, 
+            media_body=media, 
+            fields="id",
+            supportsAllDrives=True
+        ).execute()
         
         file_id = result.get("id")
         if not file_id:
