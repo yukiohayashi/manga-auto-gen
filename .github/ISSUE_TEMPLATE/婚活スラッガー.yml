@@ -9,6 +9,7 @@ body:
       label: 【必須】漫画のタイトル（Driveのフォルダ名になります）
       description: Google Driveの保存先フォルダ名として使用されます。
       placeholder: 婚活スラッガー
+      value: 婚活スラッガー
     validations:
       required: true
 
