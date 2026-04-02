@@ -25,13 +25,11 @@ class PreflightChecker:
         "female": {"hex": "#FFE800", "characters": ["はな", "さき"]},
         "male": {"hex": "#D4E8FF", "characters": ["まさと", "ともや", "ようた"]},
         "monologue": {"hex": "#FFFFFF", "characters": ["all"]},
-    }
-    
-    # 禁止キャラクター名
-    PROHIBITED_NAMES = ["あや"]
-    
+    }  
     # セリフ内で禁止される固有名詞
     PROHIBITED_IN_DIALOGUE = ["はな", "さき", "まさと", "ともや", "ようた"]
+    # 禁止キャラクター名（現在は空）
+    PROHIBITED_NAMES = []
 
     def __init__(self, spec_path: str):
         """manga_spec.ymlを読み込み"""

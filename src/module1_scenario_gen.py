@@ -42,8 +42,8 @@ CHARACTERS = {
     "brother": {"name": "ようた", "age": 20, "gender": "男性", "role": "弟"},
 }
 
-# 禁止キャラクター名
-PROHIBITED_NAMES = ["あや"]
+# 禁止キャラクター名（セリフに固有名詞を含めない）
+PROHIBITED_NAMES = []
 
 
 def load_plot_twist_rules(config_path: str) -> str:
@@ -75,7 +75,7 @@ def generate_scenario(api_key: str, plot_twist_rules: str, pattern: str) -> dict
 {plot_twist_rules}
 
 ## キャラクター設定
-- 主人公: はな（25歳女性）※「あや」という名前は使用禁止
+- 主人公: はな（25歳女性）
 - 彼氏: まさと（28歳男性）
 - 友人: さき（25歳女性）
 - 友人: ともや（25歳男性）

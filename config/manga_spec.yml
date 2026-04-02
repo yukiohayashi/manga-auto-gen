@@ -10,7 +10,7 @@ generation_instructions:
       description: "生成物に関する明示的な禁止事項"
       priority: "最優先（他のすべての指示に優先）"
       prohibited_elements:
-        - "生成される漫画のタイトル、セリフ、モノローグ、および説明文（枠外）に、キャラクターの具体的な固有名詞（例：「あや」「さき」「まさと」「ともや」、またはこれらに類する名前）を一切含めないこと"
+        - "生成される漫画のタイトル、セリフ、モノローグ、および説明文（枠外）に、キャラクターの具体的な固有名詞（例：「はな」「さき」「まさと」「ともや」、またはこれらに類する名前）を一切含めないこと"
         - "キャラクターを特定する場合は、役割名（例：「友人」「彼氏」）を使用すること"
     
     # ===== スタイル（最優先） =====
@@ -108,30 +108,30 @@ four_panel_manga_rules:
     panel_structure:
       - panel_number: 1
         name: 起
-        description: "あやが友人のさきに「彼氏がコミュ障で困っている」と相談する導入"
-        focus_characters: "あや、さき"
+        description: "はなが友人のさきに「彼氏がコミュ障で困っている」と相談する導入"
+        focus_characters: "はな、さき"
         mood_and_effects: "困惑、ピンク系背景"
         
       - panel_number: 2
         name: 承
-        description: "さきが「どんな風にコミュ障なの？」と聴く、あやが具体例を話す"
-        focus_characters: "あや、さき"
+        description: "さきが「どんな風にコミュ障なの？」と聴く、はなが具体例を話す"
+        focus_characters: "はな、さき"
         mood_and_effects: "会話シーン、日常的な雰囲気"
         
       - panel_number: 3
         name: 転
-        description: "あやが「でもイケメンだから許せる」と照れながら言う"
-        focus_characters: "あや"
+        description: "はなが「でもイケメンだから許せる」と照れながら言う"
+        focus_characters: "はな"
         mood_and_effects: "照れ、ハートマーク、ピンク背景"
         
       - panel_number: 4
         name: 結
         description: "さきが「それ、ただの惚気でしょ」とツッコミを入れるオチ"
-        focus_characters: "あや、さき"
+        focus_characters: "はな、さき"
         mood_and_effects: "ショック、集中線、コメディオチ"
 
     main_characters:
-      - あや（主人公・25歳女性）
+      - はな（主人公・25歳女性）
       - まさと（彼氏・28歳男性）
     
     supporting_characters:
@@ -139,7 +139,7 @@ four_panel_manga_rules:
       - ともや（友人・25歳男性）
     
     panel_allocation:
-      - "1コマ目: 主人公（あや）の心情や状況を中心に"
+      - "1コマ目: 主人公（はな）の心情や状況を中心に"
       - "2コマ目: 主人公と相手（まさと、さき等）の対話"
       - "3コマ目: 主人公のリアクション（感情の爆発）"
       - "4コマ目: 相手の回答と主人公のリアクション（オチ）"
@@ -432,7 +432,7 @@ visual_style_guide:
       clarity: "一目で状況が分かるシンプルさ"
 
 characters:
-  - name: はな  # ※ 2026-03-29より「あや」から「はな」に変更（全シリーズ共通ルール）
+  - name: はな
     age: 25
     gender: 女性
     role: 主人公
@@ -575,7 +575,7 @@ characters:
   - name: まさと
     age: 28
     gender: 男性
-    role: あやの彼氏
+    role: はなの彼氏
     
     appearance:
       hair:
@@ -713,11 +713,11 @@ characters:
           description: 全身立ち姿の参考図
 
 relationships:
-  - characters: [あや, まさと]
+  - characters: [はな, まさと]
     relationship: 恋人関係
-    description: あやの彼氏
+    description: はなの彼氏
   
-  - characters: [あや, さき]
+  - characters: [はな, さき]
     relationship: 親友
     description: 仲の良い友人
   
@@ -725,7 +725,7 @@ relationships:
     relationship: 友人
     description: 男性同士の友人
   
-  - characters: [あや, ともや]
+  - characters: [はな, ともや]
     relationship: 友人
     description: 共通の友人
 
@@ -798,17 +798,17 @@ usage_notes:
   - 表情の記号表現（赤面、涙、汗など）は統一されたスタイル
   - 背景は各表情に応じた柔らかい色合い
   - 男性キャラクター（まさと、ともや）は大人っぽい表情を重視
-  - 女性キャラクター（あや、さき）は優しく親しみやすい表情
+  - 女性キャラクター（はな、さき）は優しく親しみやすい表情
   - 4コマ漫画の最初には必ずタイトルパネルを配置
   - 起承転結の構成を意識したストーリー展開
   
 download_information:
   files:
-    - filename: aya.jpg
-      character: あや
+    - filename: hana.jpg
+      character: はな
       source_type: "attached_file"
-      instruction: "チャット履歴に添付された『aya.jpg』を読み込み、あやの表情バリエーションとして参照してください。外部URLへのアクセスは不要です。"
-      description: あやの表情バリエーションシート
+      instruction: "チャット履歴に添付された『hana.jpg』を読み込み、はなの表情バリエーションとして参照してください。外部URLへのアクセスは不要です。"
+      description: はなの表情バリエーションシート
     
     - filename: saki.jpg
       character: さき
@@ -846,15 +846,12 @@ production_workflow:
     - 4コマ全体の流れを意識した表情選択
 
 # ===================================
-# キャラクター名変更ルール（グローバル）
+# キャラクター名ルール
 # ===================================
 character_name_rules:
-  protagonist_name_change:
-    old_name: "あや"
-    new_name: "はな"
-    effective_date: 2026-03-29
-    scope: "全シリーズ・全コマ共通"
-    note: "以降すべての4コマ漫画シリーズで主人公名は『はな』を使用すること"
+  protagonist:
+    name: "はな"
+    note: "主人公名は『はな』を使用すること"
 
 # ===================================
 # プリフライトチェック（画像生成前必須確認）
@@ -896,9 +893,9 @@ preflight_check:
         error_if_wrong: "他のフォントを使用してはならない"
 
       - id: character_name
-        check: "character_name_rules.protagonist_name_change"
-        required_value: "主人公名は『はな』（『あや』は全面禁止）"
-        error_if_wrong: "『あや』という名前を使用してはならない"
+        check: "character_name_rules.protagonist"
+        required_value: "主人公名は『はな』"
+        error_if_wrong: "主人公名は『はな』を使用すること"
 
       - id: no_proper_nouns
         check: "generation_instructions.explicit_prohibitions"
