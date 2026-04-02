@@ -121,26 +121,26 @@ Panel {panel_number} ({panel_names[panel_number-1]}): {description}
         print(f"[Module3] Gemini APIで画像生成中... (パネル{panel_number})")
         
         try:
-            # Imagen 3を使用して画像生成
+            # Gemini 3.1 Proで画像生成
             from google.genai import types
             
-            response = self.client.models.generate_images(
-                model="imagen-3.0-generate-002",
-                prompt=prompt,
-                config=types.GenerateImagesConfig(
-                    number_of_images=1,
-                    aspect_ratio="1:1",
+            response = self.client.models.generate_content(
+                model="gemini-3-flash-preview",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_modalities=["IMAGE", "TEXT"],
                 )
             )
             
             # レスポンスから画像を抽出
-            if response.generated_images:
-                image_data = response.generated_images[0].image.image_bytes
-                image = Image.open(BytesIO(image_data))
-                print(f"[Module3] Imagen画像生成成功: パネル{panel_number}")
-                return image.resize(CANVAS_SIZE)
+            for part in response.candidates[0].content.parts:
+                if hasattr(part, 'inline_data') and part.inline_data:
+                    image_data = base64.b64decode(part.inline_data.data)
+                    image = Image.open(BytesIO(image_data))
+                    print(f"[Module3] Gemini画像生成成功: パネル{panel_number}")
+                    return image.resize(CANVAS_SIZE)
             
-            print(f"[Module3] 警告: Imagen応答に画像が含まれていません")
+            print(f"[Module3] 警告: Gemini応答に画像が含まれていません")
             return None
             
         except Exception as e:
