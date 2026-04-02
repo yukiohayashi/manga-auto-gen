@@ -356,8 +356,9 @@ class ImageGenerator:
         for i, dialogue in enumerate(dialogues):
             character = dialogue.get("character", "")
             text = dialogue.get("text", "")
-            bubble_type = dialogue.get("bubble_type", "normal")
-            keyword = dialogue.get("keyword", "")
+            # "type" または "bubble_type" の両方に対応
+            bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
+            keyword = dialogue.get("highlight", dialogue.get("keyword", ""))
 
             # 吹き出しの位置を計算
             if i % 2 == 0:
@@ -373,10 +374,11 @@ class ImageGenerator:
             tail_x = x1 + bubble_width // 2
             tail_y = y2 + 30
 
-            # 吹き出しタイプの判定
-            is_tsukkomi = bubble_type == "tsukkomi" or (is_final_panel and i == num_dialogues - 1)
+            # 吹き出しタイプの判定（shoutはtsukkomiとして扱う）
+            is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and i == num_dialogues - 1)
             is_monologue = bubble_type == "monologue"
             is_thought = bubble_type == "thought"
+            is_caption = bubble_type == "caption"
 
             # 吹き出しを描画
             self.bubble_renderer.draw_speech_bubble(
