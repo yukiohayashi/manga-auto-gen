@@ -351,19 +351,23 @@ class BubbleRenderer:
         fill: str
     ) -> None:
         """文字を90°回転して描画（ー、〜など横長文字用）"""
-        char_img_size = font_size + 16
+        col_w = font_size + 16
+        char_h = font_size + 12
+        char_img_size = max(col_w, char_h) + 4
         char_img = Image.new("RGBA", (char_img_size, char_img_size), (0, 0, 0, 0))
         char_draw = ImageDraw.Draw(char_img)
         # 中央に描画
         bbox = char_draw.textbbox((0, 0), char, font=font)
-        cx = (char_img_size - (bbox[2] - bbox[0])) // 2
-        cy = (char_img_size - (bbox[3] - bbox[1])) // 2
+        cw = bbox[2] - bbox[0]
+        ch = bbox[3] - bbox[1]
+        cx = (char_img_size - cw) // 2 - bbox[0]
+        cy = (char_img_size - ch) // 2 - bbox[1]
         char_draw.text((cx, cy), char, font=font, fill=fill)
         # 90°時計回りに回転
         rotated = char_img.rotate(-90, resample=Image.BICUBIC, expand=False)
-        # 貼り付け位置（中央揃え）
-        paste_x = x + (font_size - char_img_size) // 2
-        paste_y = y + (font_size - char_img_size) // 2
+        # 貼り付け位置（文字セルの中央に揃える）
+        paste_x = x + (col_w - char_img_size) // 2
+        paste_y = y + (char_h - char_img_size) // 2
         img.paste(rotated, (paste_x, paste_y), rotated)
 
     def calculate_vertical_layout(
