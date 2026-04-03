@@ -37,7 +37,7 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
         return
 
     panel_w, panel_h = PANEL_SIZE
-    font_size = 44
+    font_size = 52
     # ボーダー内側に収めるためのmargin（ボーダー幅 + 十分な余白）
     margin = BORDER_WIDTH + 10
 

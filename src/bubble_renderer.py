@@ -537,12 +537,31 @@ class BubbleRenderer:
         position: tuple[int, int, int, int],
         font_size: int = 36,
         fill: str = "#000000",
-        img: Optional[Image.Image] = None
+        img: Optional[Image.Image] = None,
+        keyword: Optional[str] = None
     ) -> None:
         """縦書きテキストを描画（右から左、上から下）
         img: 回転文字の貼り付け先（Noneの場合は回転文字は通常描画にフォールバック）
+        keyword: 赤文字にするキーワード（『』で囲まれた部分も含む）
         """
         font = self.get_font(font_size)
+        # キーワードに該当する文字インデックスを特定
+        highlight_indices = set()
+        if keyword and keyword in text:
+            start = 0
+            while True:
+                idx = text.find(keyword, start)
+                if idx == -1:
+                    break
+                for i in range(idx, idx + len(keyword)):
+                    highlight_indices.add(i)
+                # 前後の『』も赤にする
+                if idx > 0 and text[idx - 1] == '『':
+                    highlight_indices.add(idx - 1)
+                end_idx = idx + len(keyword)
+                if end_idx < len(text) and text[end_idx] == '』':
+                    highlight_indices.add(end_idx)
+                start = idx + 1
         x1, y1, x2, y2 = position
         
         padding = 35
@@ -575,14 +594,19 @@ class BubbleRenderer:
         start_y = y1 + ((y2 - y1) - total_height) // 2
         
         # 右から左へ列を描画
+        char_global_idx = 0
         for col_idx, col in enumerate(columns):
             x = start_x - col_idx * col_w
             y = start_y
             
             for char in col:
+                # キーワードハイライト判定
+                char_fill = TEXT_COLOR_EMPHASIS if char_global_idx in highlight_indices else fill
+                char_global_idx += 1
+
                 # 1. 回転が必要な文字（ー、〜など）
                 if char in self.ROTATE_CHARS and img is not None:
-                    self._draw_rotated_char(draw, img, char, x, y, font, font_size, fill)
+                    self._draw_rotated_char(draw, img, char, x, y, font, font_size, char_fill)
                     y += char_h
                     continue
                 
@@ -592,7 +616,7 @@ class BubbleRenderer:
                     bbox = draw.textbbox((0, 0), v_char, font=font)
                     cw = bbox[2] - bbox[0]
                     cx = x + (col_w - cw) // 2 - bbox[0]
-                    draw.text((cx, y), v_char, font=font, fill=fill)
+                    draw.text((cx, y), v_char, font=font, fill=char_fill)
                     y += char_h
                     continue
                 
@@ -604,7 +628,7 @@ class BubbleRenderer:
                 bbox = draw.textbbox((0, 0), char, font=font)
                 cw = bbox[2] - bbox[0]
                 cx = x + (col_w - cw) // 2 - bbox[0] + dx
-                draw.text((cx, y + dy), char, font=font, fill=fill)
+                draw.text((cx, y + dy), char, font=font, fill=char_fill)
                 y += char_h
 
     def draw_text_with_emphasis(
@@ -727,8 +751,8 @@ class BubbleRenderer:
         if tail_point:
             self.draw_tail(draw, position, tail_point, style)
 
-        # 4. テキストを縦書きで描画
-        self.draw_vertical_text(draw, text, position, font_size=font_size, fill=TEXT_COLOR_PRIMARY, img=img)
+        # 4. テキストを縦書きで描画（keyword指定があれば赤文字ハイライト）
+        self.draw_vertical_text(draw, text, position, font_size=font_size, fill=TEXT_COLOR_PRIMARY, img=img, keyword=keyword)
 
 
 def demo():

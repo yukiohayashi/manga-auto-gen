@@ -349,7 +349,7 @@ TECHNICAL:
             return img
 
         panel_w, panel_h = img.size
-        font_size = 44
+        font_size = 52
         margin = 16  # パネルボーダー内側に収める余白
         char_h = font_size + 14
         col_w = font_size + 20
