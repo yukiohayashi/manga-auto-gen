@@ -314,7 +314,7 @@ class BubbleRenderer:
         bbox = draw.textbbox((0, 0), text, font=font)
         return bbox[2] - bbox[0], bbox[3] - bbox[1]
 
-    # 縦書き用の句読点位置調整マップ
+    # 縦書き用の句読点位置調整マップ (dx_ratio, dy_ratio)
     VERTICAL_PUNCTUATION = {
         "。": (0.5, -0.3),   # 右上寄せ
         "、": (0.5, -0.3),
@@ -324,10 +324,46 @@ class BubbleRenderer:
         "？": (0.0, 0.0),
         "!": (0.0, 0.0),
         "?": (0.0, 0.0),
-        "ー": (0.0, 0.0),    # 長音は回転が必要だが、そのまま描画
         "…": (0.0, 0.0),
         "─": (0.0, 0.0),
     }
+
+    # 縦書きで90°回転が必要な文字
+    ROTATE_CHARS = {"ー", "〜", "～", "─", "—", "―"}
+
+    # 縦書きで回転が必要な括弧類
+    VERTICAL_BRACKETS = {
+        "「": "﹁", "」": "﹂",
+        "『": "﹃", "』": "﹄",
+        "(": "︵", ")": "︶",
+        "（": "︵", "）": "︶",
+    }
+
+    def _draw_rotated_char(
+        self,
+        draw: ImageDraw.Draw,
+        img: Image.Image,
+        char: str,
+        x: int, y: int,
+        font: ImageFont.FreeTypeFont,
+        font_size: int,
+        fill: str
+    ) -> None:
+        """文字を90°回転して描画（ー、〜など横長文字用）"""
+        char_img_size = font_size + 16
+        char_img = Image.new("RGBA", (char_img_size, char_img_size), (0, 0, 0, 0))
+        char_draw = ImageDraw.Draw(char_img)
+        # 中央に描画
+        bbox = char_draw.textbbox((0, 0), char, font=font)
+        cx = (char_img_size - (bbox[2] - bbox[0])) // 2
+        cy = (char_img_size - (bbox[3] - bbox[1])) // 2
+        char_draw.text((cx, cy), char, font=font, fill=fill)
+        # 90°時計回りに回転
+        rotated = char_img.rotate(-90, resample=Image.BICUBIC, expand=False)
+        # 貼り付け位置（中央揃え）
+        paste_x = x + (font_size - char_img_size) // 2
+        paste_y = y + (font_size - char_img_size) // 2
+        img.paste(rotated, (paste_x, paste_y), rotated)
 
     def calculate_vertical_layout(
         self, text: str, font_size: int, max_chars_per_col: int = 6
@@ -337,16 +373,14 @@ class BubbleRenderer:
         Returns:
             (columns, bubble_width, bubble_height)
         """
-        text_clean = text.replace("「", "").replace("」", "")
-        
         char_h = font_size + 10     # 1文字の縦幅（ゆったり）
         col_w = font_size + 14      # 1列の横幅（ゆったり）
         padding = 30
         
-        # テキストを列に分割
+        # テキストを列に分割（括弧含む）
         columns = []
         current_col = ""
-        for char in text_clean:
+        for char in text:
             if len(current_col) >= max_chars_per_col:
                 columns.append(current_col)
                 current_col = char
@@ -373,13 +407,14 @@ class BubbleRenderer:
         text: str,
         position: tuple[int, int, int, int],
         font_size: int = 36,
-        fill: str = "#000000"
+        fill: str = "#000000",
+        img: Optional[Image.Image] = None
     ) -> None:
-        """縦書きテキストを描画（右から左、上から下）"""
+        """縦書きテキストを描画（右から左、上から下）
+        img: 回転文字の貼り付け先（Noneの場合は回転文字は通常描画にフォールバック）
+        """
         font = self.get_font(font_size)
         x1, y1, x2, y2 = position
-        
-        text_clean = text.replace("「", "").replace("」", "")
         
         padding = 30
         char_h = font_size + 10
@@ -389,10 +424,10 @@ class BubbleRenderer:
         available_height = y2 - y1 - padding * 2
         max_chars_per_col = max(1, available_height // char_h)
         
-        # テキストを列に分割
+        # テキストを列に分割（括弧も含める）
         columns = []
         current_col = ""
-        for char in text_clean:
+        for char in text:
             if len(current_col) >= max_chars_per_col:
                 columns.append(current_col)
                 current_col = char
@@ -416,7 +451,20 @@ class BubbleRenderer:
             y = start_y
             
             for char in col:
-                # 句読点の位置調整
+                # 1. 回転が必要な文字（ー、〜など）
+                if char in self.ROTATE_CHARS and img is not None:
+                    self._draw_rotated_char(draw, img, char, x, y, font, font_size, fill)
+                    y += char_h
+                    continue
+                
+                # 2. 括弧類の縦書き変換
+                if char in self.VERTICAL_BRACKETS:
+                    v_char = self.VERTICAL_BRACKETS[char]
+                    draw.text((x, y), v_char, font=font, fill=fill)
+                    y += char_h
+                    continue
+                
+                # 3. 句読点の位置調整
                 offset = self.VERTICAL_PUNCTUATION.get(char, (0.0, 0.0))
                 dx = int(offset[0] * font_size)
                 dy = int(offset[1] * font_size)
@@ -506,7 +554,8 @@ class BubbleRenderer:
         is_caption: bool = False,
         keyword: Optional[str] = None,
         font_size: int = 28,
-        clip_edges: Optional[set] = None
+        clip_edges: Optional[set] = None,
+        img: Optional[Image.Image] = None
     ) -> None:
         """
         吹き出しを描画するメイン関数
@@ -540,7 +589,7 @@ class BubbleRenderer:
             self.draw_tail(draw, position, tail_point, style)
 
         # 4. テキストを縦書きで描画
-        self.draw_vertical_text(draw, text, position, font_size=font_size, fill=TEXT_COLOR_PRIMARY)
+        self.draw_vertical_text(draw, text, position, font_size=font_size, fill=TEXT_COLOR_PRIMARY, img=img)
 
 
 def demo():

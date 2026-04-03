@@ -487,7 +487,8 @@ TECHNICAL:
                 is_caption=is_caption,
                 keyword=keyword if is_tsukkomi else None,
                 font_size=font_size,
-                clip_edges=clip_edges
+                clip_edges=clip_edges,
+                img=img
             )
 
         return img
