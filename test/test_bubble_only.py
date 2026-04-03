@@ -13,19 +13,19 @@ from PIL import Image, ImageDraw
 from bubble_renderer import BubbleRenderer
 
 PANEL_SIZE = (1000, 1000)
-BORDER_WIDTH = 6  # 茶色ボーダーの太さ
-BORDER_COLOR = "#5C3A1E"  # 茶色
+BORDER_WIDTH = 10  # ボーダーの太さ（参考画像準拠）
+BORDER_COLOR = "#1A1A1A"  # ほぼ黒
 
 def test_panel(panel: dict, output_path: str, is_final: bool = False):
     """1パネル分の吹き出し描画テスト"""
     # ダミー背景（薄いグレー）
-    img = Image.new("RGB", PANEL_SIZE, "#E8E0D8")
+    img = Image.new("RGB", PANEL_SIZE, "#FFFFFF")
     draw = ImageDraw.Draw(img)
     # グリッド線（位置確認用）
     for x in range(0, PANEL_SIZE[0], 100):
-        draw.line([(x, 0), (x, PANEL_SIZE[1])], fill="#D0C8C0", width=1)
+        draw.line([(x, 0), (x, PANEL_SIZE[1])], fill="#EEEEEE", width=1)
     for y in range(0, PANEL_SIZE[1], 100):
-        draw.line([(0, y), (PANEL_SIZE[0], y)], fill="#D0C8C0", width=1)
+        draw.line([(0, y), (PANEL_SIZE[0], y)], fill="#EEEEEE", width=1)
 
     # module3と同じロジックで吹き出しを描画
     renderer = BubbleRenderer()

@@ -156,114 +156,91 @@ class BubbleRenderer:
         style: BubbleStyle,
         clip_edges: Optional[set] = None
     ) -> None:
-        """波打つ角丸四角形を描画。clip_edgesに含まれる辺は直線でパネル外に拡張"""
+        """手描き風の有機的な吹き出しを描画。clip_edgesに含まれる辺は直線でパネル外に拡張。
+        
+        参考画像準拠: 楕円ベースに不規則な膨らみを加えた自然な曲線。
+        """
+        import random
+        import hashlib
+
         if clip_edges is None:
             clip_edges = set()
         x1, y1, x2, y2 = bbox
         w, h = x2 - x1, y2 - y1
         ow = style.outline_width
-        radius = min(w, h) // 6
 
-        # 波のパラメータ（参考画像準拠: 緩やかで控えめな波）
-        min_dim = min(w, h)
-        if min_dim < 200:
-            # 小さい吹き出しは波なし（角丸四角形のまま）
-            ext = radius + ow + 4
-            ex1 = x1 - ext if "left" in clip_edges else x1
-            ey1 = y1 - ext if "top" in clip_edges else y1
-            ex2 = x2 + ext if "right" in clip_edges else x2
-            ey2 = y2 + ext if "bottom" in clip_edges else y2
-            draw.rounded_rectangle((ex1, ey1, ex2, ey2), radius=radius,
-                                   fill=style.fill_color,
-                                   outline=style.outline_color, width=ow)
-            return
-        amp = max(2, min_dim // 120)  # 振幅（控えめ）
-        waves_h = max(2, w // 150)  # 横辺の波数
-        waves_v = max(3, h // 150)  # 縦辺の波数
-        steps_per_wave = 12
-
-        # clip辺は拡張して直線化
-        ext = radius + ow + amp + 4
+        # clip辺の拡張量
+        ext = ow + 20
         ex1 = x1 - ext if "left" in clip_edges else x1
         ey1 = y1 - ext if "top" in clip_edges else y1
         ex2 = x2 + ext if "right" in clip_edges else x2
         ey2 = y2 + ext if "bottom" in clip_edges else y2
 
         ew, eh = ex2 - ex1, ey2 - ey1
-        er = min(ew, eh) // 6
+        cx, cy = ex1 + ew / 2, ey1 + eh / 2
+        rx, ry = ew / 2, eh / 2
+
+        # テキストベースで再現可能なシード
+        seed = int(hashlib.md5(f"{x1}{y1}{x2}{y2}".encode()).hexdigest()[:8], 16)
+        rng = random.Random(seed)
+
+        # 有機的な形状: スーパー楕円（角丸寄り）+ 低周波不規則変位
+        num_points = 120
+        n_power = 3.5  # スーパー楕円の指数（大きいほど角丸四角形に近い）
+
+        # ランダムな低周波成分を生成
+        num_harmonics = 6
+        harmonics = []
+        for _ in range(num_harmonics):
+            freq = rng.randint(2, 7)
+            amp_ratio = rng.uniform(0.015, 0.045)
+            phase = rng.uniform(0, 2 * math.pi)
+            harmonics.append((freq, amp_ratio, phase))
 
         points = []
+        for i in range(num_points):
+            t = i / num_points
+            angle = t * 2 * math.pi
 
-        # 上辺: 左→右（角丸の終わりから始まり）
-        top_steps = waves_h * steps_per_wave
-        for i in range(top_steps + 1):
-            t = i / top_steps
-            px = ex1 + er + t * (ew - 2 * er)
-            if "top" not in clip_edges:
-                dy = amp * math.sin(t * waves_h * 2 * math.pi)
+            # スーパー楕円（角丸四角形ベース）
+            cos_a = math.cos(angle)
+            sin_a = math.sin(angle)
+            # |cos|^(2/n) * sign(cos), |sin|^(2/n) * sign(sin)
+            exp = 2.0 / n_power
+            sx = abs(cos_a) ** exp * (1 if cos_a >= 0 else -1)
+            sy = abs(sin_a) ** exp * (1 if sin_a >= 0 else -1)
+            px = cx + rx * sx
+            py = cy + ry * sy
+
+            # 不規則な変位（法線方向に）
+            displacement = 0
+            for freq, amp_ratio, phase in harmonics:
+                displacement += amp_ratio * math.sin(freq * angle + phase)
+
+            min_r = min(rx, ry)
+            disp_px = displacement * min_r
+
+            # clip辺に近い部分は変位を抑制
+            suppress = 1.0
+            if "right" in clip_edges and cos_a > 0.3:
+                suppress *= max(0, 1 - (cos_a - 0.3) / 0.7)
+            if "left" in clip_edges and cos_a < -0.3:
+                suppress *= max(0, 1 - (-cos_a - 0.3) / 0.7)
+            if "bottom" in clip_edges and sin_a > 0.3:
+                suppress *= max(0, 1 - (sin_a - 0.3) / 0.7)
+            if "top" in clip_edges and sin_a < -0.3:
+                suppress *= max(0, 1 - (-sin_a - 0.3) / 0.7)
+
+            # 法線方向に変位
+            norm_len = math.sqrt(cos_a**2 + sin_a**2)
+            if norm_len > 0:
+                nx = cos_a / norm_len
+                ny = sin_a / norm_len
             else:
-                dy = 0
-            points.append((px, ey1 - dy))
+                nx, ny = 0, 0
+            px += nx * disp_px * suppress
+            py += ny * disp_px * suppress
 
-        # 右上角丸
-        for i in range(steps_per_wave + 1):
-            angle = -math.pi / 2 + (math.pi / 2) * i / steps_per_wave
-            px = ex2 - er + er * math.cos(angle)
-            py = ey1 + er - er * math.sin(angle)
-            points.append((px, py))
-
-        # 右辺: 上→下
-        right_steps = waves_v * steps_per_wave
-        for i in range(right_steps + 1):
-            t = i / right_steps
-            py = ey1 + er + t * (eh - 2 * er)
-            if "right" not in clip_edges:
-                dx = amp * math.sin(t * waves_v * 2 * math.pi)
-            else:
-                dx = 0
-            points.append((ex2 + dx, py))
-
-        # 右下角丸
-        for i in range(steps_per_wave + 1):
-            angle = 0 + (math.pi / 2) * i / steps_per_wave
-            px = ex2 - er + er * math.cos(angle)
-            py = ey2 - er + er * math.sin(angle)
-            points.append((px, py))
-
-        # 下辺: 右→左
-        bottom_steps = waves_h * steps_per_wave
-        for i in range(bottom_steps + 1):
-            t = i / bottom_steps
-            px = ex2 - er - t * (ew - 2 * er)
-            if "bottom" not in clip_edges:
-                dy = amp * math.sin(t * waves_h * 2 * math.pi)
-            else:
-                dy = 0
-            points.append((px, ey2 + dy))
-
-        # 左下角丸
-        for i in range(steps_per_wave + 1):
-            angle = math.pi / 2 + (math.pi / 2) * i / steps_per_wave
-            px = ex1 + er + er * math.cos(angle)
-            py = ey2 - er + er * math.sin(angle)
-            points.append((px, py))
-
-        # 左辺: 下→上
-        left_steps = waves_v * steps_per_wave
-        for i in range(left_steps + 1):
-            t = i / left_steps
-            py = ey2 - er - t * (eh - 2 * er)
-            if "left" not in clip_edges:
-                dx = amp * math.sin(t * waves_v * 2 * math.pi)
-            else:
-                dx = 0
-            points.append((ex1 - dx, py))
-
-        # 左上角丸
-        for i in range(steps_per_wave + 1):
-            angle = math.pi + (math.pi / 2) * i / steps_per_wave
-            px = ex1 + er + er * math.cos(angle)
-            py = ey1 + er + er * math.sin(angle)
             points.append((px, py))
 
         draw.polygon(points, fill=style.fill_color, outline=style.outline_color, width=ow)
