@@ -36,26 +36,26 @@ class BubbleStyle:
     fill_color: str
     outline_color: str
     shape: BubbleShape
-    outline_width: int = 3
+    outline_width: int = 4
 
 
 # キャラクター別吹き出しスタイル定義（参考画像準拠: 角丸四角形）
 CHARACTER_BUBBLE_STYLES = {
     # 女性陣：高彩度黄色、角丸四角形
-    "はな": BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON),
-    "さき": BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON),
-    
+    "はな": BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4),
+    "さき": BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4),
+
     # 男性陣：パステルブルー、角丸四角形
-    "まさと": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON),
-    "ともや": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON),
-    "ようた": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON),
+    "まさと": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4),
+    "ともや": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4),
+    "ようた": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4),
 }
 
 # 特殊吹き出しスタイル（参考画像準拠）
-MONOLOGUE_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.OVAL)
-TSUKKOMI_STYLE = BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4)
-THOUGHT_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.CLOUD)
-CAPTION_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.SOFT_POLYGON, outline_width=2)
+MONOLOGUE_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.OVAL, outline_width=4)
+TSUKKOMI_STYLE = BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON, outline_width=5)
+THOUGHT_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.CLOUD, outline_width=4)
+CAPTION_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.SOFT_POLYGON, outline_width=3)
 
 # テキスト色定義
 TEXT_COLOR_PRIMARY = "#000000"      # 通常テキスト（黒）
@@ -178,8 +178,8 @@ class BubbleRenderer:
                                    outline=style.outline_color, width=ow)
             return
         amp = max(2, min_dim // 120)  # 振幅（控えめ）
-        waves_h = max(1, w // 200)  # 横辺の波数（少なめ）
-        waves_v = max(2, h // 200)  # 縦辺の波数（少なめ）
+        waves_h = max(2, w // 150)  # 横辺の波数
+        waves_v = max(3, h // 150)  # 縦辺の波数
         steps_per_wave = 12
 
         # clip辺は拡張して直線化
