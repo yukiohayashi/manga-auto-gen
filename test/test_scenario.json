@@ -1,0 +1,87 @@
+{
+  "title": "婚活スラッガー",
+  "theme": "マッチングアプリで男性が次々フェードアウトする女性の話",
+  "twist_pattern": "ドラフランケン (D→F)",
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": ["はな"],
+      "description": "スマホを見てイライラしているはな。リビングでソファに座り、マッチングアプリの画面を睨んでいる。",
+      "background": "モダンなリビングルーム、暖色系の照明",
+      "effects": ["怒りマーク", "イライラ"],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "「なんで私とマッチングした男、すぐフェードアウト(敬遠）していくの！？ 勝負を避けるな！」"
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": ["ようた"],
+      "description": "はなの背後から呆れたように覗き込む弟。腕を組んで立っている。",
+      "background": "同じリビングルーム",
+      "effects": [],
+      "dialogue": [
+        {
+          "type": "caption",
+          "text": "「弟（元高校球児）」"
+        },
+        {
+          "type": "normal",
+          "character": "ようた",
+          "text": "「いいか姉ちゃん。ピッチャーが勝負を避けるのは、バッターから異常な『殺気』を感じた時だけだ。」"
+        },
+        {
+          "type": "normal",
+          "character": "ようた",
+          "text": "「自分の打席（メッセージ）、振り返ってみろ。」"
+        }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": ["はな", "ようた"],
+      "description": "はなが自分の送信履歴を見返す。冷や汗を流し、「あっ」と気づく瞬間。スマホ画面にメッセージが見える。",
+      "background": "リビングルーム、はなのアップ",
+      "effects": ["冷や汗", "驚き"],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "「えーっと、マッチング直後に『年収は？』『いつまでに結婚したい？』」"
+        },
+        {
+          "type": "normal",
+          "character": "ようた",
+          "text": "「えっ？何これ？」"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": ["ようた", "はな"],
+      "description": "弟が全力でツッコミを入れる。はなは崩れ落ちる。",
+      "background": "リビングルーム",
+      "effects": ["衝撃", "崩れ落ち"],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "ようた",
+          "text": "「初球からフルスイングしすぎだ！！ まずはバント（挨拶）から始めろ！！」",
+          "highlight": "フルスイング"
+        },
+        {
+          "type": "thought",
+          "character": "はな",
+          "text": "「ガーン…」"
+        }
+      ]
+    }
+  ]
+}

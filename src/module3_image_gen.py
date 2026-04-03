@@ -380,29 +380,41 @@ TECHNICAL:
             available_h = (panel_h - margin * 3) // 2
 
         bubble_infos = []
+        max_bw = int(panel_w * 0.50)
+
         for dialogue in speech_items:
             text = dialogue.get("text", "")
             text_len = len(text)
 
-            # テキスト量に応じた高さ: 短い文は小さく、長い文はフル
-            max_chars_col = max(1, (available_h - padding * 2) // char_h)
-            num_cols_needed = max(1, -(-text_len // max_chars_col))  # 切り上げ
+            # フォントサイズを自動調整: テキストが収まるまで縮小
+            fs = font_size
+            while fs >= 24:
+                ch = fs + 12
+                cw = fs + 16
+                pd = 25
+                max_chars_col = max(1, (available_h - pd * 2) // ch)
+                num_cols = max(1, -(-text_len // max_chars_col))
+                bw = num_cols * cw + pd * 2 + 10
+                if bw <= max_bw:
+                    break
+                fs -= 2  # 2pxずつ縮小
 
-            # テキストに必要な実際の高さ
-            chars_per_col = min(max_chars_col, -(-text_len // num_cols_needed))
-            needed_h = chars_per_col * char_h + padding * 2
-            bh = min(available_h, max(needed_h, 200))
-
-            # 幅: 列数に応じて
-            bw = num_cols_needed * col_w + padding * 2
-            bw = int(bw * 1.15)  # 少し余裕
-            max_bw = int(panel_w * 0.50)
+            # 最終サイズ計算（確定したフォントサイズで）
+            ch = fs + 12
+            cw = fs + 16
+            pd = 25
+            max_chars_col = max(1, (available_h - pd * 2) // ch)
+            num_cols = max(1, -(-text_len // max_chars_col))
+            chars_per_col = min(max_chars_col, -(-text_len // num_cols))
+            bh = min(available_h, max(chars_per_col * ch + pd * 2, 200))
+            bw = num_cols * cw + pd * 2 + 10
             bw = min(bw, max_bw)
 
             bubble_infos.append({
                 "dialogue": dialogue,
                 "width": bw, "height": bh,
                 "is_caption": False,
+                "font_size": fs,
             })
 
         # キャプション
@@ -416,6 +428,7 @@ TECHNICAL:
                 "dialogue": dialogue,
                 "width": bw, "height": bh,
                 "is_caption": True,
+                "font_size": caption_fs,
             })
 
         # === 3. 配置位置を決定 ===
@@ -494,6 +507,7 @@ TECHNICAL:
                     tail_x = x1 + bw // 3
                     tail_y = y1 - 20
 
+            bubble_fs = info.get("font_size", font_size)
             self.bubble_renderer.draw_speech_bubble(
                 draw=draw,
                 character=character,
@@ -505,7 +519,7 @@ TECHNICAL:
                 is_thought=is_thought,
                 is_caption=is_caption,
                 keyword=keyword if is_tsukkomi else None,
-                font_size=font_size,
+                font_size=bubble_fs,
                 clip_edges=clip_edges,
                 img=img
             )
