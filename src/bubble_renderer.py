@@ -303,29 +303,28 @@ class BubbleRenderer:
         # しっぽの付け根の幅
         tail_width = min(x2 - x1, y2 - y1) // 4
 
-        # しっぽの方向を計算
+        # しっぽの方向を計算（付け根を吹き出し内側に食い込ませて隙間を防ぐ）
+        inset = style.outline_width + 4
         if ty > y2:  # 下向き
-            base1 = (cx - tail_width // 2, y2)
-            base2 = (cx + tail_width // 2, y2)
+            base1 = (cx - tail_width // 2, y2 - inset)
+            base2 = (cx + tail_width // 2, y2 - inset)
         elif ty < y1:  # 上向き
-            base1 = (cx - tail_width // 2, y1)
-            base2 = (cx + tail_width // 2, y1)
+            base1 = (cx - tail_width // 2, y1 + inset)
+            base2 = (cx + tail_width // 2, y1 + inset)
         elif tx > x2:  # 右向き
-            base1 = (x2, cy - tail_width // 2)
-            base2 = (x2, cy + tail_width // 2)
+            base1 = (x2 - inset, cy - tail_width // 2)
+            base2 = (x2 - inset, cy + tail_width // 2)
         else:  # 左向き
-            base1 = (x1, cy - tail_width // 2)
-            base2 = (x1, cy + tail_width // 2)
+            base1 = (x1 + inset, cy - tail_width // 2)
+            base2 = (x1 + inset, cy + tail_width // 2)
 
         triangle = [base1, base2, tail_point]
-        # 三角を塗りのみで描画（outlineなし）
+        # 三角を塗りのみで描画（outlineなし）→ 吹き出し内側まで食い込むので隙間なし
         draw.polygon(triangle, fill=style.fill_color)
         # 接合面以外の2辺だけoutlineを描画
         ow = style.outline_width
         draw.line([base1, tail_point], fill=style.outline_color, width=ow)
         draw.line([base2, tail_point], fill=style.outline_color, width=ow)
-        # 接合面（base1→base2）は吹き出し本体の塗りで上書きして消す
-        draw.line([base1, base2], fill=style.fill_color, width=ow + 2)
 
     def calculate_text_bbox(
         self, 
