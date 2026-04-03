@@ -177,7 +177,7 @@ class BubbleRenderer:
         draw: ImageDraw.Draw, 
         bbox: tuple[int, int, int, int],
         style: BubbleStyle,
-        spikes: int = 12
+        spikes: int = 20
     ) -> None:
         """ギザギザ爆発型を描画 - ツッコミ用"""
         x1, y1, x2, y2 = bbox
@@ -185,8 +185,8 @@ class BubbleRenderer:
         cy = (y1 + y2) // 2
         outer_rx = (x2 - x1) // 2
         outer_ry = (y2 - y1) // 2
-        inner_rx = outer_rx * 0.7
-        inner_ry = outer_ry * 0.7
+        inner_rx = outer_rx * 0.88
+        inner_ry = outer_ry * 0.88
 
         points = []
         for i in range(spikes * 2):

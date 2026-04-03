@@ -374,11 +374,16 @@ TECHNICAL:
                 bw = len(text_clean) * 20 + 40
                 bh = 44
             else:
-                _, bw, bh = self.bubble_renderer.calculate_vertical_layout(
-                    text, font_size, max_chars_per_col=8
+                # 吹き出しの高さはパネル全体を使う
+                bh = panel_h - margin * 2
+                # 高さに合わせて1列あたりの文字数を逆算
+                char_h = font_size + 10
+                padding = 30
+                max_chars = max(1, (bh - padding * 2) // char_h)
+                _, bw, _ = self.bubble_renderer.calculate_vertical_layout(
+                    text, font_size, max_chars_per_col=max_chars
                 )
                 bw = int(bw * 1.2)
-                bh = int(bh * 1.2)
 
             bubble_infos.append({
                 "dialogue": dialogue,
