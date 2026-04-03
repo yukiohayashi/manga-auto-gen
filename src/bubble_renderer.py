@@ -465,7 +465,7 @@ class BubbleRenderer:
         draw: ImageDraw.Draw,
         text: str,
         position: tuple[int, int, int, int],
-        font_size: int = 20
+        font_size: int = 28
     ) -> None:
         """
         紹介キャプション（四角い矩形）を描画
@@ -526,7 +526,7 @@ class BubbleRenderer:
         """
         # キャプションの場合は専用メソッドで描画
         if is_caption:
-            self.draw_caption(draw, text, position, font_size=18)
+            self.draw_caption(draw, text, position, font_size=28)
             return
         
         # 1. スタイルを決定

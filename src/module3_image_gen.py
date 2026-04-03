@@ -371,8 +371,9 @@ TECHNICAL:
 
             if is_caption:
                 text_clean = text.replace("「", "").replace("」", "")
-                bw = len(text_clean) * 20 + 40
-                bh = 44
+                caption_font_size = 28
+                bw = len(text_clean) * caption_font_size + 40
+                bh = caption_font_size + 24
             else:
                 # 吹き出しの高さはパネル全体を使う
                 bh = panel_h - margin * 2
@@ -419,9 +420,9 @@ TECHNICAL:
             is_caption = info["is_caption"]
 
             if is_caption:
-                # キャプションはキャラの近くに配置
-                x1 = margin
-                y1 = panel_h // 3
+                # キャプションはパネル下部中央に配置（キャラの下あたり）
+                x1 = (panel_w - bw) // 2
+                y1 = panel_h - bh - margin - 30
             else:
                 pos = positions[i % len(positions)]
                 h_pos, v_pos = pos
