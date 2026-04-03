@@ -462,6 +462,18 @@ TECHNICAL:
             is_monologue = bubble_type == "monologue"
             is_thought = bubble_type == "thought"
 
+            # パネル端に接する辺を判定（ギザギザをクリップ）
+            edge_threshold = margin + 5
+            clip_edges = set()
+            if y1 <= edge_threshold:
+                clip_edges.add("top")
+            if y2 >= panel_h - edge_threshold:
+                clip_edges.add("bottom")
+            if x2 >= panel_w - edge_threshold:
+                clip_edges.add("right")
+            if x1 <= edge_threshold:
+                clip_edges.add("left")
+
             self.bubble_renderer.draw_speech_bubble(
                 draw=draw,
                 character=character,
@@ -473,7 +485,8 @@ TECHNICAL:
                 is_thought=is_thought,
                 is_caption=is_caption,
                 keyword=keyword if is_tsukkomi else None,
-                font_size=font_size
+                font_size=font_size,
+                clip_edges=clip_edges
             )
 
         return img

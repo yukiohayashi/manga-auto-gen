@@ -177,9 +177,15 @@ class BubbleRenderer:
         draw: ImageDraw.Draw, 
         bbox: tuple[int, int, int, int],
         style: BubbleStyle,
-        spikes: int = 20
+        spikes: int = 20,
+        clip_edges: Optional[set] = None
     ) -> None:
-        """ギザギザ爆発型を描画 - ツッコミ用"""
+        """ギザギザ爆発型を描画 - ツッコミ用
+        clip_edges: パネル端に接する辺を直線化 {"top","bottom","left","right"}
+        """
+        if clip_edges is None:
+            clip_edges = set()
+
         x1, y1, x2, y2 = bbox
         cx = (x1 + x2) // 2
         cy = (y1 + y2) // 2
@@ -192,16 +198,30 @@ class BubbleRenderer:
         for i in range(spikes * 2):
             angle = math.pi * i / spikes - math.pi / 2
             if i % 2 == 0:
-                # 外側の頂点
                 px = cx + outer_rx * math.cos(angle)
                 py = cy + outer_ry * math.sin(angle)
             else:
-                # 内側の頂点
                 px = cx + inner_rx * math.cos(angle)
                 py = cy + inner_ry * math.sin(angle)
             points.append((px, py))
 
         draw.polygon(points, fill=style.fill_color, outline=style.outline_color, width=style.outline_width)
+
+        # パネル端に接する辺を直線化（ギザギザを塗りつぶして直線に）
+        spike_depth = int(outer_rx * 0.15)
+        ow = style.outline_width
+        if "top" in clip_edges:
+            draw.rectangle([x1, y1, x2, y1 + spike_depth], fill=style.fill_color)
+            draw.line([x1, y1, x2, y1], fill=style.outline_color, width=ow)
+        if "bottom" in clip_edges:
+            draw.rectangle([x1, y2 - spike_depth, x2, y2], fill=style.fill_color)
+            draw.line([x1, y2, x2, y2], fill=style.outline_color, width=ow)
+        if "right" in clip_edges:
+            draw.rectangle([x2 - spike_depth, y1, x2, y2], fill=style.fill_color)
+            draw.line([x2, y1, x2, y2], fill=style.outline_color, width=ow)
+        if "left" in clip_edges:
+            draw.rectangle([x1, y1, x1 + spike_depth, y2], fill=style.fill_color)
+            draw.line([x1, y1, x1, y2], fill=style.outline_color, width=ow)
 
     def draw_cloud(
         self, 
@@ -233,14 +253,18 @@ class BubbleRenderer:
         self, 
         draw: ImageDraw.Draw, 
         bbox: tuple[int, int, int, int],
-        style: BubbleStyle
+        style: BubbleStyle,
+        clip_edges: Optional[set] = None
     ) -> None:
         """吹き出しの形状を描画"""
+        if style.shape == BubbleShape.EXPLOSION:
+            self.draw_explosion(draw, bbox, style, clip_edges=clip_edges)
+            return
+
         shape_handlers = {
             BubbleShape.ANGULAR_POLYGON: self.draw_angular_polygon,
             BubbleShape.SOFT_POLYGON: self.draw_soft_polygon,
             BubbleShape.OVAL: self.draw_oval,
-            BubbleShape.EXPLOSION: self.draw_explosion,
             BubbleShape.CLOUD: self.draw_cloud,
         }
 
@@ -481,7 +505,8 @@ class BubbleRenderer:
         is_thought: bool = False,
         is_caption: bool = False,
         keyword: Optional[str] = None,
-        font_size: int = 28
+        font_size: int = 28,
+        clip_edges: Optional[set] = None
     ) -> None:
         """
         吹き出しを描画するメイン関数
@@ -508,7 +533,7 @@ class BubbleRenderer:
         style = self.get_bubble_style(character, is_tsukkomi, is_monologue, is_thought)
 
         # 2. 吹き出しの形状を描画
-        self.draw_bubble_shape(draw, position, style)
+        self.draw_bubble_shape(draw, position, style, clip_edges=clip_edges)
 
         # 3. しっぽを描画（指定がある場合）
         if tail_point:
