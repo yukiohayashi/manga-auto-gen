@@ -708,6 +708,10 @@ class BubbleRenderer:
             keyword: 強調するキーワード（ツッコミ時）
             font_size: 基本フォントサイズ
         """
+        # セリフの最初と最後の「」を自動除去（プロンプトに残っていても安全）
+        if text.startswith("「") and text.endswith("」"):
+            text = text[1:-1]
+
         # キャプションの場合は専用メソッドで描画
         if is_caption:
             self.draw_caption(draw, text, position, font_size=28)
