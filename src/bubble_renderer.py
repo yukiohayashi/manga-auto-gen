@@ -318,7 +318,14 @@ class BubbleRenderer:
             base2 = (x1, cy + tail_width // 2)
 
         triangle = [base1, base2, tail_point]
-        draw.polygon(triangle, fill=style.fill_color, outline=style.outline_color, width=style.outline_width)
+        # 三角を塗りのみで描画（outlineなし）
+        draw.polygon(triangle, fill=style.fill_color)
+        # 接合面以外の2辺だけoutlineを描画
+        ow = style.outline_width
+        draw.line([base1, tail_point], fill=style.outline_color, width=ow)
+        draw.line([base2, tail_point], fill=style.outline_color, width=ow)
+        # 接合面（base1→base2）は吹き出し本体の塗りで上書きして消す
+        draw.line([base1, base2], fill=style.fill_color, width=ow + 2)
 
     def calculate_text_bbox(
         self, 
