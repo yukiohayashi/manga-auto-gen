@@ -465,8 +465,8 @@ class BubbleRenderer:
         fill: str
     ) -> None:
         """文字を90°回転して描画（ー、〜など横長文字用）"""
-        col_w = font_size + 20
-        char_h = font_size + 14
+        col_w = font_size + 10
+        char_h = font_size + 4
         # 回転用キャンバス（文字を中央に描画→回転）
         canvas_size = int(font_size * 2)
         char_img = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
@@ -502,8 +502,8 @@ class BubbleRenderer:
         Returns:
             (columns, bubble_width, bubble_height)
         """
-        char_h = font_size + 14     # 1文字の縦幅（ゆったり）
-        col_w = font_size + 20      # 1列の横幅（ゆったり）
+        char_h = font_size + 4      # 1文字の縦幅（詰め）
+        col_w = font_size + 10      # 1列の横幅（詰め）
         padding = 35
         
         # テキストを列に分割（括弧含む）
@@ -565,8 +565,8 @@ class BubbleRenderer:
         x1, y1, x2, y2 = position
         
         padding = 35
-        char_h = font_size + 14
-        col_w = font_size + 20
+        char_h = font_size + 4
+        col_w = font_size + 10
         
         # 利用可能エリア
         available_height = y2 - y1 - padding * 2

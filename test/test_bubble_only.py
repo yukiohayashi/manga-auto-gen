@@ -64,8 +64,8 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
         text_len = len(text)
         fs = font_size
         while fs >= 24:
-            ch = fs + 14
-            cw = fs + 20
+            ch = fs + 4
+            cw = fs + 10
             pd = 35
             max_chars_col = max(1, (available_h - pd * 2) // ch)
             num_cols = max(1, -(-text_len // max_chars_col))
@@ -74,8 +74,8 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
                 break
             fs -= 2
 
-        ch = fs + 14
-        cw = fs + 20
+        ch = fs + 4
+        cw = fs + 10
         pd = 35
         max_chars_col = max(1, (available_h - pd * 2) // ch)
         num_cols = max(1, -(-text_len // max_chars_col))
