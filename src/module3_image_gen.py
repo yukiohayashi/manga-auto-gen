@@ -342,78 +342,97 @@ TECHNICAL:
     ) -> Image.Image:
         """
         パネルにセリフ（吹き出し）を描画
-        吹き出しは画像の上下左右に自由に配置する。
-
-        Args:
-            img: ベースとなるパネル画像
-            panel: パネル情報（dialogue配列を含む）
-            is_final_panel: 4コマ目（オチ）かどうか
-        
-        Returns:
-            吹き出しが描画された画像
+        テキスト量に応じた適応的サイズ計算、上下左右に自然配置。
         """
         dialogues = panel.get("dialogue", [])
-        num_dialogues = len(dialogues)
-        if num_dialogues == 0:
+        if not dialogues:
             return img
 
         panel_w, panel_h = img.size
         font_size = 44
-        margin = 15
-        bubble_gap = 15
+        margin = 10
+        char_h = font_size + 12
+        col_w = font_size + 16
+        padding = 25
 
-        # === 1. 各吹き出しのサイズを計算 ===
-        bubble_infos = []
-        for i, dialogue in enumerate(dialogues):
+        # === 1. セリフを分類 ===
+        speech_items = []  # 通常吹き出し
+        caption_items = []  # キャプション
+
+        for dialogue in dialogues:
             text = dialogue.get("text", "")
             bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
-            is_caption = bubble_type == "caption"
-
-            if is_caption:
-                text_clean = text.replace("「", "").replace("」", "")
-                caption_font_size = 28
-                bw = len(text_clean) * caption_font_size + 40
-                bh = caption_font_size + 24
+            if bubble_type == "caption":
+                caption_items.append(dialogue)
             else:
-                # 吹き出しの高さはパネル全体を使う
-                bh = panel_h - margin * 2
-                # 高さに合わせて1列あたりの文字数を逆算
-                char_h = font_size + 12
-                padding = 30
-                max_chars = max(1, (bh - padding * 2) // char_h)
-                _, bw, _ = self.bubble_renderer.calculate_vertical_layout(
-                    text, font_size, max_chars_per_col=max_chars
-                )
-                bw = int(bw * 1.2)
-                # パネル幅の半分を超えないように制限
-                max_bw = int(panel_w * 0.55)
-                if bw > max_bw:
-                    bw = max_bw
+                speech_items.append(dialogue)
+
+        num_speech = len(speech_items)
+
+        # === 2. 吹き出しサイズ計算 ===
+        # 吹き出し数に応じて1つあたりの使える高さを決定
+        if num_speech == 1:
+            available_h = panel_h - margin * 2
+        elif num_speech == 2:
+            available_h = panel_h - margin * 2  # 対角配置なので全高使える
+        else:
+            # 3つ以上: 同じ辺に2つ並ぶ可能性あり → 半分
+            available_h = (panel_h - margin * 3) // 2
+
+        bubble_infos = []
+        for dialogue in speech_items:
+            text = dialogue.get("text", "")
+            text_len = len(text)
+
+            # テキスト量に応じた高さ: 短い文は小さく、長い文はフル
+            max_chars_col = max(1, (available_h - padding * 2) // char_h)
+            num_cols_needed = max(1, -(-text_len // max_chars_col))  # 切り上げ
+
+            # テキストに必要な実際の高さ
+            chars_per_col = min(max_chars_col, -(-text_len // num_cols_needed))
+            needed_h = chars_per_col * char_h + padding * 2
+            bh = min(available_h, max(needed_h, 200))
+
+            # 幅: 列数に応じて
+            bw = num_cols_needed * col_w + padding * 2
+            bw = int(bw * 1.15)  # 少し余裕
+            max_bw = int(panel_w * 0.50)
+            bw = min(bw, max_bw)
 
             bubble_infos.append({
                 "dialogue": dialogue,
-                "width": bw,
-                "height": bh,
-                "is_caption": is_caption,
+                "width": bw, "height": bh,
+                "is_caption": False,
             })
 
-        # === 2. 吹き出し配置位置を決定 ===
-        # 配置パターン: 上下左右に分散（漫画らしい自然な配置）
-        # positions: (横位置, 縦位置) のペア
-        #   横: "right", "left"
-        #   縦: "top", "bottom"
-        if num_dialogues == 1:
+        # キャプション
+        for dialogue in caption_items:
+            text = dialogue.get("text", "")
+            text_clean = text.replace("「", "").replace("」", "")
+            caption_fs = 28
+            bw = len(text_clean) * caption_fs + 40
+            bh = caption_fs + 24
+            bubble_infos.append({
+                "dialogue": dialogue,
+                "width": bw, "height": bh,
+                "is_caption": True,
+            })
+
+        # === 3. 配置位置を決定 ===
+        # (横位置, 縦位置): right/left, top/bottom
+        if num_speech == 1:
             positions = [("right", "top")]
-        elif num_dialogues == 2:
+        elif num_speech == 2:
             positions = [("right", "top"), ("left", "bottom")]
-        elif num_dialogues == 3:
-            positions = [("right", "top"), ("left", "bottom"), ("right", "bottom")]
+        elif num_speech == 3:
+            positions = [("right", "top"), ("left", "top"), ("left", "bottom")]
         else:
-            positions = [("right", "top"), ("left", "bottom"), ("right", "bottom"), ("left", "top")]
+            positions = [("right", "top"), ("left", "top"), ("left", "bottom"), ("right", "bottom")]
 
         draw = ImageDraw.Draw(img)
+        speech_idx = 0
 
-        for i, info in enumerate(bubble_infos):
+        for info in bubble_infos:
             dialogue = info["dialogue"]
             character = dialogue.get("character", "")
             text = dialogue.get("text", "")
@@ -424,37 +443,35 @@ TECHNICAL:
             is_caption = info["is_caption"]
 
             if is_caption:
-                # キャプションはパネル下部中央に配置（キャラの下あたり）
                 x1 = (panel_w - bw) // 2
                 y1 = panel_h - bh - margin - 30
             else:
-                pos = positions[i % len(positions)]
+                pos = positions[speech_idx % len(positions)]
                 h_pos, v_pos = pos
 
-                # 横位置
                 if h_pos == "right":
                     x1 = panel_w - bw - margin
                 else:
                     x1 = margin
 
-                # 縦位置
                 if v_pos == "top":
                     y1 = margin
                 else:
                     y1 = panel_h - bh - margin
 
-            # パネル内に収まるように調整
+                speech_idx += 1
+
+            # パネル内に収まるように
             x1 = max(margin, min(x1, panel_w - bw - margin))
             y1 = max(margin, min(y1, panel_h - bh - margin))
             x2 = x1 + bw
             y2 = y1 + bh
 
-            # 吹き出しタイプの判定
-            is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and i == num_dialogues - 1)
+            is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and speech_idx == num_speech)
             is_monologue = bubble_type == "monologue"
             is_thought = bubble_type == "thought"
 
-            # パネル端に接する辺を判定（ギザギザをクリップ）
+            # パネル端クリップ判定
             edge_threshold = margin + 5
             clip_edges = set()
             if y1 <= edge_threshold:
@@ -466,17 +483,15 @@ TECHNICAL:
             if x1 <= edge_threshold:
                 clip_edges.add("left")
 
-            # しっぽの位置（クリップされていない辺にのみ描画）
+            # しっぽ（クリップされていない辺のみ）
             tail_x = None
             tail_y = None
             if not is_caption:
-                pos = positions[i % len(positions)]
-                _, v_pos = pos
-                if v_pos == "top" and "bottom" not in clip_edges:
-                    tail_x = x1 + bw // 2
+                if "bottom" not in clip_edges and "top" in clip_edges:
+                    tail_x = x1 + bw // 3
                     tail_y = y2 + 20
-                elif v_pos == "bottom" and "top" not in clip_edges:
-                    tail_x = x1 + bw // 2
+                elif "top" not in clip_edges and "bottom" in clip_edges:
+                    tail_x = x1 + bw // 3
                     tail_y = y1 - 20
 
             self.bubble_renderer.draw_speech_bubble(
