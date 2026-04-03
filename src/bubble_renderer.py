@@ -39,23 +39,23 @@ class BubbleStyle:
     outline_width: int = 3
 
 
-# キャラクター別吹き出しスタイル定義（manga_spec.yml準拠）
+# キャラクター別吹き出しスタイル定義（参考画像準拠: 角丸四角形）
 CHARACTER_BUBBLE_STYLES = {
-    # 女性陣：高彩度黄色、角ばった多角形（丸み禁止）
-    "はな": BubbleStyle("#FFE800", "#000000", BubbleShape.ANGULAR_POLYGON),
-    "さき": BubbleStyle("#FFE800", "#000000", BubbleShape.ANGULAR_POLYGON),
+    # 女性陣：高彩度黄色、角丸四角形
+    "はな": BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON),
+    "さき": BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON),
     
-    # 男性陣：パステルブルー、柔らかい多角形または楕円
+    # 男性陣：パステルブルー、角丸四角形
     "まさと": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON),
     "ともや": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON),
     "ようた": BubbleStyle("#D4E8FF", "#000000", BubbleShape.SOFT_POLYGON),
 }
 
-# 特殊吹き出しスタイル
+# 特殊吹き出しスタイル（参考画像準拠）
 MONOLOGUE_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.OVAL)
-TSUKKOMI_STYLE = BubbleStyle("#FFE800", "#000000", BubbleShape.EXPLOSION, outline_width=4)
+TSUKKOMI_STYLE = BubbleStyle("#FFE800", "#000000", BubbleShape.SOFT_POLYGON, outline_width=4)
 THOUGHT_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.CLOUD)
-CAPTION_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.ANGULAR_POLYGON, outline_width=2)  # 紹介キャプション用
+CAPTION_STYLE = BubbleStyle("#FFFFFF", "#000000", BubbleShape.SOFT_POLYGON, outline_width=2)
 
 # テキスト色定義
 TEXT_COLOR_PRIMARY = "#000000"      # 通常テキスト（黒）
@@ -378,9 +378,9 @@ class BubbleRenderer:
         Returns:
             (columns, bubble_width, bubble_height)
         """
-        char_h = font_size + 12     # 1文字の縦幅（ゆったり）
-        col_w = font_size + 16      # 1列の横幅（ゆったり）
-        padding = 30
+        char_h = font_size + 14     # 1文字の縦幅（ゆったり）
+        col_w = font_size + 20      # 1列の横幅（ゆったり）
+        padding = 35
         
         # テキストを列に分割（括弧含む）
         columns = []
@@ -421,9 +421,9 @@ class BubbleRenderer:
         font = self.get_font(font_size)
         x1, y1, x2, y2 = position
         
-        padding = 30
-        char_h = font_size + 12
-        col_w = font_size + 16
+        padding = 35
+        char_h = font_size + 14
+        col_w = font_size + 20
         
         # 利用可能エリア
         available_height = y2 - y1 - padding * 2

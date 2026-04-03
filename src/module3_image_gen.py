@@ -351,9 +351,9 @@ TECHNICAL:
         panel_w, panel_h = img.size
         font_size = 44
         margin = 10
-        char_h = font_size + 12
-        col_w = font_size + 16
-        padding = 25
+        char_h = font_size + 14
+        col_w = font_size + 20
+        padding = 35
 
         # === 1. セリフを分類 ===
         speech_items = []  # 通常吹き出し

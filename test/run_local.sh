@@ -24,7 +24,7 @@ echo "=== ローカルテスト: ${PANELS}枚生成 ==="
 echo "シナリオ: $SCENARIO"
 echo "出力先:   $OUTPUT_DIR"
 
-python "$PROJECT_DIR/src/module3_image_gen.py" \
+python3 "$PROJECT_DIR/src/module3_image_gen.py" \
   --scenario "$SCENARIO" \
   --spec "$SPEC" \
   --characters "$CHARS" \
