@@ -512,7 +512,7 @@ TECHNICAL:
                 is_monologue=is_monologue,
                 is_thought=is_thought,
                 is_caption=is_caption,
-                keyword=keyword if is_tsukkomi else None,
+                keyword=keyword or None,
                 font_size=bubble_fs,
                 clip_edges=clip_edges,
                 img=img

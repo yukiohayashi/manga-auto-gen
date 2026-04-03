@@ -160,7 +160,7 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
             tail_point=(tail_x, tail_y) if tail_x else None,
             is_tsukkomi=is_tsukkomi, is_monologue=is_monologue,
             is_thought=is_thought, is_caption=is_caption,
-            keyword=keyword if is_tsukkomi else None,
+            keyword=keyword or None,
             font_size=bubble_fs, clip_edges=clip_edges, img=img,
         )
 
