@@ -66,7 +66,7 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
         while fs >= 24:
             ch = fs + 4
             cw = fs + 10
-            pd = 35
+            pd = 50
             max_chars_col = max(1, (available_h - pd * 2) // ch)
             num_cols = max(1, -(-text_len // max_chars_col))
             bw = num_cols * cw + pd * 2 + 10
@@ -76,7 +76,7 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
 
         ch = fs + 4
         cw = fs + 10
-        pd = 35
+        pd = 50
         max_chars_col = max(1, (available_h - pd * 2) // ch)
         num_cols = max(1, -(-text_len // max_chars_col))
         chars_per_col = min(max_chars_col, -(-text_len // num_cols))

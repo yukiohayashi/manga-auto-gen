@@ -353,7 +353,7 @@ TECHNICAL:
         margin = 16  # パネルボーダー内側に収める余白
         char_h = font_size + 4
         col_w = font_size + 10
-        padding = 35
+        padding = 50
 
         # === 1. セリフを分類 ===
         speech_items = []  # 通常吹き出し

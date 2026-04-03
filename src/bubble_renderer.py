@@ -481,7 +481,7 @@ class BubbleRenderer:
         """
         char_h = font_size + 4      # 1文字の縦幅（詰め）
         col_w = font_size + 10      # 1列の横幅（詰め）
-        padding = 35
+        padding = 50
         
         # テキストを列に分割（括弧含む）
         columns = []
@@ -541,7 +541,7 @@ class BubbleRenderer:
                 start = idx + 1
         x1, y1, x2, y2 = position
         
-        padding = 35
+        padding = 50
         char_h = font_size + 4
         col_w = font_size + 10
         
