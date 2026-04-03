@@ -351,8 +351,8 @@ class BubbleRenderer:
         fill: str
     ) -> None:
         """文字を90°回転して描画（ー、〜など横長文字用）"""
-        col_w = font_size + 16
-        char_h = font_size + 12
+        col_w = font_size + 20
+        char_h = font_size + 14
         char_img_size = max(col_w, char_h) + 4
         char_img = Image.new("RGBA", (char_img_size, char_img_size), (0, 0, 0, 0))
         char_draw = ImageDraw.Draw(char_img)
@@ -465,16 +465,22 @@ class BubbleRenderer:
                 # 2. 括弧類の縦書き変換
                 if char in self.VERTICAL_BRACKETS:
                     v_char = self.VERTICAL_BRACKETS[char]
-                    draw.text((x, y), v_char, font=font, fill=fill)
+                    bbox = draw.textbbox((0, 0), v_char, font=font)
+                    cw = bbox[2] - bbox[0]
+                    cx = x + (col_w - cw) // 2 - bbox[0]
+                    draw.text((cx, y), v_char, font=font, fill=fill)
                     y += char_h
                     continue
                 
-                # 3. 句読点の位置調整
+                # 3. 全文字を列中央揃え（句読点は位置調整あり）
                 offset = self.VERTICAL_PUNCTUATION.get(char, (0.0, 0.0))
                 dx = int(offset[0] * font_size)
                 dy = int(offset[1] * font_size)
                 
-                draw.text((x + dx, y + dy), char, font=font, fill=fill)
+                bbox = draw.textbbox((0, 0), char, font=font)
+                cw = bbox[2] - bbox[0]
+                cx = x + (col_w - cw) // 2 - bbox[0] + dx
+                draw.text((cx, y + dy), char, font=font, fill=fill)
                 y += char_h
 
     def draw_text_with_emphasis(

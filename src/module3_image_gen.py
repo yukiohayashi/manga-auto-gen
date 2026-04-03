@@ -350,7 +350,7 @@ TECHNICAL:
 
         panel_w, panel_h = img.size
         font_size = 44
-        margin = 10
+        margin = 16  # パネルボーダー内側に収める余白
         char_h = font_size + 14
         col_w = font_size + 20
         padding = 35

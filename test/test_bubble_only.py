@@ -13,6 +13,8 @@ from PIL import Image, ImageDraw
 from bubble_renderer import BubbleRenderer
 
 PANEL_SIZE = (1000, 1000)
+BORDER_WIDTH = 6  # 茶色ボーダーの太さ
+BORDER_COLOR = "#5C3A1E"  # 茶色
 
 def test_panel(panel: dict, output_path: str, is_final: bool = False):
     """1パネル分の吹き出し描画テスト"""
@@ -29,12 +31,15 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
     renderer = BubbleRenderer()
     dialogues = panel.get("dialogue", [])
     if not dialogues:
+        # ボーダー枠だけ描画
+        draw.rectangle([0, 0, PANEL_SIZE[0]-1, PANEL_SIZE[1]-1], outline=BORDER_COLOR, width=BORDER_WIDTH)
         img.save(output_path)
         return
 
     panel_w, panel_h = PANEL_SIZE
     font_size = 44
-    margin = 10
+    # ボーダー内側に収めるためのmargin（ボーダー幅 + 十分な余白）
+    margin = BORDER_WIDTH + 10
 
     speech_items = []
     caption_items = []
@@ -157,6 +162,8 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
             font_size=bubble_fs, clip_edges=clip_edges, img=img,
         )
 
+    # ボーダー枠を最前面に描画（吹き出しの上に乗る）
+    draw.rectangle([0, 0, panel_w - 1, panel_h - 1], outline=BORDER_COLOR, width=BORDER_WIDTH)
     img.save(output_path)
     print(f"  => {output_path}")
 
