@@ -611,6 +611,12 @@ TECHNICAL:
                 img = combined
                 print(f"[Module3] タイトル追加完了")
             
+            # manga_spec準拠: 白い余白で中央配置
+            white_margin = 20
+            padded = Image.new("RGB", (img.width + white_margin * 2, img.height + white_margin * 2), "#FFFFFF")
+            padded.paste(img, (white_margin, white_margin))
+            img = padded
+
             output_path = output_dir / f"4koma_panel_{i:02d}.png"
             img.save(output_path)
             output_files.append(output_path)

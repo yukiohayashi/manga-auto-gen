@@ -177,10 +177,10 @@ class BubbleRenderer:
                                    fill=style.fill_color,
                                    outline=style.outline_color, width=ow)
             return
-        amp = max(2, min_dim // 100)  # 振幅（控えめ）
-        waves_h = max(2, w // 140)  # 横辺の波数（少なめ）
-        waves_v = max(2, h // 140)  # 縦辺の波数
-        steps_per_wave = 10
+        amp = max(2, min_dim // 120)  # 振幅（控えめ）
+        waves_h = max(1, w // 200)  # 横辺の波数（少なめ）
+        waves_v = max(2, h // 200)  # 縦辺の波数（少なめ）
+        steps_per_wave = 12
 
         # clip辺は拡張して直線化
         ext = radius + ow + amp + 4

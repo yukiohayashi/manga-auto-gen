@@ -166,7 +166,12 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
 
     # ボーダー枠を最前面に描画（吹き出しの上に乗る）
     draw.rectangle([0, 0, panel_w - 1, panel_h - 1], outline=BORDER_COLOR, width=BORDER_WIDTH)
-    img.save(output_path)
+
+    # manga_spec準拠: 白い余白で中央配置
+    white_margin = 20
+    padded = Image.new("RGB", (panel_w + white_margin * 2, panel_h + white_margin * 2), "#FFFFFF")
+    padded.paste(img, (white_margin, white_margin))
+    padded.save(output_path)
     print(f"  => {output_path}")
 
 
