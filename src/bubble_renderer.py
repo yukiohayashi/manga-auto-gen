@@ -467,21 +467,31 @@ class BubbleRenderer:
         """文字を90°回転して描画（ー、〜など横長文字用）"""
         col_w = font_size + 20
         char_h = font_size + 14
-        char_img_size = max(col_w, char_h) + 4
-        char_img = Image.new("RGBA", (char_img_size, char_img_size), (0, 0, 0, 0))
+        # 回転用キャンバス（文字を中央に描画→回転）
+        canvas_size = int(font_size * 2)
+        char_img = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
         char_draw = ImageDraw.Draw(char_img)
-        # 中央に描画
+        # キャンバス中央に文字を描画
         bbox = char_draw.textbbox((0, 0), char, font=font)
         cw = bbox[2] - bbox[0]
         ch = bbox[3] - bbox[1]
-        cx = (char_img_size - cw) // 2 - bbox[0]
-        cy = (char_img_size - ch) // 2 - bbox[1]
+        cx = (canvas_size - cw) // 2 - bbox[0]
+        cy = (canvas_size - ch) // 2 - bbox[1]
         char_draw.text((cx, cy), char, font=font, fill=fill)
         # 90°時計回りに回転
         rotated = char_img.rotate(-90, resample=Image.BICUBIC, expand=False)
-        # 貼り付け位置（文字セルの中央に揃える）
-        paste_x = x + (col_w - char_img_size) // 2
-        paste_y = y + (char_h - char_img_size) // 2
+        # 回転後の実際の文字領域を取得して精密に中央揃え
+        rot_bbox = rotated.getbbox()
+        if rot_bbox:
+            rx1, ry1, rx2, ry2 = rot_bbox
+            rot_cw = rx2 - rx1
+            rot_ch = ry2 - ry1
+            # 列セル中央 - 文字中心
+            paste_x = x + (col_w - rot_cw) // 2 - rx1
+            paste_y = y + (char_h - rot_ch) // 2 - ry1
+        else:
+            paste_x = x + (col_w - canvas_size) // 2
+            paste_y = y + (char_h - canvas_size) // 2
         img.paste(rotated, (paste_x, paste_y), rotated)
 
     def calculate_vertical_layout(
