@@ -208,19 +208,20 @@ class BubbleRenderer:
         draw.polygon(points, fill=style.fill_color, outline=style.outline_color, width=style.outline_width)
 
         # パネル端に接する辺を直線化（ギザギザを塗りつぶして直線に）
-        spike_depth = int(outer_rx * 0.15)
+        spike_depth_x = int(outer_rx * 0.15) + 2
+        spike_depth_y = int(outer_ry * 0.15) + 2
         ow = style.outline_width
         if "top" in clip_edges:
-            draw.rectangle([x1, y1, x2, y1 + spike_depth], fill=style.fill_color)
+            draw.rectangle([x1, y1 - 2, x2, y1 + spike_depth_y], fill=style.fill_color)
             draw.line([x1, y1, x2, y1], fill=style.outline_color, width=ow)
         if "bottom" in clip_edges:
-            draw.rectangle([x1, y2 - spike_depth, x2, y2], fill=style.fill_color)
+            draw.rectangle([x1, y2 - spike_depth_y, x2, y2 + 2], fill=style.fill_color)
             draw.line([x1, y2, x2, y2], fill=style.outline_color, width=ow)
         if "right" in clip_edges:
-            draw.rectangle([x2 - spike_depth, y1, x2, y2], fill=style.fill_color)
+            draw.rectangle([x2 - spike_depth_x, y1, x2 + 2, y2], fill=style.fill_color)
             draw.line([x2, y1, x2, y2], fill=style.outline_color, width=ow)
         if "left" in clip_edges:
-            draw.rectangle([x1, y1, x1 + spike_depth, y2], fill=style.fill_color)
+            draw.rectangle([x1 - 2, y1, x1 + spike_depth_x, y2], fill=style.fill_color)
             draw.line([x1, y1, x1, y2], fill=style.outline_color, width=ow)
 
     def draw_cloud(

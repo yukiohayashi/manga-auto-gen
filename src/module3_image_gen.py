@@ -385,6 +385,10 @@ TECHNICAL:
                     text, font_size, max_chars_per_col=max_chars
                 )
                 bw = int(bw * 1.2)
+                # パネル幅の半分を超えないように制限
+                max_bw = int(panel_w * 0.55)
+                if bw > max_bw:
+                    bw = max_bw
 
             bubble_infos.append({
                 "dialogue": dialogue,
@@ -445,19 +449,6 @@ TECHNICAL:
             x2 = x1 + bw
             y2 = y1 + bh
 
-            # しっぽの位置（吹き出しの中央付近 → 反対方向へ）
-            if not is_caption:
-                pos = positions[i % len(positions)]
-                _, v_pos = pos
-                tail_x = x1 + bw // 2
-                if v_pos == "top":
-                    tail_y = y2 + 20
-                else:
-                    tail_y = y1 - 20
-            else:
-                tail_x = None
-                tail_y = None
-
             # 吹き出しタイプの判定
             is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and i == num_dialogues - 1)
             is_monologue = bubble_type == "monologue"
@@ -474,6 +465,19 @@ TECHNICAL:
                 clip_edges.add("right")
             if x1 <= edge_threshold:
                 clip_edges.add("left")
+
+            # しっぽの位置（クリップされていない辺にのみ描画）
+            tail_x = None
+            tail_y = None
+            if not is_caption:
+                pos = positions[i % len(positions)]
+                _, v_pos = pos
+                if v_pos == "top" and "bottom" not in clip_edges:
+                    tail_x = x1 + bw // 2
+                    tail_y = y2 + 20
+                elif v_pos == "bottom" and "top" not in clip_edges:
+                    tail_x = x1 + bw // 2
+                    tail_y = y1 - 20
 
             self.bubble_renderer.draw_speech_bubble(
                 draw=draw,
