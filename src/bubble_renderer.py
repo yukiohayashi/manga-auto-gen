@@ -364,17 +364,22 @@ class BubbleRenderer:
         tail_point: tuple[int, int],
         style: BubbleStyle
     ) -> None:
-        """吹き出しのしっぽ（三角形）を描画"""
+        """吹き出しのしっぽ（三角形）を描画
+        
+        スーパー楕円の曲線に合わせ、付け根を深くインセットして隙間を防ぐ。
+        接合部にfill色の太線を重ねて完全に隙間を塞ぐ。
+        """
         x1, y1, x2, y2 = bubble_bbox
+        w, h = x2 - x1, y2 - y1
         cx = (x1 + x2) // 2
         cy = (y1 + y2) // 2
         tx, ty = tail_point
 
-        # しっぽの付け根の幅
-        tail_width = min(x2 - x1, y2 - y1) // 4
+        # しっぽの付け根の幅（吹き出し短辺の1/3）
+        tail_width = min(w, h) // 3
 
-        # しっぽの方向を計算（付け根を吹き出し内側に食い込ませて隙間を防ぐ）
-        inset = style.outline_width + 4
+        # スーパー楕円のカーブ分を考慮した深いインセット
+        inset = max(w, h) // 6
         if ty > y2:  # 下向き
             base1 = (cx - tail_width // 2, y2 - inset)
             base2 = (cx + tail_width // 2, y2 - inset)
@@ -389,8 +394,10 @@ class BubbleRenderer:
             base2 = (x1 + inset, cy + tail_width // 2)
 
         triangle = [base1, base2, tail_point]
-        # 三角を塗りのみで描画（outlineなし）→ 吹き出し内側まで食い込むので隙間なし
+        # 三角を塗りのみで描画
         draw.polygon(triangle, fill=style.fill_color)
+        # 接合部をfill色で太く塗って隙間を完全に消す
+        draw.line([base1, base2], fill=style.fill_color, width=inset)
         # 接合面以外の2辺だけoutlineを描画
         ow = style.outline_width
         draw.line([base1, tail_point], fill=style.outline_color, width=ow)
@@ -721,12 +728,12 @@ class BubbleRenderer:
         # 1. スタイルを決定
         style = self.get_bubble_style(character, is_tsukkomi, is_monologue, is_thought)
 
-        # 2. 吹き出しの形状を描画
-        self.draw_bubble_shape(draw, position, style, clip_edges=clip_edges)
-
-        # 3. しっぽを描画（指定がある場合）
+        # 2. しっぽを先に描画（吹き出し本体で接合部を覆い隠す）
         if tail_point:
             self.draw_tail(draw, position, tail_point, style)
+
+        # 3. 吹き出しの形状を描画（しっぽの上に重なるので接合部が自然に隠れる）
+        self.draw_bubble_shape(draw, position, style, clip_edges=clip_edges)
 
         # 4. テキストを縦書きで描画（keyword指定があれば赤文字ハイライト）
         self.draw_vertical_text(draw, text, position, font_size=font_size, fill=TEXT_COLOR_PRIMARY, img=img, keyword=keyword)
