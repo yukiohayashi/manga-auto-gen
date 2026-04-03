@@ -342,7 +342,7 @@ TECHNICAL:
     ) -> Image.Image:
         """
         パネルにセリフ（吹き出し）を描画
-        キャラクターの顔を隠さないよう、キャンバスを上に拡張して吹き出しエリアを確保する。
+        吹き出しは画像の上下左右に自由に配置する。
 
         Args:
             img: ベースとなるパネル画像
@@ -350,7 +350,7 @@ TECHNICAL:
             is_final_panel: 4コマ目（オチ）かどうか
         
         Returns:
-            吹き出しが描画された画像（上に拡張済み）
+            吹き出しが描画された画像
         """
         dialogues = panel.get("dialogue", [])
         num_dialogues = len(dialogues)
@@ -360,12 +360,10 @@ TECHNICAL:
         panel_w, panel_h = img.size
         font_size = 36
         margin = 15
-        bubble_gap = 15  # 吹き出し間の隙間
+        bubble_gap = 15
 
         # === 1. 各吹き出しのサイズを計算 ===
-        speech_bubbles = []  # 通常の吹き出し（上部エリアに配置）
-        caption_bubbles = []  # キャプション（画像上に重ねる）
-
+        bubble_infos = []
         for i, dialogue in enumerate(dialogues):
             text = dialogue.get("text", "")
             bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
@@ -375,108 +373,101 @@ TECHNICAL:
                 text_clean = text.replace("「", "").replace("」", "")
                 bw = len(text_clean) * 20 + 40
                 bh = 44
-                caption_bubbles.append({
-                    "dialogue": dialogue, "width": bw, "height": bh,
-                })
             else:
                 _, bw, bh = self.bubble_renderer.calculate_vertical_layout(
                     text, font_size, max_chars_per_col=8
                 )
                 bw = int(bw * 1.2)
                 bh = int(bh * 1.2)
-                speech_bubbles.append({
-                    "dialogue": dialogue, "width": bw, "height": bh,
-                })
 
-        # === 2. 吹き出しエリアの高さを計算 ===
-        if speech_bubbles:
-            # 吹き出しを横に並べるので、最大高さ + マージン
-            max_bubble_h = max(b["height"] for b in speech_bubbles)
-            bubble_area_height = max_bubble_h + margin * 2
+            bubble_infos.append({
+                "dialogue": dialogue,
+                "width": bw,
+                "height": bh,
+                "is_caption": is_caption,
+            })
+
+        # === 2. 吹き出し配置位置を決定 ===
+        # 配置パターン: 上下左右に分散（漫画らしい自然な配置）
+        # positions: (横位置, 縦位置) のペア
+        #   横: "right", "left"
+        #   縦: "top", "bottom"
+        if num_dialogues == 1:
+            positions = [("right", "top")]
+        elif num_dialogues == 2:
+            positions = [("right", "top"), ("left", "bottom")]
+        elif num_dialogues == 3:
+            positions = [("right", "top"), ("left", "bottom"), ("right", "bottom")]
         else:
-            bubble_area_height = 0
+            positions = [("right", "top"), ("left", "bottom"), ("right", "bottom"), ("left", "top")]
 
-        # === 3. キャンバスを上に拡張 ===
-        if bubble_area_height > 0:
-            new_h = panel_h + bubble_area_height
-            expanded = Image.new("RGB", (panel_w, new_h), "#FFFFFF")
-            # 吹き出しエリアの背景を少し薄い色に
-            bubble_bg = Image.new("RGB", (panel_w, bubble_area_height), "#FFFFFF")
-            expanded.paste(bubble_bg, (0, 0))
-            expanded.paste(img, (0, bubble_area_height))
-            img = expanded
-        
         draw = ImageDraw.Draw(img)
 
-        # === 4. 吹き出しを上部エリアに配置 ===
-        if speech_bubbles:
-            # 吹き出しを横に並べる（右から左へ）
-            total_bubble_w = sum(b["width"] for b in speech_bubbles) + bubble_gap * (len(speech_bubbles) - 1)
-            start_x = panel_w - margin - speech_bubbles[0]["width"]  # 右端から開始
-
-            for i, info in enumerate(speech_bubbles):
-                dialogue = info["dialogue"]
-                character = dialogue.get("character", "")
-                text = dialogue.get("text", "")
-                bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
-                keyword = dialogue.get("highlight", dialogue.get("keyword", ""))
-                bw = info["width"]
-                bh = info["height"]
-
-                # 右から左へ配置
-                if i == 0:
-                    x1 = panel_w - margin - bw
-                else:
-                    x1 = panel_w - margin - sum(b["width"] for b in speech_bubbles[:i+1]) - bubble_gap * i
-
-                x1 = max(margin, x1)
-                y1 = margin
-                x2 = x1 + bw
-                y2 = y1 + bh
-
-                # しっぽの位置（吹き出しの下 → 画像エリアに向かう）
-                tail_x = x1 + bw // 2
-                tail_y = y2 + 20
-
-                # 吹き出しタイプの判定
-                is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and i == num_dialogues - 1)
-                is_monologue = bubble_type == "monologue"
-                is_thought = bubble_type == "thought"
-
-                self.bubble_renderer.draw_speech_bubble(
-                    draw=draw,
-                    character=character,
-                    text=text,
-                    position=(x1, y1, x2, y2),
-                    tail_point=(tail_x, tail_y),
-                    is_tsukkomi=is_tsukkomi,
-                    is_monologue=is_monologue,
-                    is_thought=is_thought,
-                    is_caption=False,
-                    keyword=keyword if is_tsukkomi else None,
-                    font_size=font_size
-                )
-
-        # === 5. キャプションは画像エリア内に描画 ===
-        for i, info in enumerate(caption_bubbles):
+        for i, info in enumerate(bubble_infos):
             dialogue = info["dialogue"]
             character = dialogue.get("character", "")
             text = dialogue.get("text", "")
+            bubble_type = dialogue.get("type", dialogue.get("bubble_type", "normal"))
+            keyword = dialogue.get("highlight", dialogue.get("keyword", ""))
             bw = info["width"]
             bh = info["height"]
+            is_caption = info["is_caption"]
 
-            x1 = margin
-            y1 = bubble_area_height + margin + i * (bh + 10)
+            if is_caption:
+                # キャプションはキャラの近くに配置
+                x1 = margin
+                y1 = panel_h // 3
+            else:
+                pos = positions[i % len(positions)]
+                h_pos, v_pos = pos
+
+                # 横位置
+                if h_pos == "right":
+                    x1 = panel_w - bw - margin
+                else:
+                    x1 = margin
+
+                # 縦位置
+                if v_pos == "top":
+                    y1 = margin
+                else:
+                    y1 = panel_h - bh - margin
+
+            # パネル内に収まるように調整
+            x1 = max(margin, min(x1, panel_w - bw - margin))
+            y1 = max(margin, min(y1, panel_h - bh - margin))
             x2 = x1 + bw
             y2 = y1 + bh
+
+            # しっぽの位置（吹き出しの中央付近 → 反対方向へ）
+            if not is_caption:
+                pos = positions[i % len(positions)]
+                _, v_pos = pos
+                tail_x = x1 + bw // 2
+                if v_pos == "top":
+                    tail_y = y2 + 20
+                else:
+                    tail_y = y1 - 20
+            else:
+                tail_x = None
+                tail_y = None
+
+            # 吹き出しタイプの判定
+            is_tsukkomi = bubble_type in ["tsukkomi", "shout"] or (is_final_panel and i == num_dialogues - 1)
+            is_monologue = bubble_type == "monologue"
+            is_thought = bubble_type == "thought"
 
             self.bubble_renderer.draw_speech_bubble(
                 draw=draw,
                 character=character,
                 text=text,
                 position=(x1, y1, x2, y2),
-                tail_point=None,
-                is_caption=True,
+                tail_point=(tail_x, tail_y) if tail_x is not None else None,
+                is_tsukkomi=is_tsukkomi,
+                is_monologue=is_monologue,
+                is_thought=is_thought,
+                is_caption=is_caption,
+                keyword=keyword if is_tsukkomi else None,
                 font_size=font_size
             )
 
