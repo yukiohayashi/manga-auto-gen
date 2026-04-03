@@ -358,7 +358,7 @@ TECHNICAL:
             return img
 
         panel_w, panel_h = img.size
-        font_size = 36
+        font_size = 44
         margin = 15
         bubble_gap = 15
 
@@ -378,7 +378,7 @@ TECHNICAL:
                 # 吹き出しの高さはパネル全体を使う
                 bh = panel_h - margin * 2
                 # 高さに合わせて1列あたりの文字数を逆算
-                char_h = font_size + 10
+                char_h = font_size + 12
                 padding = 30
                 max_chars = max(1, (bh - padding * 2) // char_h)
                 _, bw, _ = self.bubble_renderer.calculate_vertical_layout(

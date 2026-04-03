@@ -374,8 +374,8 @@ class BubbleRenderer:
         Returns:
             (columns, bubble_width, bubble_height)
         """
-        char_h = font_size + 10     # 1文字の縦幅（ゆったり）
-        col_w = font_size + 14      # 1列の横幅（ゆったり）
+        char_h = font_size + 12     # 1文字の縦幅（ゆったり）
+        col_w = font_size + 16      # 1列の横幅（ゆったり）
         padding = 30
         
         # テキストを列に分割（括弧含む）
@@ -418,8 +418,8 @@ class BubbleRenderer:
         x1, y1, x2, y2 = position
         
         padding = 30
-        char_h = font_size + 10
-        col_w = font_size + 14
+        char_h = font_size + 12
+        col_w = font_size + 16
         
         # 利用可能エリア
         available_height = y2 - y1 - padding * 2
