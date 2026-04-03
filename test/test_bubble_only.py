@@ -126,24 +126,26 @@ def test_panel(panel: dict, output_path: str, is_final: bool = False):
         else:
             pos = positions[speech_idx % len(positions)]
             h_pos, v_pos = pos
-            x1 = panel_w - bw - margin if h_pos == "right" else margin
-            y1 = margin if v_pos == "top" else panel_h - bh - margin
+            # ボーダーにスナップ: right/topはボーダー端に配置
+            x1 = panel_w - bw if h_pos == "right" else margin
+            y1 = 0 if v_pos == "top" else panel_h - bh
             speech_idx += 1
 
-        x1 = max(margin, min(x1, panel_w - bw - margin))
-        y1 = max(margin, min(y1, panel_h - bh - margin))
+        x1 = max(0, min(x1, panel_w - bw))
+        y1 = max(0, min(y1, panel_h - bh))
         x2, y2 = x1 + bw, y1 + bh
 
         is_tsukkomi = bt in ["tsukkomi", "shout"] or (is_final and speech_idx == num_speech)
         is_monologue = bt == "monologue"
         is_thought = bt == "thought"
 
-        edge_threshold = margin + 5
+        # ボーダー接触判定
+        border_threshold = BORDER_WIDTH + 2
         clip_edges = set()
-        if y1 <= edge_threshold: clip_edges.add("top")
-        if y2 >= panel_h - edge_threshold: clip_edges.add("bottom")
-        if x2 >= panel_w - edge_threshold: clip_edges.add("right")
-        if x1 <= edge_threshold: clip_edges.add("left")
+        if y1 <= border_threshold: clip_edges.add("top")
+        if y2 >= panel_h - border_threshold: clip_edges.add("bottom")
+        if x2 >= panel_w - border_threshold: clip_edges.add("right")
+        if x1 <= border_threshold: clip_edges.add("left")
 
         tail_x, tail_y = None, None
         if not is_caption:

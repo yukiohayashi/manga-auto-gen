@@ -153,15 +153,27 @@ class BubbleRenderer:
         self, 
         draw: ImageDraw.Draw, 
         bbox: tuple[int, int, int, int],
-        style: BubbleStyle
+        style: BubbleStyle,
+        clip_edges: Optional[set] = None
     ) -> None:
-        """柔らかい多角形を描画 - 男性陣用"""
+        """角丸四角形を描画。clip_edgesに含まれる辺はoutlineを描画しない"""
+        if clip_edges is None:
+            clip_edges = set()
         x1, y1, x2, y2 = bbox
-        
-        # 角丸四角形として描画
         radius = min(x2 - x1, y2 - y1) // 6
-        draw.rounded_rectangle(bbox, radius=radius, fill=style.fill_color, 
-                               outline=style.outline_color, width=style.outline_width)
+        ow = style.outline_width
+
+        # clip_edgesがある場合: bboxを拡張して角丸・outlineをパネル外に押し出す
+        ext = radius + ow + 2
+        ex1 = x1 - ext if "left" in clip_edges else x1
+        ey1 = y1 - ext if "top" in clip_edges else y1
+        ex2 = x2 + ext if "right" in clip_edges else x2
+        ey2 = y2 + ext if "bottom" in clip_edges else y2
+
+        # 拡張bboxで描画（outline含む）→ パネル外にはみ出した部分は見えない
+        draw.rounded_rectangle((ex1, ey1, ex2, ey2), radius=radius,
+                               fill=style.fill_color,
+                               outline=style.outline_color, width=ow)
 
     def draw_oval(
         self, 
@@ -262,9 +274,12 @@ class BubbleRenderer:
             self.draw_explosion(draw, bbox, style, clip_edges=clip_edges)
             return
 
+        if style.shape == BubbleShape.SOFT_POLYGON:
+            self.draw_soft_polygon(draw, bbox, style, clip_edges=clip_edges)
+            return
+
         shape_handlers = {
             BubbleShape.ANGULAR_POLYGON: self.draw_angular_polygon,
-            BubbleShape.SOFT_POLYGON: self.draw_soft_polygon,
             BubbleShape.OVAL: self.draw_oval,
             BubbleShape.CLOUD: self.draw_cloud,
         }

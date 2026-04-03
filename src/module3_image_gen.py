@@ -462,21 +462,15 @@ TECHNICAL:
                 pos = positions[speech_idx % len(positions)]
                 h_pos, v_pos = pos
 
-                if h_pos == "right":
-                    x1 = panel_w - bw - margin
-                else:
-                    x1 = margin
-
-                if v_pos == "top":
-                    y1 = margin
-                else:
-                    y1 = panel_h - bh - margin
+                # ボーダーにスナップ配置
+                x1 = panel_w - bw if h_pos == "right" else margin
+                y1 = 0 if v_pos == "top" else panel_h - bh
 
                 speech_idx += 1
 
             # パネル内に収まるように
-            x1 = max(margin, min(x1, panel_w - bw - margin))
-            y1 = max(margin, min(y1, panel_h - bh - margin))
+            x1 = max(0, min(x1, panel_w - bw))
+            y1 = max(0, min(y1, panel_h - bh))
             x2 = x1 + bw
             y2 = y1 + bh
 
@@ -484,16 +478,16 @@ TECHNICAL:
             is_monologue = bubble_type == "monologue"
             is_thought = bubble_type == "thought"
 
-            # パネル端クリップ判定
-            edge_threshold = margin + 5
+            # ボーダー接触判定（接触辺はoutline省略）
+            border_threshold = 8
             clip_edges = set()
-            if y1 <= edge_threshold:
+            if y1 <= border_threshold:
                 clip_edges.add("top")
-            if y2 >= panel_h - edge_threshold:
+            if y2 >= panel_h - border_threshold:
                 clip_edges.add("bottom")
-            if x2 >= panel_w - edge_threshold:
+            if x2 >= panel_w - border_threshold:
                 clip_edges.add("right")
-            if x1 <= edge_threshold:
+            if x1 <= border_threshold:
                 clip_edges.add("left")
 
             # しっぽ（クリップされていない辺のみ）
