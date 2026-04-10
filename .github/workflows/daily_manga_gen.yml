@@ -1,0 +1,144 @@
+name: Daily 4-Koma Manga Generation
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 毎日 UTC 0:00（JST 9:00）に実行
+  workflow_dispatch:      # 手動実行用入力フォーム
+    inputs:
+      story_title:
+        description: '【必須】漫画のタイトル（Driveのフォルダ名になります）'
+        required: true
+        type: string
+        default: ''
+      theme_prompt:
+        description: '【必須】本日のテーマやシナリオ指示（例：マッチングアプリで重い男、等）'
+        required: true
+        type: string
+        default: ''
+      twist_pattern:
+        description: '【任意】どんでん返しパターンの指定'
+        required: false
+        type: choice
+        options:
+          - おまかせ（自動選択）
+          - ドラキュラ2世 (D→D'継承)
+          - ドラキュラの影 (D→D'誤認)
+          - ドラウルフ (D→W)
+          - ドラフランケン (D→F)
+          - ウルフドラキュラ (W→D)
+          - ウルフフランケン (W→F)
+          - フランケンドラキュラ (F→D)
+          - フランケンウルフ (F→W)
+          - ゾンビ (∅→○)
+          - ドラゴンの卵 (遠→近)
+      scenario_detail:
+        description: '【任意】詳細シナリオ（4コマの起承転結を直接指定する場合）'
+        required: false
+        type: string
+        default: ''
+
+env:
+  PYTHON_VERSION: '3.13'
+  DRIVE_PARENT_FOLDER_ID: '1InxhF6u1ToFBTsnfMeJ1xIW3ibNynUq_'
+
+jobs:
+  generate-manga:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate episode folder name
+        id: episode
+        run: |
+          EPISODE_DATE=$(date +%Y%m%d)
+          # 手動実行時はタイトルをフォルダ名に使用、自動実行時は日付
+          if [ -n "${{ github.event.inputs.story_title }}" ]; then
+            STORY_NAME="${{ github.event.inputs.story_title }}"
+            # フォルダ名に使えない文字を置換
+            SAFE_NAME=$(echo "$STORY_NAME" | sed 's/[\/\\:*?"<>|]/_/g')
+            echo "name=$SAFE_NAME" >> $GITHUB_OUTPUT
+            echo "folder=episodes/$SAFE_NAME" >> $GITHUB_OUTPUT
+          else
+            echo "name=$EPISODE_DATE" >> $GITHUB_OUTPUT
+            echo "folder=episodes/$EPISODE_DATE" >> $GITHUB_OUTPUT
+          fi
+          echo "date=$EPISODE_DATE" >> $GITHUB_OUTPUT
+
+      - name: Create episode directory
+        run: mkdir -p ${{ steps.episode.outputs.folder }}
+
+      # モジュール1：シナリオ・プロット生成
+      - name: Module 1 - Generate Scenario
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          STORY_TITLE: ${{ github.event.inputs.story_title || steps.episode.outputs.name }}
+          THEME_PROMPT: ${{ github.event.inputs.theme_prompt || '' }}
+          TWIST_PATTERN: ${{ github.event.inputs.twist_pattern || 'おまかせ（自動選択）' }}
+          SCENARIO_DETAIL: ${{ github.event.inputs.scenario_detail || '' }}
+        run: |
+          python src/module1_scenario_gen.py \
+            --config config/PlotTwist_plain.txt \
+            --output ${{ steps.episode.outputs.folder }}/scenario.json \
+            --title "$STORY_TITLE" \
+            --theme "$THEME_PROMPT" \
+            --pattern "$TWIST_PATTERN" \
+            --detail "$SCENARIO_DETAIL"
+
+      # モジュール2：プリフライト検証
+      - name: Module 2 - Preflight Check
+        run: |
+          python src/module2_preflight_check.py \
+            --scenario ${{ steps.episode.outputs.folder }}/scenario.json \
+            --spec config/manga_spec.yml \
+            --output ${{ steps.episode.outputs.folder }}/validated_scenario.json
+
+      # モジュール3：画像生成
+      - name: Module 3 - Generate Images
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python src/module3_image_gen.py \
+            --scenario ${{ steps.episode.outputs.folder }}/validated_scenario.json \
+            --spec config/manga_spec.yml \
+            --characters characters \
+            --output ${{ steps.episode.outputs.folder }}
+
+      # モジュール4：Google Drive同期
+      - name: Module 4 - Sync to Google Drive
+        env:
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          DRIVE_PARENT_FOLDER_ID: ${{ env.DRIVE_PARENT_FOLDER_ID }}
+        run: |
+          python src/module4_drive_sync.py \
+            --source ${{ steps.episode.outputs.folder }} \
+            --parent-folder-id ${{ env.DRIVE_PARENT_FOLDER_ID }} \
+            --episode-name "${{ steps.episode.outputs.name }}"
+
+      # モジュール5：Instagram投稿文生成
+      - name: Module 5 - Generate SNS Caption
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python src/module5_sns_publisher.py \
+            --scenario ${{ steps.episode.outputs.folder }}/validated_scenario.json \
+            --strategy docs/SYSTEM_GUIDE.md \
+            --output ${{ steps.episode.outputs.folder }}/instagram_caption.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: manga-${{ steps.episode.outputs.date }}
+          path: ${{ steps.episode.outputs.folder }}
+          retention-days: 30
