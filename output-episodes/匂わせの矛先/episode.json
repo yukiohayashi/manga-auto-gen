@@ -1,0 +1,131 @@
+{
+  "title": "匂わせの矛先",
+  "theme": "恋愛の匂わせかと思いきや、実は別の目的のためのロックオンだったというホラー寄りのどんでん返し",
+  "twist_pattern": "サイコパス編",
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "description": "はなとまさとが居酒屋で飲んでいる。はなはニコニコ笑顔でまさとを見つめている。まさとは少しドキドキしている様子。",
+      "background": "居酒屋のテーブル席、暖かい照明",
+      "effects": [
+        "キラキラ"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "まさと君って、本当に頼りになるよね！",
+          "bubble_position": "left",
+          "highlight": "頼り"
+        },
+        {
+          "type": "thought",
+          "character": "まさと",
+          "text": "おっ、これは脈アリか",
+          "bubble_position": "right",
+          "highlight": "脈アリ"
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "description": "はなが少し身を乗り出してまさとに近づく。まさとは褒められて嬉しそうにしている。",
+      "background": "居酒屋（同じ席）",
+      "effects": [
+        "デレデレ"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "まさと君の『断れない性格』\nすごく好きかも",
+          "bubble_position": "left",
+          "highlight": "好き"
+        },
+        {
+          "type": "thought",
+          "character": "まさと",
+          "text": "『好き』って言った！？\nしかも俺の性格わかってる？",
+          "bubble_position": "right",
+          "highlight": ""
+        }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "description": "はなが上目遣いでまさとの手を軽く握る。まさとは完全に舞い上がっている。",
+      "background": "居酒屋（同じ席）",
+      "effects": [
+        "ドキドキ",
+        "キュン"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "ねえ、もし私が『一生のお願い』って言ったら、聞いてくれる…？",
+          "bubble_position": "right",
+          "highlight": "一生のお願い"
+        },
+        {
+          "type": "normal",
+          "character": "まさと",
+          "text": "も、もちろん！",
+          "bubble_position": "left",
+          "highlight": ""
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "description": "はながとても笑顔で、カバンから分厚い書類（婚姻届の書類）を取り出す。まさとは青ざめて震えている。",
+      "background": "居酒屋（同じ席）",
+      "effects": [
+        "衝撃",
+        "青ざめ",
+        "震え"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "名前と実印だけ書いてね\n住所は書いたから",
+          "bubble_position": "right",
+          "highlight": "実印"
+        },
+        {
+          "type": "thought",
+          "character": "まさと",
+          "text": "住所、なぜ知ってる？",
+          "bubble_position": "left",
+          "highlight": ""
+        },
+        {
+          "type": "effect_text",
+          "character": "ナレーション",
+          "text": "ウキウキ"
+        }
+      ]
+    }
+  ]
+}

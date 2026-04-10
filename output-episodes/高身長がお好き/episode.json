@@ -1,0 +1,124 @@
+{
+  "title": "高身長がお好き",
+  "theme": "マッチングアプリで「高身長」をアピールしていた男の罠",
+  "twist_pattern": "ドラフランケン (D→F)",
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": [
+        "はな",
+        "ようた"
+      ],
+      "description": "リビング。はながソファに座ってスマホを見ながらウキウキしている。ようたが横から覗き込んでいる。はなは嬉しそうな表情、ようたは怪訝な表情。",
+      "background": "モダンなリビングルーム、暖色系の照明",
+      "effects": [
+        "キラキラ",
+        "ワクワク"
+      ],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "見てよこれ！\n身長180cmの塩顔",
+          "bubble_position": "right",
+          "highlight": "180cm"
+        },
+        {
+          "type": "normal",
+          "character": "ようた",
+          "text": "なんでプロフ写真が\n「引き」のアングル？しかも帽子？",
+          "bubble_position": "left",
+          "highlight": ""
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": [
+        "ようた",
+        "はな"
+      ],
+      "description": "ようたはセリフだけで生成しない。はなは聞く耳を持たず手を振って拒否するポーズ（真ん中）。",
+      "background": "同じリビングルーム",
+      "effects": [],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "ようた",
+          "text": "姉ちゃん、野球でも『ホームラン王』が強風でゲタ履いてることもあるんだから。",
+           "bubble_position": "left",
+              "highlight": "ゲタ履いてる"
+        },
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "あんたの野球フィルターはいいの！私は高身長に包まれたいの！",
+       "bubble_position": "right",
+         "highlight": "高身長"
+       }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": [
+        "はな"
+      ],
+      "description": "待ち合わせ場所のカフェ前。はなが遠くに背の高い男性の後ろ姿を見つけて、期待に目を輝かせている。男性の後ろ姿だけが見える（頭は枠の外で見えない）。",
+      "background": "おしゃれなカフェの前、昼の街並み",
+      "effects": [
+        "キラキラ",
+        "ドキドキ"
+      ],
+      "dialogue": [
+        {
+          "type": "thought",
+          "character": "はな",
+          "text": "あっ、絶対彼だ！\n背が高っか！声かけてみよ"
+        },
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "あの〜マッチングアプリの、"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": [
+        "はな"
+      ],
+"description": "マッチング相手の男が振り向く。男は異常な高さの厚底ブーツを履いており、さらに巨大なポンパドールヘア（リーゼント）で頭頂部を無理やり高くして身長180cmを偽装している。男の実際の『顔』の位置ははなより低い位置にある。強風が吹いてリーセントが逆立っている。はなは左側で白目を剥いて硬直している。",  
+   "background": "カフェの前、昼の街並み",
+      "effects": [
+        "衝撃",
+        "白目",
+        "硬直"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "マッチング相手",
+          "text": "今日は『強風』のおかげで\n180cmをキープできてます！",
+          "highlight": "強風",
+        "bubble_position": "right"
+       },
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "陸上競技の追い風\n参考記録かよ！！",
+        "bubble_position": "left",
+             "highlight": "追い風"
+        },
+        {
+          "type": "effect_text",
+          "character": "はな",
+          "text": "ガビーン！！"
+        }
+      ]
+    }
+  ]
+}

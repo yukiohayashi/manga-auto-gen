@@ -1,0 +1,109 @@
+{
+  "title": "彼はサイコパス？",
+  "plot_twist_type": "ドラウルフ（D→W）",
+  "plot_twist_description": "外部の敵（サイコパス彼氏）を追っていたら、実は別の内面的問題（中二病）だった",
+  "character_outfits": {
+    "はな": "white and blue horizontal striped T-shirt, light blue jeans, long straight brown hair",
+    "さき": "SHORT BOB HAIRCUT (chin-length, NOT long hair), FOREHEAD VISIBLE (no bangs, hair parted to side), pink/salmon cardigan over white top, brown chino pants",
+    "なおみ": "ROUND GLASSES (MUST wear round glasses), LONG WAVY BROWN HAIR (shoulder-length or longer), white collared blouse, navy blue skirt"
+  },
+  "panels": [
+    {
+      "number": 1,
+      "name": "起",
+      "description": "女性3人が深刻な顔で彼氏の怪しい行動を語る。カフェでの女子会シーン。後ろにうっすらと男の影が3人を大きくつるむようにいる。",
+      "characters": ["はな", "さき","なおみ"],
+      "background": "おしゃれなカフェの内装、テーブルにコーヒーカップ",
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "私のカレ…サイコパスの傾向あるかも",
+          "bubble_position": "right",
+          "highlight": "サイコパス"
+        },
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "平気な顔で\n嘘をつくし",
+          "bubble_position": "left",
+          "highlight": "嘘"
+        }
+      ],
+      "effects": []
+    },
+    {
+      "number": 2,
+      "name": "承",
+      "description": "女性3人のうち、友人Bも同調し、自分の彼氏の怪しい行動を挙げる。共感の表情。",
+    "characters": ["はな", "さき","なおみ"],
+      "background": "同じカフェ、さきのアップ、右側になおみの後ろ姿",
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "さき",
+          "text": "それを言うなら\n私のカレも！",
+          "bubble_position": "right",
+          "highlight": ""
+        },
+        {
+          "type": "normal",
+          "character": "さき",
+          "text": "友だちにまでしれっと\n学歴詐称してたんだよ！",
+          "bubble_position": "left",
+          "highlight": "学歴詐称"
+        }
+      ],
+      "effects": []
+    },
+    {
+      "number": 3,
+      "name": "転",
+      "description": "なおみが控えめに自分の彼氏の異常な行動を告白。包帯、帰る場所がない発言など。",
+   "characters": ["はな", "さき","なおみ"],
+      "background": "SAME cafe interior as panel 1 and 2 (wooden furniture, plants, warm lighting), なおみが少し困った表情",
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "なおみ",
+          "text": "あ…じゃあ私の彼もそうなのかな…",
+          "bubble_position": "right",
+          "highlight": ""
+        },
+        {
+          "type": "normal",
+          "character": "なおみ",
+          "text": "ケガしてないのに\n左腕に包帯巻いてるし",
+          "bubble_position": "left",
+          "highlight": "包帯"
+        }
+      ],
+      "effects": []
+    },
+    {
+      "number": 4,
+      "name": "結",
+      "description": "なおみが彼氏の決定的な発言を暴露。はなとさきが冷静にツッコミを入れる。",
+      "characters": ["はな", "さき", "なおみ"],
+      "background": "SAME cafe interior as panel 1 and 2 (wooden furniture, plants, warm lighting),3人の引きの構図でみんなドン引きの表情をしている",
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "なおみ",
+          "text": "急に『俺は魔族の生まれ変わりだ』\nとか言い出したり…",
+          "bubble_position": "right",
+          "highlight": "魔族の生まれ変わり"
+        },
+        {
+          "type": "shout",
+          "character": "さき",
+          "text": "それサイコパスでなく\n別の病気だわ",
+          "bubble_position": "left",
+          "highlight": "別の病気"
+        }
+      ],
+      "effects": ["ツッコミ"]
+    }
+  ],
+  "instagram_hook": "彼氏がサイコパスかも…って思ったことある？でも本当の診断結果は予想外だった😂"
+}

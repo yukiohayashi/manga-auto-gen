@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "sound-inn-432007-s0",
+  "private_key_id": "39e20e4b3f3c982228e121686af65191bc8dce2c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDApLS/1nZg4rPp\nsBAw9QgkuTRg/4/T/tfbplB9XYmqGGVyquKd3Sv0p1eAkvAgWDVUVcEUs20n8Q51\ngWxpXtOtxXvSoDUJSpJ0SHBJTPvAQ0NrHwujA6S6INTxjpZChCv0Las/0rgNdfKc\nIfiUPLTq6lYi7XnE9+SREEgpGu6Ht43BQtO38S+QUKqoQq8RF5I2g64wXcDqN0WL\nq9gOU4n4Gb2KM/eHjHWCkx9OhxNGvtSyXN2r1t41UaN1RlUeJCedt60oUwY9X8mU\nUB3hWj+53QJ5rmGydx70/5l3tTMsIU0/WttJnvXXtZlY+4TZpUvbAzQWYgYPkWwI\ntBV9g1UjAgMBAAECggEAE0+PZNmRNUYUZd0FynqNjezY0M5dcxFNPxHtaJu7RIc8\niCGUJOH6WYR604MnOf7Nnb4Y5EPWMdZKrkHChc+BJZ6xulvf5SYKB0kJpHdolw3H\nENJkXrtrRFMtNWenLVTFeS0oyPWNCKBlqPwIyIdLVW8XIlouxi1ZRqdcrG4sMgNp\n7gL0t/GSDEs1MqoPJVeC9dpFKTmjJkzMkpcJVv4LABV+vvM/RVMej3j4oZtgsIxy\nl+15S6EUCFaNRASdbS8HfEK4pP0VTPkOhMVsnN2JyP67AjXrKZP30tEnUcut1KqJ\nxiLoun1uMjn+hi7phX2zq50B67YI2Yh8gNyZAZi++QKBgQD+VyqNGsxE4Te9Tmxr\nwq4urp/Z/iecJmdvEBCg3plpbw1V1TMQSihZua67IDhSBySq7xSJpHBRt1VOv63n\nMmkIFzqDkhm3xAa5HB70EGx5yhRMXzPIpl8fJxpFWoBY0RtlD340hov0fz+BxGKN\nRakP9+VWlLRkLX2F8pF07Hr9ywKBgQDB5nwpRl7rvcw9EJss51DYwHFmIZ53OTlt\nLR7fHiM5VWCLJol1N33e7sSM6zlUltOdqIxCmzEFHuaLNA0VBfVGtz/Po/16vUtK\nHBzsjBYFbwOIiF8Sab+GvTznW0NTGpM/ADJs1w8A+CAFiAhoUO6ltjz12l7+Hh0/\n6d0dD8QbCQKBgQD7qKfzwoZHyUjryUNCRPkwO5zzh6UNvnotzImHg3nsdvOM8E18\nWsQeM7oOcc0IbQT9FV8O6mQwluST7NlXn+uJE+LT+KX1zMKSOp7uA6oxv5/iCXkl\nmmkYXAqEgQ3p0831ayUHN/IXVCk0b2rMOhcUM8b6qlzrmo9PEDqYpLz1jQKBgQCN\n4Ci/RrdThOe5UrpIK+UTBBS1Zyn9EIj9YoNxPCsH23mtt3/inbzi7xAwEDk9tLKY\nbGhcoBNJLOgBuQ9Nb7Odj54IP3TMZ098pX9gccv3I9iRAT+XSHsUisjSfAuR9iMB\neRJsYxueWO+NPJDySy2jYOnP9n2FMOG0D1lz10JliQKBgC0W7TGcwLZQef1X+Fxl\nQm1BdDQQxMB7SRkSt5+R5RvkWrMcHux468NDdF0LnoBOo9r/GrRLgHr1iXk9qibu\nJguUe+2IuTjR3BDUxWlYT/vY5TC4Q5fiipMljKZRg1rJCRoDZnf2om20YJD0+5tK\nBTk8IyTTV023OSfUF3BUyOzz\n-----END PRIVATE KEY-----\n",
+  "client_email": "manga-auto-gen-drive-sync@sound-inn-432007-s0.iam.gserviceaccount.com",
+  "client_id": "104062245780503089101",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/manga-auto-gen-drive-sync%40sound-inn-432007-s0.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
