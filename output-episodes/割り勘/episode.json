@@ -1,0 +1,125 @@
+{
+  "title": "割り勘",
+  "plot_twist_type": "ドラウルフ（D→W）",
+  "plot_twist_description": "割り勘にケチをつけていたら、実は自分の感謝の気持ちが足りなかった",
+  "character_outfits": {
+    "さき": "SHORT BOB HAIRCUT (chin-length, NOT long hair), FOREHEAD VISIBLE (no bangs, hair parted to side), pink/salmon cardigan over white top, brown chino pants",
+    "まさと": "black hair, casual checkered shirt, dark jeans",
+    "はな": "white and blue horizontal striped T-shirt, light blue jeans, long straight brown hair"
+  },
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": [
+        "まさと"
+      ],
+      "description": "レストラン。まさとがはなに笑顔で話しかけている。テーブルにはもうメインを食べ終えて、食後のコーヒーが置かれている。相手の女性は画面外。",
+      "background": "おしゃれなレストラン、暖色系の照明",
+      "effects": [],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "まさと",
+          "text": "初めての食事だし\n割り勘でいい？",
+          "bubble_position": "right",
+          "highlight": "割り勘"
+        },
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "4000円くらいだよね",
+          "bubble_position": "left",
+          "highlight": ""
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": [
+        "はな"
+      ],
+      "description": "はなが笑顔で応じているが、心の中では複雑な表情。テーブルにはコーヒーが置いてあり、財布を出している様子。",
+      "background": "同じレストラン",
+      "effects": ["ドキッ"],
+      "dialogue": [
+        {
+          "type": "thought",
+          "character": "はな",
+          "text": "まあ今どきの人だから\n割り勘も仕方ないよね",
+          "bubble_position": "center",
+          "highlight": ""
+        }
+    
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": [],
+      "description": "レストランのレジスターのクローズアップ。デジタル表示に「8,002円」という金額が大きく表示されている。背景はぼかし。",
+      "background": "レストランのレジカウンター、ぼかし背景",
+      "effects": [
+        "バクバク"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "まさと",
+          "text": "じゃあ、4001円で",
+          "bubble_position": "right",
+          "highlight": "4001円"
+        },
+        {
+          "type": "thought",
+          "character": "はな",
+          "text": "1円単位まで\n割り勘かよ...",
+          "bubble_position": "left",
+          "highlight": "1円単位"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": [
+        "さき",
+        "はな"
+      ],
+      "description": "はなの自宅のリビング。はなが右で怒った表情でさきに愚痴を言っている。さきは左で冷静な表情で指摘している。",
+      "background": "はなの自宅のリビングで窓から光が差し込む",
+      "effects": [
+        "ギクッ"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "1円単位まで\n割り勘なんて\nありえない！",
+          "bubble_position": "right-bottom",
+          "highlight": "1円単位"
+        },
+        {
+          "type": "normal",
+          "character": "さき",
+          "text": "あんたも\n1円単位で\n請求するじゃん",
+          "bubble_position": "left-top",
+          "highlight": "1,234円"
+        }
+      ],
+      "inset_cuts": [
+        {
+          "position": "bottom_left",
+          "shape": "diagonal_triangle",
+          "size": "small",
+          "character": "はな",
+          "expression": "ばつが悪い",
+          "description": "はなのばつの悪そうな顔のクローズアップ",
+          "text": "あっ...",
+          "text_position": "near_face"
+        }
+      ]
+    }
+  ]
+}
