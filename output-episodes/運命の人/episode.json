@@ -1,0 +1,101 @@
+{
+  "title": "運命の人",
+  "theme": "マッチングアプリで運命の人を待つはなが、実は弟が宇宙人コスプレしてた",
+  "twist_pattern": "ウルフドラキュラ (W→D)",
+  "plot_twist_type": "ウルフドラキュラ（W→D）",
+  "plot_twist_description": "自分の内面を責めていたら、実は外部（弟の宇宙人コスプレ）が原因だった",
+  "character_outfits": {
+    "はな": "長いストレートの茶髪、ホワイトとブルーの広めの横縞Tシャツ、ライトブルージーンズ、シンプルなスニーカー",
+    "ようた": "黒髪、カジュアルなTシャツ、デニムパンツ、手作りの宇宙人ヘルメット（段ボール製、銀色ペンキ塗り、割り箸アンテナ付き）"
+  },
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": [
+        "はな"
+      ],
+      "description": "夜のベランダ。中央にはなが星空を眺めながら憂い顔で立っている。星々がキラキラと瞬いている。",
+      "background": "夜のベランダ、美しい星空",
+      "effects": [
+        "キラキラ",
+        "星々"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "私の電磁波が嫌われてる…\nだから運命の人が見つからない",
+          "bubble_position": "center",
+          "highlight": "電磁波"
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": [
+        "はな"
+      ],
+      "description": "はなの部屋、鏡の前。中央にはなが頭にアルミホイルをぐるぐる巻きにして、真剣な顔で鏡を見ている。",
+      "background": "はなの部屋、鏡の前",
+      "effects": [
+        "ピカピカ",
+        "アルミホイル"
+      ],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "もっと強い電磁波を出さなきゃ\n運命の人を呼べるはず！",
+          "bubble_position": "center",
+          "highlight": "電磁波"
+        }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": [
+        "はな",
+        "ようた"
+      ],
+      "description": "夕暮れ時。公園でアルミホイル帽子をかぶったままのはなが突然驚いた表情で後ろを振り返る。宇宙人マスク（ロボットよりももっと宇宙人っぽい未来的なデザイン）をかぶったようたが急にはなの前に現れている。マスクから不気味な光が漏れている。",
+      "background": "公園、夕暮れ時",
+      "effects": [
+        "マスクの光"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "ようた",
+          "text": "アナタ・ウンメイの人？\n理想が高すぎるカモネ",
+          "bubble_position": "right",
+          "highlight": "理想が高すぎ"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": [
+        "はな",
+        "ようた"
+      ],
+      "description": "同じ夕暮れ時。アルミホイル帽子をかぶったままのはなが怒り心頭で左からようたの宇宙人マスクを手で叩き、マスクが下に落ちて、ようたの顔が真っ赤な表情で見えてしまっている。",
+       "background": "公園、夜",
+      "effects": [
+        "姉想いの弟"
+      ],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "気が強いのはよけいじゃあ\n早う、彼氏を出さんかい！",
+          "bubble_position": "left",
+          "highlight": "彼氏"
+        }
+      ]
+    }
+  ]
+}

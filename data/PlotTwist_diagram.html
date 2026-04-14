@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>どんでん返し 10タイプ 構造図解</title>
+
+<style>
+  :root {
+    --bg: #1a1a2e;
+    --drac: #c0392b;
+    --drac-light: #e74c3c;
+    --wolf: #8e44ad;
+    --wolf-light: #9b59b6;
+    --frank: #27ae60;
+    --frank-light: #2ecc71;
+    --dragon-egg: #e67e22;
+    --zombie: #16a085;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: #fff;
+    font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  h1 {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+    color: #f0f0f0;
+    letter-spacing: 0.05em;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 24px;
+  }
+  .section-title {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ccc;
+    margin-bottom: 12px;
+    padding-left: 4px;
+    border-left: 4px solid #555;
+  }
+
+  /* ===== 怪物3分類カード ===== */
+  .enemy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .enemy-card {
+    border-radius: 12px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .enemy-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+  .enemy-card .badge {
+    display: inline-block;
+    font-size: 1.6rem;
+    font-weight: 900;
+    width: 44px; height: 44px;
+    line-height: 44px;
+    text-align: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    margin-bottom: 10px;
+  }
+  .enemy-card h3 { font-size: 1rem; margin-bottom: 6px; }
+  .enemy-card p { font-size: 0.78rem; opacity: 0.85; line-height: 1.6; }
+  .enemy-card .tag { font-size: 0.7rem; opacity: 0.65; margin-top: 8px; font-style: italic; }
+  .drac-card { background: linear-gradient(135deg, var(--drac), #922b21); border: 2px solid var(--drac-light); }
+  .wolf-card { background: linear-gradient(135deg, var(--wolf), #6c3483); border: 2px solid var(--wolf-light); }
+  .frank-card { background: linear-gradient(135deg, var(--frank), #1e8449); border: 2px solid var(--frank-light); }
+
+  /* ===== マトリクス共通 ===== */
+  .matrix-wrap {
+    margin-bottom: 8px;
+    overflow-x: auto;
+  }
+  .matrix-header-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-left: 130px;
+  }
+  .matrix-col-label {
+    flex: 1;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: bold;
+    padding: 6px 4px;
+    border-radius: 6px;
+    margin: 0 4px;
+  }
+  .matrix-row {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 6px;
+    min-height: 72px;
+  }
+  .matrix-row-label {
+    width: 122px;
+    min-width: 122px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px;
+    margin-right: 8px;
+  }
+  .matrix-cell {
+    flex: 1;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 10px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+    min-height: 68px;
+  }
+  .matrix-cell:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(0,0,0,0.6); z-index: 2; }
+  .matrix-cell .type-name { font-size: 0.88rem; font-weight: bold; }
+  .matrix-cell .type-desc { font-size: 0.65rem; opacity: 0.8; margin-top: 4px; line-height: 1.4; }
+  .none-cell {
+    flex: 1;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 10px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #444;
+    min-height: 68px;
+  }
+  .none-cell span { font-size: 0.7rem; color: #555; }
+
+  /* D→D 2パターン入りセル */
+  .dd-cell {
+    flex: 1;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 7px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-height: 68px;
+    background: rgba(192,57,43,0.3);
+    border: 1.5px solid rgba(231,76,60,0.5);
+  }
+  .dd-sub {
+    border-radius: 7px;
+    padding: 6px 8px;
+    background: rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+    text-align: center;
+    flex: 1;
+  }
+  .dd-sub:hover { background: rgba(231,76,60,0.45); transform: scale(1.02); }
+  .dd-sub .sub-label { font-size: 0.58rem; opacity: 0.7; margin-bottom: 2px; }
+  .dd-sub .sub-name { font-size: 0.82rem; font-weight: bold; }
+  .dd-sub .sub-desc { font-size: 0.6rem; opacity: 0.8; margin-top: 2px; line-height: 1.3; }
+
+  /* ===== 存在の転換セクション ===== */
+  .existence-wrap {
+    margin-top: 28px;
+    margin-bottom: 8px;
+  }
+  .existence-note {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-bottom: 10px;
+  }
+  .existence-row {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 6px;
+    min-height: 72px;
+  }
+  .existence-row-label {
+    width: 122px;
+    min-width: 122px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px;
+    margin-right: 8px;
+  }
+  .existence-cell {
+    flex: 1;
+    border-radius: 10px;
+    margin: 0 4px;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+    min-height: 68px;
+  }
+  .existence-cell:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(0,0,0,0.6); z-index: 2; }
+  .existence-cell .type-name { font-size: 0.88rem; font-weight: bold; }
+  .existence-cell .type-desc { font-size: 0.65rem; opacity: 0.8; margin-top: 4px; line-height: 1.4; }
+
+  /* ===== 凡例 ===== */
+  .legend {
+    font-size: 0.72rem;
+    color: #888;
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    line-height: 1.8;
+  }
+
+  /* ===== モーダル ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: #0f3460;
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 540px;
+    width: 92%;
+    position: relative;
+    border: 1px solid #334;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 18px;
+    background: none; border: none; color: #aaa;
+    font-size: 1.4rem; cursor: pointer;
+  }
+  .modal h2 { font-size: 1.1rem; margin-bottom: 6px; }
+  .modal .origin { font-size: 0.75rem; color: #adf; font-style: italic; margin-bottom: 14px; }
+  .modal .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .modal .panel-item {
+    background: rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+  .modal .panel-item strong { display: block; margin-bottom: 4px; font-size: 0.8rem; color: #ffd; }
+
+  @media (max-width: 600px) {
+    .enemy-grid { grid-template-columns: 1fr; }
+    .matrix-header-row { padding-left: 90px; }
+    .matrix-row-label, .existence-row-label { width: 82px; min-width: 82px; font-size: 0.68rem; }
+    .matrix-cell .type-name, .existence-cell .type-name { font-size: 0.78rem; }
+    .dd-sub .sub-name { font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>どんでん返し 10タイプ 構造図解</h1>
+<p class="subtitle">クリックで各タイプの詳細と4コマ構造を確認できます</p>
+
+<!-- 怪物の3分類 -->
+<div class="section-title">怪物の3分類（どんでん返しの基本構造）</div>
+<div class="enemy-grid">
+  <div class="enemy-card drac-card" onclick="openModal('drac')">
+    <div class="badge">D</div>
+    <h3>ドラキュラ（外部の恐怖）</h3>
+    <p>主人公の外部に存在する敵。主人公の意思とは無関係に世の中に存在している。勝てばスカッとする王道型。</p>
+    <div class="tag">例）ライバル、悪役、社会の理不尽、アプリの仕様</div>
+  </div>
+  <div class="enemy-card wolf-card" onclick="openModal('wolf')">
+    <div class="badge">W</div>
+    <h3>ウルフ（内部の恐怖）</h3>
+    <p>主人公の中に潜む敵。コントロールできない自分自身の無意識・性格・衝動。精神的な別人格で、生活はカモフラージュ。</p>
+    <div class="tag">例）衝動、二重人格、自分の性格・思い込み</div>
+  </div>
+  <div class="enemy-card frank-card" onclick="openModal('frank')">
+    <div class="badge">F</div>
+    <h3>フランケン（自分が生み出した恐怖）</h3>
+    <p>主人公が意識的に犯した行動・選択が原因で生まれた敵。因果応報の象徴。フランケンの目的は復讐。</p>
+    <div class="tag">例）過去の行動ミス、隠した秘密が招いた復讐</div>
+  </div>
+</div>
+
+<!-- 正体の転換マトリクス -->
+<div class="section-title">正体の転換マトリクス（敵は誰か・何かの誤認）</div>
+<div style="font-size:0.75rem;color:#aaa;margin-bottom:10px;">
+  縦軸：主人公の<strong style="color:#f39c12">思い込み（起点）</strong>　→　横軸：実際の<strong style="color:#3498db">正体（どんでん返し先）</strong>
+</div>
+<div class="matrix-wrap">
+  <!-- ヘッダー -->
+  <div class="matrix-header-row">
+    <div class="matrix-col-label" style="background:rgba(192,57,43,0.25);color:#e74c3c;">[D] ドラキュラ<br><small>外部の敵</small></div>
+    <div class="matrix-col-label" style="background:rgba(142,68,173,0.25);color:#9b59b6;">[W] ウルフ<br><small>内部の敵</small></div>
+    <div class="matrix-col-label" style="background:rgba(39,174,96,0.25);color:#2ecc71;">[F] フランケン<br><small>自分の行動</small></div>
+  </div>
+
+  <!-- 行1: ドラキュラ起点 -->
+  <div class="matrix-row">
+    <div class="matrix-row-label" style="background:rgba(192,57,43,0.3);border:1px solid var(--drac);">[D]<br>ドラキュラ<br>外部の敵</div>
+
+    <!-- D→D'：2パターン -->
+    <div class="dd-cell">
+      <div class="dd-sub" onclick="openModal('t_drac2')">
+        <div class="sub-label">D→D'（継承）</div>
+        <div class="sub-name">ドラキュラ2世</div>
+        <div class="sub-desc">倒したら次の世代が来た</div>
+      </div>
+      <div class="dd-sub" onclick="openModal('t_shadow')">
+        <div class="sub-label">D→D'（誤認）</div>
+        <div class="sub-name">ドラキュラの影</div>
+        <div class="sub-desc">追った相手は影で本体は別にいた</div>
+      </div>
+    </div>
+
+    <div class="matrix-cell" style="background:rgba(142,68,173,0.6);" onclick="openModal('t_dw')">
+      <div class="type-name">ドラウルフ</div>
+      <div class="type-desc">D→W<br>実は自分の内面だった</div>
+    </div>
+    <div class="matrix-cell" style="background:rgba(26,188,156,0.6);" onclick="openModal('t_df')">
+      <div class="type-name">ドラフランケン</div>
+      <div class="type-desc">D→F<br>実は自分の行動が原因</div>
+    </div>
+  </div>
+
+  <!-- 行2: ウルフ起点 -->
+  <div class="matrix-row">
+    <div class="matrix-row-label" style="background:rgba(142,68,173,0.3);border:1px solid var(--wolf);">[W]<br>ウルフ<br>内部の敵</div>
+    <div class="matrix-cell" style="background:rgba(231,76,60,0.6);" onclick="openModal('t_wd')">
+      <div class="type-name">ウルフドラキュラ</div>
+      <div class="type-desc">W→D<br>実は外部の敵だった</div>
+    </div>
+    <div class="none-cell"><span>W→W<br>該当なし</span></div>
+    <div class="matrix-cell" style="background:rgba(46,204,113,0.6);" onclick="openModal('t_wf')">
+      <div class="type-name">ウルフフランケン</div>
+      <div class="type-desc">W→F<br>実は自分の行動が原因</div>
+    </div>
+  </div>
+
+  <!-- 行3: フランケン起点 -->
+  <div class="matrix-row">
+    <div class="matrix-row-label" style="background:rgba(39,174,96,0.3);border:1px solid var(--frank);">[F]<br>フランケン<br>自分の行動</div>
+    <div class="matrix-cell" style="background:rgba(231,76,60,0.6);" onclick="openModal('t_fd')">
+      <div class="type-name">フランケンドラキュラ</div>
+      <div class="type-desc">F→D<br>実は外部の敵だった</div>
+    </div>
+    <div class="matrix-cell" style="background:rgba(142,68,173,0.6);" onclick="openModal('t_fw')">
+      <div class="type-name">フランケンウルフ</div>
+      <div class="type-desc">F→W<br>実は幻（思い込み）だった</div>
+    </div>
+    <div class="none-cell"><span>F→F<br>該当なし</span></div>
+  </div>
+</div>
+
+<!-- 存在の転換セクション -->
+<div class="existence-wrap">
+  <div class="section-title">存在の転換（存在するか・どこにあるかの誤認）</div>
+  <div class="existence-note">
+    D/W/F（誰が敵か）とは別次元の転換。「存在の有無」または「場所の認識」が逆転する。
+  </div>
+
+  <!-- ヘッダー -->
+  <div class="matrix-header-row">
+    <div class="matrix-col-label" style="background:rgba(255,255,255,0.06);color:#aaa;">実際の状態</div>
+    <div class="matrix-col-label" style="background:rgba(255,255,255,0.03);color:#666;"></div>
+    <div class="matrix-col-label" style="background:rgba(255,255,255,0.03);color:#666;"></div>
+  </div>
+
+  <!-- ゾンビ行 -->
+  <div class="existence-row">
+    <div class="existence-row-label" style="background:rgba(22,160,133,0.3);border:1px solid var(--zombie);">
+      ∅→○<br>死んだと思ったら<br>生きていた
+    </div>
+    <div class="existence-cell" style="background:rgba(22,160,133,0.55);flex:3;" onclick="openModal('t_zombie')">
+      <div class="type-name">ゾンビ</div>
+      <div class="type-desc">失われた・終わったと思ったものが実は存在していた。絶望からの復活。</div>
+    </div>
+    <div style="flex:2;margin:0 4px;"></div>
+  </div>
+
+  <!-- ドラゴンの卵行 -->
+  <div class="existence-row">
+    <div class="existence-row-label" style="background:rgba(230,126,34,0.3);border:1px solid var(--dragon-egg);">
+      遠→近<br>遠くにあると思ったら<br>手元にあった
+    </div>
+    <div class="existence-cell" style="background:rgba(230,126,34,0.55);flex:3;" onclick="openModal('t_egg')">
+      <div class="type-name">ドラゴンの卵</div>
+      <div class="type-desc">探し回っていたものは最初から自分のそばにあった。遠く×近くの逆転。</div>
+    </div>
+    <div style="flex:2;margin:0 4px;"></div>
+  </div>
+</div>
+
+<div class="legend">
+  <strong style="color:#e74c3c;">正体の転換マトリクス</strong>：D/W/F の3軸で「誰が・何が敵か」の誤認を分類。D→D' セルのみ2パターン（継承・誤認）を内包。<br>
+  <strong style="color:#1abc9c;">存在の転換</strong>：「存在するか」「どこにあるか」の誤認。D/W/F の軸とは独立した別次元の転換。<br>
+  灰色破線セル（W→W / F→F）は同種の転換で意味が成立しないため該当なし。
+</div>
+
+<!-- モーダル -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h2 id="m-title"></h2>
+    <div class="origin" id="m-origin"></div>
+    <div id="m-desc" style="font-size:0.85rem;line-height:1.7;margin-bottom:10px;white-space:pre-line;"></div>
+    <div id="m-manga" style="margin-bottom:8px;"></div>
+    <div class="panels" id="m-panels"></div>
+  </div>
+</div>
+
+<script>
+// 基本3分類（静的データ）
+const baseData = {
+  drac: {
+    title: 'ドラキュラ — 外部の恐怖 [D]',
+    origin: '吸血鬼ドラキュラに由来。外から来る脅威の象徴。',
+    desc: '主人公の意思とは全く関係なく世の中に存在している敵。大部分の敵がこれに当てはまるラスボス的な存在。ドロドロした話にならず、勝てばスカッとする。',
+    panels: null
+  },
+  wolf: {
+    title: 'ウルフ — 内部の恐怖 [W]',
+    origin: '狼男（ウェアウルフ）に由来。自分の中に潜む制御不能な側面の象徴。',
+    desc: '主人公の中に潜んでいて主人公のコントロールが効かない敵。精神的に別人格で、生活はカモフラージュ。主人公が本当の敵の場合、最後に自分の肉体を滅ぼす悲劇性を含む。',
+    panels: null
+  },
+  frank: {
+    title: 'フランケン — 自分が生み出した恐怖 [F]',
+    origin: 'フランケンシュタインに由来。自分が作り出したものに復讐される因果応報の象徴。',
+    desc: '主人公が意識的に犯した悪事・行動が原因で生まれた敵。主人公が過去に犯した行いが良心を責める。フランケンシュタインの目的は復讐である。',
+    panels: null
+  }
+};
+
+// パターンデータ（JSONから読み込み）
+let data = {...baseData};
+
+async function loadPatterns() {
+  try {
+    const res = await fetch('plot_twist_patterns.json');
+    const json = await res.json();
+    
+    // JSONからdataオブジェクトを構築
+    for (const [category, info] of Object.entries(json)) {
+      for (const p of info.patterns) {
+        data[p.id] = {
+          title: `${p.name}（${p.code}：${p.description}）`,
+          origin: p.origin,
+          desc: p.description,
+          panels: p.panels
+        };
+      }
+    }
+    console.log('✅ パターンデータ読み込み完了');
+  } catch (err) {
+    console.error('❌ パターンデータ読み込み失敗:', err);
+  }
+}
+
+// 初期化
+loadPatterns();
+
+function openModal(key) {
+  const d = data[key];
+  if (!d) return;
+  document.getElementById('m-title').textContent = d.title;
+  document.getElementById('m-origin').textContent = d.origin;
+  document.getElementById('m-desc').textContent = d.desc;
+  const mangaEl = document.getElementById('m-manga');
+  if (d.manga) {
+    mangaEl.innerHTML = `<span style="display:inline-block;background:rgba(255,215,0,0.15);border:1px solid rgba(255,215,0,0.4);border-radius:6px;padding:4px 10px;font-size:0.75rem;color:#ffd700;">📖 ${d.manga}</span>`;
+  } else {
+    mangaEl.innerHTML = '';
+  }
+  const panelsEl = document.getElementById('m-panels');
+  if (d.panels) {
+    const labels = ['起', '承', '転', '結'];
+    panelsEl.innerHTML = d.panels.map((p, i) =>
+      `<div class="panel-item"><strong>${labels[i]}（${i+1}コマ目）</strong>${p}</div>`
+    ).join('');
+  } else {
+    panelsEl.innerHTML = '';
+  }
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+function closeModalOutside(e) {
+  if (e.target.id === 'modal') closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

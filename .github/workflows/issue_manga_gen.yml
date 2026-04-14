@@ -1,0 +1,196 @@
+name: Issue-Triggered Manga Generation
+
+on:
+  issues:
+    types: [opened, labeled]
+
+env:
+  PYTHON_VERSION: '3.13'
+  DRIVE_PARENT_FOLDER_ID: '0AFCTATYikdWmUk9PVA'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  generate-manga:
+    if: contains(github.event.issue.title, '[生成リクエスト]')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Japanese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+          fc-cache -fv
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip uninstall -y google-generativeai || true
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: List available models
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c "
+          from google import genai
+          client = genai.Client(api_key='$GEMINI_API_KEY')
+          for model in client.models.list():
+              print(model.name)
+          "
+
+      - name: Parse Issue Body
+        id: parse
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body;
+            
+            // Issueフォームのフィールドを抽出
+            const extractField = (label) => {
+              const regex = new RegExp(`### ${label}\\s*\\n\\s*([\\s\\S]*?)(?=\\n### |$)`, 'i');
+              const match = body.match(regex);
+              return match ? match[1].trim() : '';
+            };
+            
+            const storyTitle = extractField('【必須】漫画のタイトル（Driveのフォルダ名になります）');
+            const themePrompt = extractField('【必須】本日のテーマやシナリオ指示');
+            const twistPattern = extractField('【任意】どんでん返しパターンの指定');
+            const scenarioDetail = extractField('【任意】詳細シナリオ（4コマの起承転結を直接指定する場合）');
+            
+            core.setOutput('story_title', storyTitle);
+            core.setOutput('theme_prompt', themePrompt);
+            core.setOutput('twist_pattern', twistPattern || 'おまかせ（自動選択）');
+            core.setOutput('scenario_detail', scenarioDetail);
+            
+            console.log('Parsed fields:');
+            console.log('Title:', storyTitle);
+            console.log('Theme:', themePrompt);
+            console.log('Pattern:', twistPattern);
+
+      - name: Generate episode folder name
+        id: episode
+        run: |
+          EPISODE_DATE=$(date +%Y%m%d)
+          STORY_NAME="${{ steps.parse.outputs.story_title }}"
+          if [ -n "$STORY_NAME" ]; then
+            SAFE_NAME=$(echo "$STORY_NAME" | sed 's/[\/\\:*?"<>|]/_/g')
+            echo "name=$SAFE_NAME" >> $GITHUB_OUTPUT
+            echo "folder=episodes/$SAFE_NAME" >> $GITHUB_OUTPUT
+          else
+            echo "name=$EPISODE_DATE" >> $GITHUB_OUTPUT
+            echo "folder=episodes/$EPISODE_DATE" >> $GITHUB_OUTPUT
+          fi
+          echo "date=$EPISODE_DATE" >> $GITHUB_OUTPUT
+
+      - name: Create episode directory
+        run: mkdir -p ${{ steps.episode.outputs.folder }}
+
+      - name: Module 1 - Generate Scenario
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          STORY_TITLE: ${{ steps.parse.outputs.story_title }}
+          THEME_PROMPT: ${{ steps.parse.outputs.theme_prompt }}
+          TWIST_PATTERN: ${{ steps.parse.outputs.twist_pattern }}
+          SCENARIO_DETAIL: ${{ steps.parse.outputs.scenario_detail }}
+        run: |
+          python src/module1_scenario_gen.py \
+            --config config/PlotTwist_plain.txt \
+            --output ${{ steps.episode.outputs.folder }}/scenario.json \
+            --title "$STORY_TITLE" \
+            --theme "$THEME_PROMPT" \
+            --pattern "$TWIST_PATTERN" \
+            --detail "$SCENARIO_DETAIL"
+
+      - name: Module 2 - Preflight Check
+        run: |
+          python src/module2_preflight_check.py \
+            --scenario ${{ steps.episode.outputs.folder }}/scenario.json \
+            --spec config/manga_spec.yml \
+            --output ${{ steps.episode.outputs.folder }}/validated_scenario.json
+
+      - name: List available Gemini models (debug)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c "
+          from google import genai
+          import os
+          client = genai.Client(api_key=os.environ['GEMINI_API_KEY'])
+          models = client.models.list()
+          print('=== Available models for image generation ===')
+          for m in models:
+              if 'image' in m.name.lower() or 'imagen' in m.name.lower():
+                  print(f'  {m.name}')
+          "
+
+      - name: Module 3 - Generate Images
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python src/module3_image_gen.py \
+            --scenario ${{ steps.episode.outputs.folder }}/validated_scenario.json \
+            --spec config/manga_spec.yml \
+            --characters characters \
+            --output ${{ steps.episode.outputs.folder }} \
+            --panels 2 \
+            --no-combine
+
+      - name: Module 4 - Sync to Google Drive (Optional)
+        continue-on-error: true
+        env:
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          DRIVE_PARENT_FOLDER_ID: ${{ env.DRIVE_PARENT_FOLDER_ID }}
+        run: |
+          python src/module4_drive_sync.py \
+            --source ${{ steps.episode.outputs.folder }} \
+            --parent-folder-id ${{ env.DRIVE_PARENT_FOLDER_ID }} \
+            --episode-name "${{ steps.episode.outputs.name }}" || echo "[Module4] Google Drive同期をスキップしました（サービスアカウントのクォータ制限）"
+
+      - name: Module 5 - Generate SNS Caption
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python src/module5_sns_publisher.py \
+            --scenario ${{ steps.episode.outputs.folder }}/validated_scenario.json \
+            --strategy docs/SYSTEM_GUIDE.md \
+            --output ${{ steps.episode.outputs.folder }}/instagram_caption.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: manga-${{ steps.episode.outputs.name }}
+          path: ${{ steps.episode.outputs.folder }}
+          retention-days: 30
+
+      - name: Comment on Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = context.issue.number;
+            const episodeName = '${{ steps.episode.outputs.name }}';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `## ✅ 漫画生成完了\n\n**タイトル**: ${episodeName}\n\n成果物は以下から確認できます:\n- [GitHub Actions 実行結果](${runUrl})\n- Google Drive: \`manga-auto-gen/${episodeName}/\`\n\n生成された画像とInstagram投稿文がアーティファクトとしてダウンロード可能です。`
+            });
+            
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              state: 'closed'
+            });
