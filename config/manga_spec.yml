@@ -15,8 +15,7 @@ generation_instructions:
     
     # ===== スタイル（最優先） =====
     1_art_style:
-      source_type: attached_file  # 添付ファイル
-      filename: reference_4koma.jpg  # 参照スタイル画像
+      source_type: specification
       priority: "最優先"
       specific_instructions:
         - "適度なディテールバランス（極端に簡略化しない）"
@@ -73,19 +72,12 @@ project_info:
 
 style_references:
   primary_style_reference:
-    source_type: "attached_file"
-    filename: "reference_4koma.png"  # 参照したい画像に合わせて変更してください
-    description: "この添付ファイルのスタイルを完全に再現すること"
+    source_type: "specification"
+    description: "キャラクターシート（hana.png, saki.png等）のスタイルを完全に再現すること"
     key_characteristics:
       - "適度なディテールバランス"
       # （以下、そのまま）
   
-  successful_generation_example:
-    source_type: "attached_file"
-    filename: "successful_panel_4.png" # こちらも参照画像があればファイル名に変更
-    description: "このクオリティを目指す"
-    style_notes:
-      # （以下、そのまま）
 
 
 # ===================================
@@ -969,12 +961,6 @@ google_drive_sync:
       operation: update
     - name: "yota.png"
       file_id: "1Vg_ZvcbdwUxTH9CcnAZ4OT4zVlPWPeaE"
-      operation: update
-    - name: "reference_4koma.png"
-      file_id: "1rh-477oeOOEuFmvIoZ0WKrd4uKdNuGxx"
-      operation: update
-    - name: "successful_panel_4.png"
-      file_id: "1fnSNJ3u7PbdBHspYpYMLiy3mjPnhMDTj"
       operation: update
     - name: "preflight_check.py"
       file_id: "1DXrInNDgPgV8DAA8Rr6nqdlcavWMDa5t"

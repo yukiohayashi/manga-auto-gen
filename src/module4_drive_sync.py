@@ -33,8 +33,6 @@ REGISTERED_FILES = {
     "masato.png": "1ooIUb1iYOZBAHowkjPwMBGy08EmblyKn",
     "tomoya.png": "1gt4a9_wbPYcVfjj4GDXaknnekiYMfuf8",
     "yota.png": "1Vg_ZvcbdwUxTH9CcnAZ4OT4zVlPWPeaE",
-    "reference_4koma.png": "1rh-477oeOOEuFmvIoZ0WKrd4uKdNuGxx",
-    "successful_panel_4.png": "1fnSNJ3u7PbdBHspYpYMLiy3mjPnhMDTj",
     "preflight_check.py": "1DXrInNDgPgV8DAA8Rr6nqdlcavWMDa5t",
 }
 
@@ -216,32 +214,6 @@ class DriveSync:
                 failed.append(filename)
         
         print(f"[Module4] キャラクター素材: 成功 {len(success)}, 失敗 {len(failed)}")
-        return {"success": success, "failed": failed}
-
-    def download_all_reference_assets(self, output_dir: Path) -> dict:
-        """
-        全参照用素材をダウンロード
-        
-        Args:
-            output_dir: 保存先ディレクトリ
-        
-        Returns:
-            {"success": list, "failed": list}
-        """
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        reference_files = ["reference_4koma.png", "successful_panel_4.png"]
-        success = []
-        failed = []
-        
-        for filename in reference_files:
-            output_path = output_dir / filename
-            if self.download_registered_file(filename, output_path):
-                success.append(filename)
-            else:
-                failed.append(filename)
-        
-        print(f"[Module4] 参照用素材: 成功 {len(success)}, 失敗 {len(failed)}")
         return {"success": success, "failed": failed}
 
     def _verify_folder_location(self, folder_id: str, expected_name: str) -> None:

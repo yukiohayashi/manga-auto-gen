@@ -15,8 +15,7 @@ generation_instructions:
     
     # ===== スタイル（最優先） =====
     1_art_style:
-      source_type: attached_file  # 添付ファイル
-      filename: successful_panel_4.png  # 参照スタイル画像
+      source_type: specification
       priority: "最優先"
       specific_instructions:
         - "適度なディテールバランス（極端に簡略化しない）"
@@ -73,18 +72,10 @@ project_info:
 
 style_references:
   primary_style_reference:
-    source_type: "attached_file"
-    filename: "successful_panel_4.png"  # 4コマスタイル参照・オチの成功例
-    description: "この添付ファイルのスタイルを完全に再現すること"
+    source_type: "specification"
+    description: "キャラクターシート（hana.png, saki.png等）のスタイルを完全に再現すること"
     key_characteristics:
       - "適度なディテールバランス"
-      # （以下、そのまま）
-  
-  successful_generation_example:
-    source_type: "attached_file"
-    filename: "successful_panel_4.png" # こちらも参照画像があればファイル名に変更
-    description: "このクオリティを目指す"
-    style_notes:
       # （以下、そのまま）
 
 
@@ -970,10 +961,6 @@ google_drive_sync:
     - name: "naomi.png"
       file_id: "11d10DBfiN8KC8xG7g9LH4Up2KHwfn9sO"
       operation: update
-    - name: "successful_panel_4.png"
-      file_id: "1HHGfAmo56csdyHx83XOzyfAQiXx1mmXt"
-      operation: update
-  
   # ===== 必須遵守ルール =====
   mandatory_rules:
     - id: always_use_folder_id

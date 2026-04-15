@@ -1,0 +1,89 @@
+{
+  "title": "最強チームの唯一の弱点",
+  "theme": "合コン最強3人組のはな・さき・なおみが、実は3人全員の好みが同じ男性でいつも空中分解する",
+  "twist_pattern": "ウルフドラキュラ (W→D)",
+  "plot_twist_type": "ウルフドラキュラ（W→D）",
+  "plot_twist_description": "合コン無敵チームだと自信満々だったのに、実は全員の好みが丸かぶりだった",
+  "character_outfits": {
+    "はな": "長いストレートの茶髪、ホワイトとブルーの広めの横縞Tシャツ、ライトブルージーンズ",
+    "さき": "ショートボブ（あご丈）でおでこが見える、ピンクのカーディガン、白のインナー、茶色のチノパンツ",
+    "なおみ": "丸メガネ必須、ゆるいウェーブのロングブラウンヘア、白の襟付きブラウス、ネイビーのスカート"
+  },
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": ["はな", "さき", "なおみ"],
+      "description": "明るいレストラン。3人が横並びで自信満々のドヤ顔ポーズをしている。右にはな（ロングストレートの茶髪・肩より長い、白と青の横縞Tシャツ）、中央にさき（VERY SHORT BOB haircut chin-length ONLY、おでこが完全に見える、ロングヘアは絶対禁止、ピンクカーディガン）、左になおみ（丸メガネ必須、ゆるいウェーブのロングブラウンヘア、白の襟付きブラウス）。背景にキラキラとハートが飛んでいる。",
+      "background": "明るいレストラン、夕方",
+      "effects": ["キラキラ", "ハート"],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "さき",
+          "text": "合コン三銃士、参上！",
+          "bubble_position": "center",
+          "highlight": "合コン三銃士"
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": ["はな", "さき", "なおみ"],
+      "description": "レストランの合コン会場。3人が男性陣の前でそれぞれ得意げに担当をアピールしている。はな（ロングストレート茶髪、横縞Tシャツ）はウィンク、なおみ（丸メガネ、ウェーブロングヘア、白ブラウス）はビールを高々と掲げ笑顔、さき（VERY SHORT BOB chin-length、おでこ出し、ピンクカーディガン）は腕を組んでクールに微笑んでいる。",
+      "background": "レストラン、夜、賑やか",
+      "effects": ["ワイワイ", "キラキラ"],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "お色気担当・はな！\nかわいさ担当・なおみ！\n盛り上げ担当・さき！",
+          "bubble_position": "right",
+          "highlight": "担当"
+        }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": ["はな", "さき", "なおみ"],
+      "description": "同じレストラン。3人が顔を寄せ合い、同じ方向（画面右外）をじっとした目で見つめている。はな（ロングストレート茶髪）、さき（VERY SHORT BOB chin-length、おでこ出し）、なおみ（丸メガネ、ウェーブロングヘア）の3人の視線が完全に同じ方向を向いている。ナレーションボックスが左に表示されている。",
+      "background": "レストラン、夜、集中線",
+      "effects": ["ドキドキ"],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "ナレーション",
+          "text": "…そんな彼女たちの\n唯一にして最大の欠点は",
+          "bubble_position": "left",
+          "highlight": "欠点"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": ["はな", "さき", "なおみ"],
+      "description": "居酒屋の合コン会場、斜め俯瞰アングル。テーブルの上にビールジョッキ・枝豆・唐揚げが並んでいる。テーブルを挟んで、手前に男性の後ろ姿が1人座っており、3人の女性が男性1人を奪い合うように身を乗り出して同時に話しかけている。男性は後ろ姿のままパニック・困惑の様子で固まっている（背中から動揺が伝わる）。はな（LONG STRAIGHT brown hair past shoulders, white and blue horizontal striped T-shirt）、さき（VERY SHORT chin-length bob, forehead fully visible, NO long hair, pink cardigan）、なおみ（round glasses, wavy long brown hair, white collared blouse）が前のめりに男性へ詰め寄っている。",
+      "background": "居酒屋、夜、温かみのある照明、木目調のテーブル",
+      "effects": ["シーン"],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "ナレーション",
+          "text": "男性の好みが\n丸かぶりなこと",
+          "bubble_position": "right",
+          "highlight": "丸かぶり"
+        },
+        {
+          "type": "normal",
+          "character": "ナレーション",
+          "text": "よって成功率は未だ０%",
+          "bubble_position": "left",
+          "highlight": "０%"
+        }
+      ]
+    }
+  ]
+}

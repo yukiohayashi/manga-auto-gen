@@ -326,7 +326,13 @@ TECHNICAL:
                         if isinstance(image_data, str):
                             image_data = base64.b64decode(image_data)
                         image = Image.open(BytesIO(image_data))
-                        print(f"[Module3] Gemini画像生成成功: パネル{panel_number}")
+                        print(f"[Module3] Gemini画像生成成功: パネル{panel_number} (元サイズ: {image.size})")
+                        # 正方形にセンタークロップしてからリサイズ
+                        w, h = image.size
+                        min_dim = min(w, h)
+                        left = (w - min_dim) // 2
+                        top = (h - min_dim) // 2
+                        image = image.crop((left, top, left + min_dim, top + min_dim))
                         return image.resize(CANVAS_SIZE)
                 
                 print(f"[Module3] 警告: Gemini応答に画像が含まれていません（試行{attempt + 1}）")
@@ -398,7 +404,7 @@ TECHNICAL:
         panel_w, panel_h = img.size
         font_size = 62 * SS
         border_width = 10 * SS
-        margin = border_width + 10 * SS
+        margin = border_width + 5 * SS  # 余白を狭める（10 → 5）
 
         speech_items = []
         caption_items = []
@@ -658,7 +664,7 @@ TECHNICAL:
                 combined = Image.new("RGB", (panel_width, panel_height + title_height), "#FFFFFF")
                 draw = ImageDraw.Draw(combined)
                 
-                font = self._get_title_font(48)
+                font = self._get_title_font(60)  # フォントサイズを48から60に拡大
                 
                 # タイトルを白背景の中央に描画
                 text_bbox = draw.textbbox((0, 0), title, font=font)

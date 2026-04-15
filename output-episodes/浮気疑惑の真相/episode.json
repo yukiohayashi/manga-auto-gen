@@ -1,0 +1,103 @@
+{
+  "title": "浮気疑惑の真相",
+  "theme": "恋愛コメディ",
+  "twist_pattern": "誤解からのオチ",
+  "character_outfits": {
+    "はな": "長いストレートの茶髪、ホワイトとブルーの広めの横縞Tシャツ、ライトブルージーンズ",
+    "まさと": "茶色の短めのウェーブヘア、水色のカジュアルシャツ、ダークグレーのパンツ"
+  },
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": ["はな", "まさと"],
+      "description": "部屋の中。まさと（short brown wavy hair, light blue casual shirt, dark gray pants）は画面右側でスマホを見ながら立っている。はな（LONG STRAIGHT brown hair past shoulders, white and blue horizontal striped T-shirt）は画面左側で座っており、まさとを不安そうに見ている。2人は十分に離れており、吹き出しが重ならないように配置。",
+      "background": "部屋の中、リビング、明るい自然光",
+      "effects": [],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "まさと",
+          "text": "コンビニ行ってくる",
+          "bubble_position": "right"
+        },
+        {
+          "type": "normal",
+     "character": "ナレーション",
+          "text": "最近スマホばっか見てる",
+          "bubble_position": "left"
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": ["まさと"],
+      "description": "暗めの背景、紫色、集中線。画面中央にまさと（youthful appearance, age 28, short brown wavy hair, round gentle eyes, soft facial features like in character sheet, light blue casual shirt, dark gray pants）がスマホを見ながらニヤニヤしている表情で大きく描かれている。左右にナレーション用のスペースを確保。キャラクターシートの「喜び」の表情を参考に、若々しく柔らかい顔立ちで描く。",
+      "background": "暗め、紫色、集中線",
+      "effects": ["ニヤニヤ"],
+      "dialogue": [
+        {
+          "type": "normal",
+       "character": "ナレーション",
+          "text": "歩くのが楽しいって言ってた",
+          "bubble_position": "right"
+        },
+        {
+          "type": "normal",
+           "character": "ナレーション",
+          "text": "誰かと\n会ってる...？",
+          "bubble_position": "left"
+        }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": ["はな", "まさと"],
+      "description": "紫の背景。左にいるはな（LONG STRAIGHT brown hair past shoulders, white and blue horizontal striped T-shirt）が涙目で右のまさと（youthful appearance age 28, short brown wavy hair with soft features, round gentle eyes like character sheet, light blue casual shirt, dark gray pants）を問い詰めている。まさとは困惑しながらスマホを持っている。はなは「なんか隠してない？」「正直に言って！」と詰め寄っている。キャラクターシートの「困惑」表情を参考に描く。",
+      "background": "紫色、緊張感のある背景",
+      "effects": ["汗", "？"],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "なんか\n隠してない？",
+          "highlight": "隠して",
+          "bubble_position": "left"
+        },
+        {
+          "type": "shout",
+          "character": "はな",
+          "text": "正直に言って！",
+          "bubble_position": "left",
+          "highlight": "正直"
+        },
+        {
+          "type": "normal",
+          "character": "まさと",
+          "text": "え...？",
+          "bubble_position": "right"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": ["はな", "まさと"],
+      "description": "赤い背景、集中線、炎のような効果。引きの構図で2人の全身が見える。画面右側にまさと（youthful appearance age 28, short brown wavy hair, light blue casual shirt, dark gray pants）が大きく叫びながらスマホを掲げている。スマホ画面には万歩計アプリで3万歩達成の文字とグラフが表示されている。画面左側中央寄りに小さくはな（LONG STRAIGHT brown hair past shoulders, white and blue horizontal striped T-shirt）が呆然とした表情で立っており、顔と全身がはっきり見える。はなは画面の中央寄りに配置され、左端の吹き出しに隠れない。",
+      "background": "赤い背景、集中線、炎",
+      "effects": ["3万歩達成"],
+      "dialogue": [
+      
+
+        {
+          "type": "normal",
+          "character": "ナレーション",
+          "text": "スマホの万歩計アプリかよ",
+          "bubble_position": "left"
+        }
+      ]
+    }
+  ]
+}
