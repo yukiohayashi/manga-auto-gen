@@ -11,8 +11,8 @@
       "panel_number": 1,
       "structure": "起",
       "characters": ["はな", "まさと"],
-      "description": "部屋の中。まさと（short brown wavy hair, light blue casual shirt, dark gray pants）は画面右側でスマホを見ながら立っている。はな（LONG STRAIGHT brown hair past shoulders, white and blue horizontal striped T-shirt）は画面左側で座っており、まさとを不安そうに見ている。2人は十分に離れており、吹き出しが重ならないように配置。",
-      "background": "部屋の中、リビング、明るい自然光",
+      "description": "部屋の中、引きの構図。画面右側にまさと（youthful appearance age 28, short brown wavy hair, round gentle eyes, soft facial features like in character sheet, light blue casual shirt, dark gray pants）がスマホを見ながら立っている。顔全体がはっきり見える。画面左側にはな（LONG STRAIGHT brown hair past shoulders with bangs covering forehead, NO forehead visible, white and blue horizontal striped T-shirt, light blue jeans）が座っており、まさとを不安そうに見ている。2人は十分に離れており、吹き出しが顔に重ならないように配置。",
+      "background": "部屋の中、リビング",
       "effects": [],
       "dialogue": [
         {
@@ -23,7 +23,7 @@
         },
         {
           "type": "normal",
-     "character": "ナレーション",
+          "character": "ナレーション",
           "text": "最近スマホばっか見てる",
           "bubble_position": "left"
         }
