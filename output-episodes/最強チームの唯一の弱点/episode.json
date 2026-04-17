@@ -13,10 +13,17 @@
     {
       "panel_number": 1,
       "structure": "起",
-      "characters": ["はな", "さき", "なおみ"],
-      "description": "明るいレストラン。3人が横並びで自信満々のドヤ顔ポーズをしている。右にはな（ロングストレートの茶髪・肩より長い、白と青の横縞Tシャツ）、中央にさき（VERY SHORT BOB haircut chin-length ONLY、おでこが完全に見える、ロングヘアは絶対禁止、ピンクカーディガン）、左になおみ（丸メガネ必須、ゆるいウェーブのロングブラウンヘア、白の襟付きブラウス）。背景にキラキラとハートが飛んでいる。",
+      "characters": [
+        "はな",
+        "さき",
+        "なおみ"
+      ],
+      "description": "明るいレストラン。3人が横並びで自信満々のドヤ顔ポーズをしている。右にはな（LONG STRAIGHT brown hair past shoulders with bangs covering forehead, NO forehead visible, age 25, white and blue horizontal striped T-shirt, light blue jeans）、中央にさき（SHOULDER-LENGTH BOB brown hair, forehead visible, age 25, pink/coral cardigan, white inner shirt, beige pants）、左になおみ（round glasses REQUIRED, wavy long brown hair, age 25, white collared blouse, navy skirt）。背景にキラキラとハートが飛んでいる。キャラクターシート通りの外見で描く。",
       "background": "明るいレストラン、夕方",
-      "effects": ["キラキラ", "ハート"],
+      "effects": [
+        "キラキラ",
+        "ハート"
+      ],
       "dialogue": [
         {
           "type": "shout",
@@ -30,10 +37,17 @@
     {
       "panel_number": 2,
       "structure": "承",
-      "characters": ["はな", "さき", "なおみ"],
+      "characters": [
+        "はな",
+        "さき",
+        "なおみ"
+      ],
       "description": "レストランの合コン会場。3人が男性陣の前でそれぞれ得意げに担当をアピールしている。はな（ロングストレート茶髪、横縞Tシャツ）はウィンク、なおみ（丸メガネ、ウェーブロングヘア、白ブラウス）はビールを高々と掲げ笑顔、さき（VERY SHORT BOB chin-length、おでこ出し、ピンクカーディガン）は腕を組んでクールに微笑んでいる。",
       "background": "レストラン、夜、賑やか",
-      "effects": ["ワイワイ", "キラキラ"],
+      "effects": [
+        "ワイワイ",
+        "キラキラ"
+      ],
       "dialogue": [
         {
           "type": "normal",
@@ -47,16 +61,23 @@
     {
       "panel_number": 3,
       "structure": "転",
-      "characters": ["はな", "さき", "なおみ"],
-      "description": "同じレストラン。3人が顔を寄せ合い、同じ方向（画面右外）をじっとした目で見つめている。はな（ロングストレート茶髪）、さき（VERY SHORT BOB chin-length、おでこ出し）、なおみ（丸メガネ、ウェーブロングヘア）の3人の視線が完全に同じ方向を向いている。ナレーションボックスが左に表示されている。",
+      "characters": [
+        "はな",
+        "さき",
+        "なおみ"
+      ],
+      "description": "同じレストラン。3人が顔を寄せ合い、同じ方向（画面右外）をじっとした目で見つめている。はな（ロングストレート茶髪）、さき（VERY SHORT BOB chin-length、おでこ出し）、なおみ（丸メガネ、ウェーブロングヘア）の3人の視線が完全に同じ方向を向いている。ナレーションボックスは左下に縦書きで表示される。",
       "background": "レストラン、夜、集中線",
-      "effects": ["ドキドキ"],
+      "effects": [
+        "ドキドキ"
+      ],
       "dialogue": [
         {
           "type": "normal",
           "character": "ナレーション",
           "text": "…そんな彼女たちの\n唯一にして最大の欠点は",
-          "bubble_position": "left",
+          "bubble_position": "left_bottom",
+          "bubble_avoid_face_zone": false,
           "highlight": "欠点"
         }
       ]
@@ -64,10 +85,16 @@
     {
       "panel_number": 4,
       "structure": "結",
-      "characters": ["はな", "さき", "なおみ"],
+      "characters": [
+        "はな",
+        "さき",
+        "なおみ"
+      ],
       "description": "居酒屋の合コン会場、斜め俯瞰アングル。テーブルの上にビールジョッキ・枝豆・唐揚げが並んでいる。テーブルを挟んで、手前に男性の後ろ姿が1人座っており、3人の女性が男性1人を奪い合うように身を乗り出して同時に話しかけている。男性は後ろ姿のままパニック・困惑の様子で固まっている（背中から動揺が伝わる）。はな（LONG STRAIGHT brown hair past shoulders, white and blue horizontal striped T-shirt）、さき（VERY SHORT chin-length bob, forehead fully visible, NO long hair, pink cardigan）、なおみ（round glasses, wavy long brown hair, white collared blouse）が前のめりに男性へ詰め寄っている。",
       "background": "居酒屋、夜、温かみのある照明、木目調のテーブル",
-      "effects": ["シーン"],
+      "effects": [
+        "シーン"
+      ],
       "dialogue": [
         {
           "type": "shout",
