@@ -1,0 +1,129 @@
+{
+  "title": "青い鳥症候群",
+  "theme": "「毎朝おはようをくれる理想の相手」を遠くに求めていたはなが、実はすでに職場で声をかけられていた——相手は清掃のおじいちゃんだった（手元の幸せを見落とす青い鳥オチ）",
+  "twist_pattern": "ギャップオチ（期待→現実）",
+  "plot_twist_type": "ギャップオチ（期待→現実）",
+  "plot_twist_description": "恋愛の「おはよう」を想像していたが、毎日声をかけていたのは職場の清掃員（75歳）だった",
+  "character_outfits": {
+    "はな": "長いストレートの茶髪、ホワイトとブルーの広めの横縞Tシャツ、ライトブルージーンズ",
+    "さき": "ショートボブ（あご丈）でおでこが見える、ピンクのカーディガン、白のインナー、茶色のチノパンツ",
+    "清掃員": "75歳、グレー系の作業着（ジャンパー）、モップ所持、名札あり"
+  },
+  "panels": [
+    {
+      "panel_number": 1,
+      "structure": "起",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "show_line_screen": true,
+      "description": "【必須構図】左にさき、右にはな。後から台詞吹き出しを重ねる：はなの長台詞は画面右上〜上寄り、さきの短い返答は左下。顔・目・口は縦位置で画面のおおよそ35〜72%の帯に置き、画面上部〜15%は背景と余白（吹き出し用）として開ける。二人の顔が互いに隠れない。胸上〜上半身。キャラをフレーム外に切らない。背後の奥に大きめのLINEスマホ画面（キャラの頭より小さめ〜同程度）を置き、緑/白の吹き出しで「おはよう♡」→「おはよう」の短い往復が読めること。紫の水玉模様の背景。時計9:41、LINEロゴ。手元のスマホはあれば裏面のみ。右のはな（LONG STRAIGHT brown hair past shoulders, bangs covering forehead, NO forehead visible, white and blue horizontal wide striped T-shirt, light blue jeans）が頬を手で包み恋焦がれた表情。左のさき（VERY SHORT chin-length bob, forehead visible, pink/coral cardigan, white inner shirt, brown chino pants）がうなずいて聞いている。レギュラー衣装。はなの顔は右端にべったり寄せず、右から約18〜28%内側に配置。右上に重ねる縦2列の長台詞用に、はな（頬・口元）の左側に十分な空きを残し、吹き出しと顔が重ならないこと。",
+      "background": "室内トーク、紫ドット、背後にLINEチャット画面",
+      "effects": [
+        "ワクワク"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "毎日『おはよう』って言ってくれるだけで\n幸せになれるのに",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "おはよう"
+        },
+        {
+          "type": "normal",
+          "character": "さき",
+          "text": "うん",
+          "bubble_position": "left_bottom"
+        }
+      ]
+    },
+    {
+      "panel_number": 2,
+      "structure": "承",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "description": "ピンクの背景に集中線。左のさき（chin-length bob, forehead visible, pink cardigan, white inner, brown chinos）が人差し指ではな方向を指し、ニヤリとした表情。右のはな（LONG STRAIGHT brown hair, white and blue horizontal striped T-shirt, light blue jeans）はキョトン顔で汗、頭上の装飾文字は effects の「？」「キョトン」のみ。レギュラー衣装。吹き出しは最強チーム系レギュラー。",
+      "background": "ピンク、集中線",
+      "effects": [
+        "？",
+        "キョトン"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "さき",
+          "text": "毎日『おはよう』って言ってくれる人、いるじゃん",
+          "bubble_position": "left",
+          "highlight": "おはよう"
+        },
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "え？いたの？",
+          "bubble_position": "right"
+        }
+      ]
+    },
+    {
+      "panel_number": 3,
+      "structure": "転",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "description": "桃〜黄色のグラデ背景に星キラ。左のはな（white and blue horizontal striped T-shirt, light blue jeans）が身を乗り出して目を輝かせ、期待でワクワクした表情。右のさき（pink cardigan, white inner, brown chinos, chin-length bob, forehead visible）ははなを指差し、ニヤリと意味深に告げる。はなはショックではなく期待感が高まるリアクションにする。レギュラー衣装。吹き出しは最強チーム系レギュラー。",
+      "background": "桃黄色、星キラ",
+      "effects": [
+        "ワクワク"
+      ],
+      "dialogue": [
+        {
+          "type": "normal",
+          "character": "さき",
+          "text": "ほら、いつも仕事場に\n優しく声をかけてくれる人",
+          "bubble_position": "right"
+        },
+        {
+          "type": "normal",
+          "character": "はな",
+          "text": "えっ、だれだれ？♡",
+          "bubble_position": "left"
+        }
+      ]
+    },
+    {
+      "panel_number": 4,
+      "structure": "結",
+      "characters": [
+        "はな",
+        "清掃員"
+      ],
+      "description": "オレンジ〜黄色にスピード線。右に清掃員（75歳、grey work uniform、badge、モップ、笑顔で手を振る）。左前にはな（LONG STRAIGHT brown hair, white and blue horizontal striped T-shirt, light blue jeans）が両手を上げた絶叫級のショック表情、顔上半分に青縦線の影。装飾は effects の「ドーン」のみを下部中心寄りに置き、吹き出し予定エリア（右側・左下）には重ねない。星型見出し・ラベル・装飾吹き出しは作らない。はなはレギュラー衣装。吹き出しは最強チーム系レギュラー。",
+      "background": "オレンジ黄色、スピード線",
+      "effects": [
+        "ドーン"
+      ],
+      "dialogue": [
+        {
+          "type": "shout",
+          "character": "ナレーション",
+          "text": "清掃のおじいちゃん！！（75歳）",
+          "bubble_position": "left",
+          "highlight": "清掃のおじいちゃん"
+        },
+        {
+          "type": "normal",
+          "character": "清掃員",
+          "text": "おはようさん、今日も元気そうだね♡",
+          "bubble_position": "right",
+          "highlight": "おはよう"
+        }
+      ]
+    }
+  ]
+}
