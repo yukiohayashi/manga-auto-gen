@@ -1,0 +1,169 @@
+{
+  "title": "彼の借金",
+  "theme": "マッチングアプリでのトラウマと、真面目すぎる彼氏",
+  "twist_pattern": "フランケンウルフ",
+  "plot_twist_type": "F→W（過去の行動による罪悪感が、内面の幻影だったと気づく）",
+  "plot_twist_description": "歴代の彼氏が全員借金持ちだったという過去の経験（フランケン）から、現在の彼氏の些細な行動を「巨大な負債」という恐怖の幻影（ウルフ）として捉えてしまうが、実はただの100円の延滞だったというオチ。",
+  "character_outfits": {
+    "はな": "LONG STRAIGHT brown hair past shoulders with bangs covering forehead（おでこは見えない）。white and blue horizontal WIDE striped T-shirt（淡い水色の太ボーダー、等間隔）+ light blue jeans。白ニットや無地トップスは不可。",
+    "さき": "VERY SHORT chin-length bob（あご丈ショートボブ）で forehead visible。pink/salmon cardigan over white inner top + brown chino pants。はなのボーダー服を着せない。",
+    "まさと": "キャラクターシート masato.png と同一。short brown wavy hair、casual shirt/sweat系。別人化しない。"
+  },
+  "plot_twist_pattern": "フランケンウルフ",
+  "panels": [
+    {
+      "description": "カフェでテーブルを挟んで向かい合うはなとさき。はなが右でさきが左にいる。両者の顔と表情がフレーム内ではっきり見えるアイレベル。はなは真剣な表情でカップを握りしめている。",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "誠実さも大事だけど\n絶対に借金がない人がいい",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "借金がない人"
+        },
+        {
+          "character": "さき",
+          "text": "前の彼、借金だらけだったからな",
+          "type": "thought",
+          "bubble_position": "left",
+          "bubble_avoid_face_zone": false   
+             }
+      ],
+      "background": "おしゃれなカフェ",
+      "effects": [
+        {
+          "text": "",
+          "visual": "はなの背後に放射状の集中線（スピードライン）。顔・吹き出し用の余白を避ける。説明文を文字として描かない"
+        }
+      ],
+      "panel_number": 1,
+      "structure": "起"
+    },
+    {
+      "description": "帰宅後、リビングのソファで頭を抱えて封筒を凝視しているまさと。はなが左でまさとが右にいる。両者の顔と表情がフレーム内ではっきり見えるアイレベル。まさとは深刻な表情で封筒を眺めている。",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "あの深刻な顔、まさか督促状？\nまさか借金まみれ？",
+          "type": "thought",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "督促状"
+        },
+        {
+          "character": "はな",
+          "text": "……ねえ、その封筒、何かの支払い？",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "……ねえ、その封"
+        }
+      ],
+      "background": "夜のマンションのリビング",
+      "effects": [
+        {
+          "text": "",
+          "visual": "まさと周囲にどんよりした暗いオーラを線・トーンで表現（説明語を文字として書かない）"
+        },
+        {
+          "text": "",
+          "visual": "はなの震えにガタガタ線・小さな震えマーク（擬音テキストなしでも可）"
+        }
+      ],
+      "panel_number": 2,
+      "structure": "承"
+    },
+    {
+      "description": "まさとは涙目になりながら封筒を差し出す。中身は図書館からの督促ハガキ。",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "まさと",
+          "text": "ごめん……返却 期限を忘れてて。延滞料金が100円も取られちゃうんだ……",
+          "type": "shout",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "100円"
+        },
+        {
+          "character": "はな",
+          "text": "……ひゃくえん？",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "……ひゃくえん？"
+        }
+      ],
+      "background": "リビング（照明が少し明るくなる）",
+      "effects": [
+        {
+          "text": "",
+          "visual": "図書館の督促ハガキのクローズアップ。表示される数字や金額は読める程度でよい（セリフと整合）"
+        },
+        {
+          "text": "ポカーン",
+          "visual": "拍子抜けの表情と小さな衝撃記号。吹き出しと重ならない"
+        }
+      ],
+      "panel_number": 3,
+      "structure": "転"
+    },
+    {
+      "description": "膝から崩れ落ちるはなと、ショックで固まっているまさと。はなが全力でツッコミを入れる。",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "100円でそんな死にそうな顔しないでよ！ 紛らわしいわ！！",
+          "type": "shout",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "100円でそんな"
+        },
+        {
+          "character": "ナレーション",
+          "text": "トラウマが生んだ巨大な幻",
+          "type": "normal",
+          "bubble_position": "left",
+          "bubble_avoid_face_zone": false,
+          "highlight": "トラウマが生んだ"
+        }
+      ],
+      "background": "リビング（全体）",
+      "effects": [
+        {
+          "text": "ガーン",
+          "visual": "インパクト用の効果字として配置。顔を隠さない"
+        },
+        {
+          "text": "",
+          "visual": "はなの誇張したツッコミの身振り手振り（追加の日本語ラベルは書かない）"
+        }
+      ],
+      "panel_number": 4,
+      "structure": "結"
+    }
+  ],
+  "instagram_hook": "歴代彼氏が全員借金持ちだった私のトラウマが、ついに今の彼氏にも牙を剥く…！？と思ったら、まさかの結末に😂 彼の真面目さが度を越えてました…。",
+  "metadata": {
+    "generated_at": "2026-04-21T10:24:17.627563",
+    "pattern_category": "from_three_twists_last",
+    "pattern_name": "フランケンウルフ",
+    "validation_errors": []
+  }
+}
