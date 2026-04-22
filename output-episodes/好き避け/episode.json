@@ -1,0 +1,145 @@
+{
+  "title": "好き避け",
+  "theme": "好き避け",
+  "twist_pattern": "ウルフフランケン",
+  "plot_twist_type": "W→F（精神的問題 → 物理的行動ミス）",
+  "plot_twist_description": "自分の性格（好き避け）のせいで相手に嫌われたと思い悩んでいたが、実はスマホの操作ミスで物理的に相手を遮断していたという自業自得なオチ。",
+  "character_outfits": {
+    "はな": "家でリラックスしているオーバーサイズのニットとショートパンツ",
+    "さき": "トレンド感のあるデニムシャツとタイトスカート"
+  },
+  "plot_twist_pattern": "ウルフフランケン",
+  "panels": [
+    {
+      "description": "はながソファでクッションに顔を埋めて、ひどく落ち込んでいる様子。",
+      "characters": [
+        "はな"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "あんなに盛り上がってたのに、急に既読すらつかなくなった……。",
+          "type": "thought",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "あんなに盛り上が"
+        },
+        {
+          "character": "はな",
+          "text": "やっぱり、あの冷たい返信がダメだったんだ……。",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "やっぱり、あの冷"
+        }
+      ],
+      "background": "女の子の部屋（散らかっている）",
+      "effects": [
+        "どんよりした空気"
+      ],
+      "panel_number": 1,
+      "structure": "起"
+    },
+    {
+      "description": "遊びに来ていたさきが、コーヒーを飲みながら呆れた顔ではなを見ている。",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "dialogue": [
+        {
+          "character": "さき",
+          "text": "また例の『好き避け』？",
+          "type": "normal",
+          "bubble_position": "left",
+          "bubble_avoid_face_zone": false,
+          "highlight": "好き避け"
+        },
+        {
+          "character": "はな",
+          "text": "そうなの！本当は嬉しいのに、つい無愛想なスタンプ一個で返しちゃって。私の性格が最悪なせいで、愛想尽かされたんだわ！",
+          "type": "shout",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "そうなの！本当は"
+        }
+      ],
+      "background": "女の子の部屋",
+      "effects": [
+        "はなの涙"
+      ],
+      "panel_number": 2,
+      "structure": "承"
+    },
+    {
+      "description": "カフェで再会。右にいるはなは『忙しかった』と言い訳して平静を装うが、手は震え、視線は泳ぎまくり。対する左にいるまさとは静かにスマホ画面を見せ、会話の空気が一気に凍る。",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "dialogue": [
+        {
+          "character": "さき",
+          "text": "……ちょっと待って。あんた、この人のトーク画面、いつ閉じた？",
+          "type": "normal",
+          "bubble_position": "left",
+          "bubble_avoid_face_zone": false,
+          "highlight": "……ちょっと待っ"
+        },
+        {
+          "character": "はな",
+          "text": "え？昨日、メッセージが来た時に恥ずかしすぎて、画面を開いたままスマホを布団にバフッて伏せたけど……。",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "え？昨日、メッセ"
+        }
+      ],
+      "background": "女の子の部屋",
+      "effects": [
+        "スマホの画面が光る"
+      ],
+      "panel_number": 3,
+      "structure": "転"
+    },
+    {
+      "description": "右にいるまさとのスマホ画面には、左にいるはなが送信した直後に『やっぱ無し！』『今の忘れて！』を連投した履歴。LINEブロックはしておらず、やり取り自体は成立していた。はなは椅子からずり落ち、顔面蒼白。まさとは半笑いで優しくツッコむ。好き避けのつもりが、言い直し連打で気持ちがダダ漏れだったオチ。",
+      "characters": [
+        "はな",
+        "さき"
+      ],
+      "dialogue": [
+        {
+          "character": "さき",
+          "text": "性格の問題じゃなくて、物理的にあんたが自分で『非表示』ボタン押しちゃってるだけじゃん！",
+          "type": "shout",
+          "bubble_position": "left",
+          "bubble_avoid_face_zone": false,
+          "highlight": "非表示"
+        },
+        {
+          "character": "はな",
+          "text": "通知すら来ないと思ったら、私が遮断してただけーー！？",
+          "type": "shout",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "通知すら来ないと"
+        }
+      ],
+      "background": "女の子の部屋",
+      "effects": [
+        "衝撃の集中線",
+        "ガーンという擬音"
+      ],
+      "panel_number": 4,
+      "structure": "結"
+    }
+  ],
+  "instagram_hook": "「嫌われた」と落ち込んでいたら、まさかの原因は自分の中……ではなく指先にありました。自業自得すぎる「好き避け」の結末とは？😂",
+  "metadata": {
+    "generated_at": "2026-04-20T19:03:33.005269",
+    "pattern_category": "manual",
+    "pattern_name": "ウルフフランケン",
+    "validation_errors": []
+  }
+}
