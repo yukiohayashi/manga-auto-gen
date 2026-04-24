@@ -1,0 +1,124 @@
+{
+  "title": "初キス記念日",
+  "theme": "マッチングアプリで付き合ったカップルの、お酒と記憶にまつわる温度差",
+  "twist_pattern": "ウルフフランケン",
+  "plot_twist_type": "W→F（内部の認識から自分の行動への転換）",
+  "plot_twist_description": "「初めてのキス」という初々しい精神的喜び（W）に浸っていたが、実は「過去に何度も酔ってキスを仕掛けていた」という自分の無意識な物理的行動（F）が原因で、相手を困惑させていた事実に気づく（あるいは突きつけられる）構造。",
+  "character_outfits": {
+    "はな": "LONG STRAIGHT brown hair past shoulders with bangs covering forehead（おでこは見えない）。white and blue horizontal WIDE striped T-shirt（淡い水色の太ボーダー、等間隔）+ light blue jeans。白ニットや無地トップスは不可。",
+    "さき": "VERY SHORT chin-length bob（あご丈ショートボブ）で forehead visible。pink/salmon cardigan over white inner top + brown chino pants。はなのボーダー服を着せない。",
+    "まさと": "キャラクターシート masato.png と同一。short brown wavy hair、casual shirt/sweat系。別人化しない。"
+  },
+  "panels": [
+    {
+      "description": "まさとの部屋。ソファに座る二人。至近距離で見つめ合い、今にも唇が重なりそうなロマンチックな雰囲気。キャラクターシート厳守：はなは LONG STRAIGHT brown hair past shoulders + bangs covering forehead（NO forehead visible）、white and blue horizontal WIDE striped T-shirt（淡い水色ボーダー）+ light blue jeans。まさとは masato.png と同一の顔・髪型。顔立ちの入れ替え禁止、別人化禁止。",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "（ドキドキ……。とうとう、彼との初キス……！）",
+          "type": "thought",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "ドキドキ……。と"
+        }
+      ],
+      "background": "まさとの部屋（清潔感のある男性の部屋）",
+      "effects": [
+        "キラキラした空気感",
+        "クローズアップ"
+      ],
+      "panel_number": 1,
+      "structure": "起"
+    },
+    {
+      "description": "はながソファーでカバンから手帳を取り出し、ペンで今日の日付に大きなハートマークを描き込む。まさとは意外な表情",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "よし、完了！忘れないように「初キス記念日」って書いておかなきゃ！",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "初キス記念日"
+        }
+      ],
+      "background": "まさとの部屋のソファ",
+      "effects": [
+        "手帳のハートマーク強調"
+      ],
+      "panel_number": 2,
+      "structure": "承"
+    },
+    {
+      "description": "右に満面の笑みで喜ぶはなに対し、左にいるまさとは戸惑いが隠せない様子。",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "はな",
+          "text": "今日はおうちデートも初めてだし、ダブル記念日だね！幸せだなあ。",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "今日はおうちデー"
+        },
+        {
+          "character": "まさと",
+          "text": "……えッ。あ、あはは……そうだね……。",
+          "type": "normal",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "……えッ。あ、あ"
+        }
+      ],
+      "background": "まさとの部屋のソファ",
+      "effects": [
+        "まさとの冷や汗",
+        "はなの背後の花エフェクト"
+      ],
+      "panel_number": 3,
+      "structure": "転"
+    },
+    {
+      "description": "まさとの回想。居酒屋やバー、宅飲みで、泥酔したはなが「ちゅーして！」と何度もまさとに襲いかかっている複数のコマ。現在のまさとの呆然とした表情。",
+      "characters": [
+        "はな",
+        "まさと"
+      ],
+      "dialogue": [
+        {
+          "character": "まさと",
+          "text": "（今まで飲んでる時にされた大量のキス、一回も記憶になかったんかい……！）",
+          "type": "thought",
+          "bubble_position": "right",
+          "bubble_avoid_face_zone": false,
+          "highlight": "今まで飲んでる時"
+        }
+      ],
+      "background": "まさとの部屋（現在）＋居酒屋の回想コマ",
+      "effects": [
+        "衝撃のフラッシュバック",
+        "まさとの呆然とした表情"
+      ],
+      "panel_number": 4,
+      "structure": "結"
+    }
+  ],
+  "instagram_hook": "「初キス記念日」だと喜ぶ彼女。でも、彼氏の顔はなぜか真っ青……？その衝撃の理由とは。お酒の席での『無意識な行動』が招いた、切なすぎる温度差。 #マッチングアプリ #カップルの日常 #お酒の失敗 #どんでん返し",
+  "metadata": {
+    "generated_at": "2026-04-20T11:26:09.902264",
+    "pattern_category": "from_existing_episode",
+    "pattern_name": "ウルフフランケン",
+    "validation_errors": []
+  }
+}
